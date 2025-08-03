@@ -40,6 +40,7 @@ app.config['MAIL_DEFAULT_SENDER'] = ('PlugCap App', '929aca001@smtp-brevo.com')
 app.config['BREVO_API_KEY'] = os.getenv('BREVO_API_KEY')
 app.config['EMAIL_FROM'] = os.getenv('EMAIL_FROM')
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024  # 100KB limit for uploads to allow slight overhead
+app.config['ADMIN_PASSWORD'] = os.getenv('ADMIN_PASSWORD')  # Simple admin password
 
 mail = Mail(app)
 db.init_app(app)
@@ -49,7 +50,6 @@ migrate = Migrate(app, db)  # Initialize Flask-Migrate
 # Create database
 with app.app_context():
     db.create_all()
-
 
 @app.errorhandler(RequestEntityTooLarge)
 def handle_file_too_large(error):
@@ -64,6 +64,25 @@ def generate_access_code(length=5):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if request.method == 'POST':
+        password = request.form.get('admin_password')
+        if password == app.config['ADMIN_PASSWORD']:
+            session['admin_authenticated'] = True
+            users = User.query.all()
+            return render_template('admin.html', users=users)
+        else:
+            flash('Incorrect admin password.', 'error')
+            return render_template('admin.html', users=None)
+    
+    # If not authenticated, show password prompt
+    if not session.get('admin_authenticated'):
+        return render_template('admin.html', users=None)
+    
+    users = User.query.all()
+    return render_template('admin.html', users=users)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
