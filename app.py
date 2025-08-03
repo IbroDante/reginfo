@@ -50,6 +50,7 @@ migrate = Migrate(app, db)  # Initialize Flask-Migrate
 with app.app_context():
     db.create_all()
 
+
 @app.errorhandler(RequestEntityTooLarge)
 def handle_file_too_large(error):
     flash('Profile picture must not exceed 50KB.', 'error')
@@ -71,6 +72,7 @@ def register():
         first_name = request.form['first_name']
         family_name = request.form['family_name']
         company_organisation = request.form['company_organisation']
+        country_of_origin = request.form['country_of_origin']
         telephone = request.form['telephone']
         email = request.form['email']
         confirm_email = request.form['confirm_email']
@@ -118,6 +120,7 @@ def register():
             first_name=first_name,
             family_name=family_name,
             company_organisation=company_organisation,
+            country_of_origin=country_of_origin,
             telephone=telephone,
             email=email,
             confirm_email=confirm_email,
@@ -135,7 +138,7 @@ def register():
 
         # Send confirmation emails
         send_user_confirmation_email(email, token, first_name, family_name)
-        send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data)
+        send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data)
 
         flash('Registration successful! Please check your email (Inbox, Spam or Junk) for confirmation. Thank you!', 'success')
         return redirect(url_for('index'))
@@ -199,7 +202,7 @@ def send_user_confirmation_email(email, token, first_name, family_name):
     else:
         print(f"Failed to send user email: {response.text}")
 
-def send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data):
+def send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data):
     url = "https://api.brevo.com/v3/smtp/email"
     payload = {
         "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
@@ -216,6 +219,7 @@ def send_admin_notification_email(email, token, title, first_name, family_name, 
                     <li><strong>First Name:</strong> {first_name}</li>
                     <li><strong>Family Name:</strong> {family_name}</li>
                     <li><strong>Company/Organisation/University:</strong> {company_organisation}</li>
+                    <li><strong>Country of Origin:</strong> {country_of_origin}</li>
                     <li><strong>Email:</strong> {email}</li>
                     <li><strong>Telephone:</strong> {telephone}</li>
                     <li><strong>Age Group:</strong> {age_group}</li>

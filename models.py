@@ -14,6 +14,7 @@ class User(db.Model):
     first_name = db.Column(db.String(100), nullable=False)
     family_name = db.Column(db.String(100), nullable=False)
     company_organisation = db.Column(db.String(200), nullable=False)
+    country_of_origin = db.Column(db.String(100), nullable=False)
     telephone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     confirm_email = db.Column(db.String(120), nullable=False)
