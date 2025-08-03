@@ -40,17 +40,16 @@ app.config['MAIL_DEFAULT_SENDER'] = ('PlugCap App', '929aca001@smtp-brevo.com')
 app.config['BREVO_API_KEY'] = os.getenv('BREVO_API_KEY')
 app.config['EMAIL_FROM'] = os.getenv('EMAIL_FROM')
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024  # 100KB limit for uploads to allow slight overhead
-app.config['ADMIN_PASSWORD'] = os.getenv('ADMIN_PASSWORD')  # Simple admin password
+app.config['ADMIN_PASSWORD'] = os.getenv('ADMIN_PASSWORD')  
 
 mail = Mail(app)
 db.init_app(app)
 mail.init_app(app)
-migrate = Migrate(app, db)  # Initialize Flask-Migrate
+migrate = Migrate(app, db) 
 
 # Create database
 with app.app_context():
     db.create_all()
-
 
 @app.errorhandler(RequestEntityTooLarge)
 def handle_file_too_large(error):
@@ -89,13 +88,12 @@ def register():
     if request.method == 'POST':
         title = request.form['title']
         custom_title = request.form.get('custom_title', '')
-        # Use custom_title if title is 'Other(s)' and custom_title is provided
         if title == 'Other(s)':
             if not custom_title:
                 flash('Please provide a custom title for "Other(s)".', 'error')
                 return redirect(url_for('register'))
             if len(custom_title) > 10:
-                flash('Custom title must not exceed 10 characters.', 'error')
+                flash('Title must not exceed 10 characters.', 'error')
                 return redirect(url_for('register'))
             title = custom_title
         first_name = request.form['first_name']
@@ -113,17 +111,14 @@ def register():
         further_info = request.form.get('further_info', '')
         picture_file = request.files.get('picture')
 
-        # Validate email matching
         if email != confirm_email:
             flash('Email and Confirm Email do not match.', 'error')
             return redirect(url_for('register'))
 
-        # Check if email already exists
         if User.query.filter_by(email=email).first():
             flash('Email already registered!', 'error')
             return redirect(url_for('register'))
 
-        # Handle picture upload and enforce 50KB limit
         picture_data = None
         if picture_file:
             try:
@@ -138,12 +133,10 @@ def register():
                 flash(f'Error processing image: {str(e)}', 'error')
                 return redirect(url_for('register'))
 
-        # Generate 5-character access code
         token = generate_access_code()
         while User.query.filter_by(confirmation_token=token).first():
             token = generate_access_code()
 
-        # Create new user
         user = User(
             title=title,
             first_name=first_name,
@@ -160,31 +153,122 @@ def register():
             travel_visa=travel_visa,
             further_info=further_info,
             picture=picture_data,
-            confirmation_token=token
+            confirmation_token=token,
+            is_approved=False,
+            disapproval_reason=None
         )
         db.session.add(user)
         db.session.commit()
 
-        # Send confirmation emails
-        send_user_confirmation_email(email, token, first_name, family_name)
+        send_user_receipt_email(email, first_name, family_name)
         send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data)
 
-        flash('Registration successful! Please check your email (Inbox, Spam or Junk) for confirmation. Thank you!', 'success')
+        flash('Your registration is received. A confirmation email will be sent to you shortly. Check your inbox, Spam or junk folders.', 'success')
         return redirect(url_for('index'))
 
     return render_template('register.html')
 
+@app.route('/approve/<int:user_id>', methods=['POST'])
+def approve_user(user_id):
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+
+    user = User.query.get_or_404(user_id)
+    if user.is_approved:
+        flash(f'{user.first_name} {user.family_name} is already approved.', 'error')
+        return redirect(url_for('admin'))
+
+    user.is_approved = True
+    user.disapproval_reason = None 
+    db.session.commit()
+
+    send_user_confirmation_email(user.email, user.confirmation_token, user.first_name, user.family_name)
+    flash(f'{user.first_name} {user.family_name} has been approved and confirmation email sent. Check your inbox, Spam or junk folders.', 'success')
+    return redirect(url_for('admin'))
+
+@app.route('/disapprove/<int:user_id>', methods=['POST'])
+def disapprove_user(user_id):
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+
+    user = User.query.get_or_404(user_id)
+    disapproval_reason = request.form.get('disapproval_reason')
+    
+    if not disapproval_reason:
+        flash('Please provide a reason for disapproval.', 'error')
+        return redirect(url_for('admin'))
+
+    user.is_approved = False
+    user.disapproval_reason = disapproval_reason
+    db.session.commit()
+
+    send_user_disapproval_email(user.email, user.first_name, user.family_name, disapproval_reason)
+    flash(f'{user.first_name} {user.family_name} has been disapproved. Check your inbox, Spam or junk folders.', 'success')
+    return redirect(url_for('admin'))
+
+@app.route('/delete/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+
+    user = User.query.get_or_404(user_id)
+    first_name = user.first_name
+    family_name = user.family_name
+    db.session.delete(user)
+    db.session.commit()
+    flash(f'{first_name} {family_name} has been deleted.', 'success')
+    return redirect(url_for('admin'))
+
 @app.route('/confirm/<token>')
 def confirm_email(token):
     user = User.query.filter_by(confirmation_token=token).first()
-    if user:
+    if user and user.is_approved:
         user.is_confirmed = True
         user.confirmation_token = ''
         db.session.commit()
         flash('Registration confirmed successfully!', 'success')
     else:
-        flash('Invalid or expired confirmation link.', 'error')
+        flash('Invalid, unapproved, or expired confirmation link.', 'error')
     return redirect(url_for('index'))
+
+def send_user_receipt_email(email, first_name, family_name):
+    url = "https://api.brevo.com/v3/smtp/email"
+    payload = json.dumps({
+        "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
+        "to": [{"email": email, "name": f"{first_name} {family_name}"}],
+        "subject": "Registration Received for Sustainable Energy Forum (SEF-2025)",
+        "htmlContent": f"""
+            <html>
+            <head></head>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <p>Dear {first_name} {family_name},</p>
+                <p>Thank you for registering for the <strong>Sustainable Energy Forum (SEF-2025)</strong> in Abuja. Your registration has been received and is under review by our committee.</p>
+                <p>You will receive a second email with your confirmation details and unique access code once your registration is approved.</p>
+                <p><strong>For updates and to join the conversation, follow us:</strong></p>
+                <ul>
+                    <li>Via Instagram: <a href="https://www.instagram.com/jodor_a.m/">https://www.instagram.com/jodor_a.m/</a></li>
+                    <li>Via LinkedIn: <a href="https://www.linkedin.com/jodor-a-m-ltd/">https://www.linkedin.com/jodor-a-m-ltd/</a></li>
+                </ul>
+                <p>We look forward to welcoming you!</p>
+                <p>Best regards,</p>
+                <p><strong>J.A.M Ltd</strong></p>
+            </body>
+            </html>
+        """
+    })
+    headers = {
+        "accept": "application/json",
+        "api-key": app.config['BREVO_API_KEY'],
+        "content-type": "application/json"
+    }
+    response = requests.post(url, headers=headers, data=payload)
+    if response.status_code == 201:
+        print(f"Receipt email sent successfully: {response.json()}")
+    else:
+        print(f"Failed to send receipt email: {response.text}")
 
 def send_user_confirmation_email(email, token, first_name, family_name):
     confirm_url = url_for('confirm_email', token=token, _external=True)
@@ -192,13 +276,13 @@ def send_user_confirmation_email(email, token, first_name, family_name):
     payload = json.dumps({
         "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
         "to": [{"email": email, "name": f"{first_name} {family_name}"}],
-        "subject": "Your Registration for Sustainable Energy Forum (SEF-2025)",
+        "subject": "Your Registration for Sustainable Energy Forum (SEF-2025) is Approved",
         "htmlContent": f"""
             <html>
             <head></head>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
                 <p>Dear {first_name} {family_name},</p>
-                <p>Thank you for registering to attend the <strong>Sustainable Energy Forum (SEF-2025)</strong> in Abuja – an exclusive gathering to showcase Africa's leading energy experts, manufacturers, energy traders, product innovators with solutions and breakthrough projects.</p>
+                <p>Congratulations! Your registration for the <strong>Sustainable Energy Forum (SEF-2025)</strong> in Abuja has been approved by our committee.</p>
                 <p><strong>Kindly find below your event details and unique access code for a smooth registration and check-in experience. Just come ready to be captivated.</strong></p>
                 <ul>
                     <li><strong>Event Title:</strong> Sustainable Energy Forum (SEF-2025)</li>
@@ -227,22 +311,59 @@ def send_user_confirmation_email(email, token, first_name, family_name):
     }
     response = requests.post(url, headers=headers, data=payload)
     if response.status_code == 201:
-        print(f"User email sent successfully: {response.json()}")
+        print(f"Confirmation email sent successfully: {response.json()}")
     else:
-        print(f"Failed to send user email: {response.text}")
+        print(f"Failed to send confirmation email: {response.text}")
+
+def send_user_disapproval_email(email, first_name, family_name, disapproval_reason):
+    url = "https://api.brevo.com/v3/smtp/email"
+    payload = json.dumps({
+        "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
+        "to": [{"email": email, "name": f"{first_name} {family_name}"}],
+        "subject": "Registration Status for Sustainable Energy Forum (SEF-2025)",
+        "htmlContent": f"""
+            <html>
+            <head></head>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <p>Dear {first_name} {family_name},</p>
+                <p>Thank you for your interest in the <strong>Sustainable Energy Forum (SEF-2025)</strong> in Abuja.</p>
+                <p>We regret to inform you that your registration has not been approved by our committee. The reason for this decision is: <strong>{disapproval_reason}</strong></p>
+                <p>Please contact us at <a href="mailto:{app.config['EMAIL_FROM']}">{app.config['EMAIL_FROM']}</a> for further details or to address any concerns.</p>
+                <p><strong>For updates and to join the conversation, follow us:</strong></p>
+                <ul>
+                    <li>Via Instagram: <a href="https://www.instagram.com/jodor_a.m/">https://www.instagram.com/jodor_a.m/</a></li>
+                    <li>Via LinkedIn: <a href="https://www.linkedin.com/jodor-a-m-ltd/">https://www.linkedin.com/jodor-a-m-ltd/</a></li>
+                </ul>
+                <p>We appreciate your understanding and hope to see you at future events.</p>
+                <p>Best regards,</p>
+                <p><strong>J.A.M Ltd</strong></p>
+            </body>
+            </html>
+        """
+    })
+    headers = {
+        "accept": "application/json",
+        "api-key": app.config['BREVO_API_KEY'],
+        "content-type": "application/json"
+    }
+    response = requests.post(url, headers=headers, data=payload)
+    if response.status_code == 201:
+        print(f"Disapproval email sent successfully: {response.json()}")
+    else:
+        print(f"Failed to send disapproval email: {response.text}")
 
 def send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data):
     url = "https://api.brevo.com/v3/smtp/email"
     payload = {
         "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
         "to": [{"email": app.config['EMAIL_FROM'], "name": "J.A.M Ltd Admin"}],
-        "subject": "New Registration for SEF-2025",
+        "subject": "New Registration for SEF-2025 (Pending Approval)",
         "htmlContent": f"""
             <html>
             <head></head>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
                 <p>Dear J.A.M Ltd Admin,</p>
-                <p>A new user has registered for the Sustainable Energy Forum (SEF-2025). Below are the details:</p>
+                <p>A new user has registered for the Sustainable Energy Forum (SEF-2025) and is awaiting approval. Below are the details:</p>
                 <ul>
                     <li><strong>Title:</strong> {title}</li>
                     <li><strong>First Name:</strong> {first_name}</li>
@@ -260,6 +381,7 @@ def send_admin_notification_email(email, token, title, first_name, family_name, 
                     <li><strong>Unique Access Code:</strong> {token}</li>
                 </ul>
                 <p>{'Profile picture is attached below.' if picture_data else 'No profile picture was uploaded.'}</p>
+                <p>Please review and approve, disapprove, or delete this registration via the admin dashboard.</p>
                 <p>Best regards,</p>
                 <p><strong>J.A.M Ltd Registration System</strong></p>
             </body>
