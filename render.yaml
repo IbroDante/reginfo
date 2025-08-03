@@ -1,0 +1,58 @@
+services:
+  - type: web
+    name: examapp
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: |
+      pip install -r requirements.txt
+      flask db init || true
+      flask db migrate || true
+      flask db upgrade
+    startCommand: gunicorn -k gevent -w 4 app:app
+    worker: celery -A app.celery worker --concurrency=2 --loglevel=info
+    envVars:
+      - key: REDIS_URL
+        value: redis://red-d0qs96ripnbc73emomu0:6379
+      - key: DATABASE_URL
+        value: postgresql://your-db-url
+      - key: POSTGRES_DB
+        sync: true
+      - key: POSTGRES_USER
+        sync: true
+      - key: POSTGRES_PASSWORD
+        sync: true
+      - key: POSTGRES_HOST
+        value: postgres
+    disk:
+      name: exam_app
+      mountPath: /static/uploads
+      sizeGB: 5
+
+  - type: pserv
+    name: postgres
+    plan: free
+    env: docker
+    autoDeploy: false
+    disk:
+      name: postgres
+      mountPath: /var/lib/postgresql/data
+      sizeGB: 10
+    envVars:
+      - fromGroup: postgres
+
+static:
+  - path: /static
+    source: static
+
+envVarGroups:
+  - name: postgres
+    envVars:
+      - key: POSTGRES_DB
+        value: intime_nsmy
+      - key: POSTGRES_USER
+        value: ibrahimlolu
+      - key: POSTGRES_PASSWORD
+        value: 1QK3zpmye1WQlvxHCibrswdwsSgzqR4w
+      - key: POSTGRES_HOST
+        value: dpg-cq7alatds78s738u05l0-a
