@@ -50,7 +50,6 @@ migrate = Migrate(app, db)  # Initialize Flask-Migrate
 with app.app_context():
     db.create_all()
 
-# Custom handler for 413 Request Entity Too Large
 @app.errorhandler(RequestEntityTooLarge)
 def handle_file_too_large(error):
     flash('Profile picture must not exceed 50KB.', 'error')
@@ -58,7 +57,7 @@ def handle_file_too_large(error):
 
 def generate_access_code(length=5):
     """Generate a random 5-character alphanumeric access code."""
-    characters = string.ascii_letters + string.digits  # a-z, A-Z, 0-9
+    characters = string.ascii_letters + string.digits
     return ''.join(random.choice(characters) for _ in range(length))
 
 @app.route('/')
@@ -68,72 +67,84 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        fullname = request.form['fullname']
-        username = request.form['username']
+        title = request.form['title']
+        first_name = request.form['first_name']
+        family_name = request.form['family_name']
+        company_organisation = request.form['company_organisation']
+        telephone = request.form['telephone']
         email = request.form['email']
-        state = request.form['state']
-        lga = request.form['lga']
-        phone_number = request.form['phone_number']
+        confirm_email = request.form['confirm_email']
+        age_group = request.form['age_group']
+        highest_qualification = request.form['highest_qualification']
+        registration_category = request.form['registration_category']
+        hotel_lodging = request.form['hotel_lodging'] == 'Yes'
+        travel_visa = request.form['travel_visa'] == 'Yes'
+        further_info = request.form.get('further_info', '')
         picture_file = request.files.get('picture')
-        
-        # Check if email or username already exists
+
+        # Validate email matching
+        if email != confirm_email:
+            flash('Email and Confirm Email do not match.', 'error')
+            return redirect(url_for('register'))
+
+        # Check if email already exists
         if User.query.filter_by(email=email).first():
             flash('Email already registered!', 'error')
             return redirect(url_for('register'))
-        if User.query.filter_by(username=username).first():
-            flash('Username already taken!', 'error')
-            return redirect(url_for('register'))
-        
+
         # Handle picture upload and enforce 50KB limit
         picture_data = None
         if picture_file:
             try:
-                # Check file size
                 picture_file.seek(0, os.SEEK_END)
                 file_size = picture_file.tell()
-                picture_file.seek(0)  # Reset file pointer
-                if file_size > 50 * 1024:  # 50KB limit
+                picture_file.seek(0)
+                if file_size > 50 * 1024:
                     flash('Profile picture must not exceed 50KB.', 'error')
                     return redirect(url_for('register'))
                 picture_data = base64.b64encode(picture_file.read()).decode('utf-8')
             except Exception as e:
                 flash(f'Error processing image: {str(e)}', 'error')
                 return redirect(url_for('register'))
-        
+
         # Generate 5-character access code
         token = generate_access_code()
-        
-        # Ensure the access code is unique
         while User.query.filter_by(confirmation_token=token).first():
             token = generate_access_code()
-        
+
         # Create new user
         user = User(
-            fullname=fullname,
-            username=username,
+            title=title,
+            first_name=first_name,
+            family_name=family_name,
+            company_organisation=company_organisation,
+            telephone=telephone,
             email=email,
-            state=state,
-            lga=lga,
-            phone_number=phone_number,
+            confirm_email=confirm_email,
+            age_group=age_group,
+            highest_qualification=highest_qualification,
+            registration_category=registration_category,
+            hotel_lodging=hotel_lodging,
+            travel_visa=travel_visa,
+            further_info=further_info,
             picture=picture_data,
             confirmation_token=token
         )
         db.session.add(user)
         db.session.commit()
-        
-        # Send confirmation emails to user and admin
-        send_user_confirmation_email(email, token, fullname)
-        send_admin_notification_email(email, token, fullname, picture_data)
-        
+
+        # Send confirmation emails
+        send_user_confirmation_email(email, token, first_name, family_name)
+        send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data)
+
         flash('Registration successful! Please check your email (Inbox, Spam or Junk) for confirmation. Thank you!', 'success')
         return redirect(url_for('index'))
-    
+
     return render_template('register.html')
 
 @app.route('/confirm/<token>')
 def confirm_email(token):
     user = User.query.filter_by(confirmation_token=token).first()
-    
     if user:
         user.is_confirmed = True
         user.confirmation_token = ''
@@ -141,26 +152,25 @@ def confirm_email(token):
         flash('Registration confirmed successfully!', 'success')
     else:
         flash('Invalid or expired confirmation link.', 'error')
-    
     return redirect(url_for('index'))
 
-def send_user_confirmation_email(email, token, fullname):
+def send_user_confirmation_email(email, token, first_name, family_name):
     confirm_url = url_for('confirm_email', token=token, _external=True)
     url = "https://api.brevo.com/v3/smtp/email"
     payload = json.dumps({
         "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
-        "to": [{"email": email, "name": fullname}],
+        "to": [{"email": email, "name": f"{first_name} {family_name}"}],
         "subject": "Your Registration for Sustainable Energy Forum (SEF-2025)",
         "htmlContent": f"""
             <html>
             <head></head>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-                <p>Dear {fullname},</p>
+                <p>Dear {first_name} {family_name},</p>
                 <p>Thank you for registering to attend the <strong>Sustainable Energy Forum (SEF-2025)</strong> in Abuja – an exclusive gathering to showcase Africa's leading energy experts, manufacturers, energy traders, product innovators with solutions and breakthrough projects.</p>
                 <p><strong>Kindly find below your event details and unique access code for a smooth registration and check-in experience. Just come ready to be captivated.</strong></p>
                 <ul>
                     <li><strong>Event Title:</strong> Sustainable Energy Forum (SEF-2025)</li>
-                    <li><strong>Name:</strong> {fullname}</li>
+                    <li><strong>Name:</strong> {first_name} {family_name}</li>
                     <li><strong>Date:</strong> September 29-30th, 2025</li>
                     <li><strong>Time:</strong> 10:00 AM (Daily)</li>
                     <li><strong>Venue:</strong> Central Business District, Abuja</li>
@@ -189,7 +199,7 @@ def send_user_confirmation_email(email, token, fullname):
     else:
         print(f"Failed to send user email: {response.text}")
 
-def send_admin_notification_email(email, token, fullname, picture_data):
+def send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data):
     url = "https://api.brevo.com/v3/smtp/email"
     payload = {
         "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
@@ -202,8 +212,18 @@ def send_admin_notification_email(email, token, fullname, picture_data):
                 <p>Dear J.A.M Ltd Admin,</p>
                 <p>A new user has registered for the Sustainable Energy Forum (SEF-2025). Below are the details:</p>
                 <ul>
-                    <li><strong>Full Name:</strong> {fullname}</li>
+                    <li><strong>Title:</strong> {title}</li>
+                    <li><strong>First Name:</strong> {first_name}</li>
+                    <li><strong>Family Name:</strong> {family_name}</li>
+                    <li><strong>Company/Organisation/University:</strong> {company_organisation}</li>
                     <li><strong>Email:</strong> {email}</li>
+                    <li><strong>Telephone:</strong> {telephone}</li>
+                    <li><strong>Age Group:</strong> {age_group}</li>
+                    <li><strong>Highest Qualification:</strong> {highest_qualification}</li>
+                    <li><strong>Registration Category:</strong> {registration_category}</li>
+                    <li><strong>Hotel Lodging Required:</strong> {'Yes' if hotel_lodging else 'No'}</li>
+                    <li><strong>Travel Visa Required:</strong> {'Yes' if travel_visa else 'No'}</li>
+                    <li><strong>Further Info:</strong> {further_info or 'None'}</li>
                     <li><strong>Unique Access Code:</strong> {token}</li>
                 </ul>
                 <p>{'Profile picture is attached below.' if picture_data else 'No profile picture was uploaded.'}</p>
