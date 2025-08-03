@@ -66,7 +66,7 @@ Set Up Environment Variables:Create a .env file in the project root:
 # .env
 DATABASE_URL=postgresql://user:password@localhost:5432/your_database
 SECRET_KEY=your-secret-key
-BREVO_API_KEY=xkeysi
+BREVO_API_KEY=xkeysi12
 EMAIL_FROM=mololuwa.ibrahim@gmail.com
 
 
