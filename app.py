@@ -20,11 +20,14 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_, desc
 import psycopg2, psycopg2cffi
 from werkzeug.exceptions import RequestEntityTooLarge
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL") #render
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL") #render
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
@@ -122,7 +125,7 @@ def register():
         send_user_confirmation_email(email, token, fullname)
         send_admin_notification_email(email, token, fullname, picture_data)
         
-        flash('Registration successful! Please check your email for confirmation.', 'success')
+        flash('Registration successful! Please check your email (Inbox, Spam or Junk) for confirmation. Thank you!', 'success')
         return redirect(url_for('index'))
     
     return render_template('register.html')
