@@ -51,6 +51,7 @@ migrate = Migrate(app, db)  # Initialize Flask-Migrate
 with app.app_context():
     db.create_all()
 
+
 @app.errorhandler(RequestEntityTooLarge)
 def handle_file_too_large(error):
     flash('Profile picture must not exceed 50KB.', 'error')
@@ -77,7 +78,6 @@ def admin():
             flash('Incorrect admin password.', 'error')
             return render_template('admin.html', users=None)
     
-    # If not authenticated, show password prompt
     if not session.get('admin_authenticated'):
         return render_template('admin.html', users=None)
     
@@ -88,6 +88,16 @@ def admin():
 def register():
     if request.method == 'POST':
         title = request.form['title']
+        custom_title = request.form.get('custom_title', '')
+        # Use custom_title if title is 'Other(s)' and custom_title is provided
+        if title == 'Other(s)':
+            if not custom_title:
+                flash('Please provide a custom title for "Other(s)".', 'error')
+                return redirect(url_for('register'))
+            if len(custom_title) > 10:
+                flash('Custom title must not exceed 10 characters.', 'error')
+                return redirect(url_for('register'))
+            title = custom_title
         first_name = request.form['first_name']
         family_name = request.form['family_name']
         company_organisation = request.form['company_organisation']

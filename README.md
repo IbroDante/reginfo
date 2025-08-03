@@ -1,6 +1,6 @@
 JODOR Asset Management (J.A.M) Ltd Web Application
 Overview
-JODOR Asset Management (J.A.M) Ltd is a modern, forward-thinking asset management company focused on delivering exceptional investment solutions. This web application serves as the official platform for the Sustainable Energy Forum (SEF-2025) in Abuja, Nigeria, allowing users to register, receive a unique 5-character access code, and confirm their attendance via email. The application features a world-class, visually stunning landing page and a user-friendly registration form, both styled with Tailwind CSS, Poppins font, and enhanced with animations (AOS, Typed.js) and SweetAlert2 for flash messages.
+JODOR Asset Management (J.A.M) Ltd is a modern, forward-thinking asset management company focused on delivering exceptional investment solutions. This web application serves as the official platform for the Sustainable Energy Forum (SEF-2025) in Abuja, Nigeria, allowing users to register, receive a unique 5-character access code, and confirm their attendance via email. The application features a world-class, visually stunning landing page, a user-friendly registration form, and an admin dashboard, all styled with Tailwind CSS, Poppins font, and enhanced with animations (AOS, Typed.js), SweetAlert2 for flash messages, and DataTables for the admin dashboard.
 Features
 
 Landing Page (/):
@@ -16,9 +16,34 @@ Footer with newsletter signup (placeholder) and dynamic copyright year.
 
 Registration Form (/register):
 
-Collects user details: full name, username, email, state, LGA, phone number, and optional profile picture (≤50KB).
+Collects user details:
+Title (Ms., Mr., Mrs., Engr., Dr., Prof., Chief, Alhaji, Otunba, Other(s))
+First Name, Family Name
+Company/Organisation/University
+Country of Origin (dropdown with 249 ISO 3166-1 countries)
+Telephone
+Email, Confirm Email
+Age Group (20-29, 30-39, etc.)
+Highest Educational Qualification (Diploma/Certificate, Bachelors, etc.)
+Registration Category (Support Team, Press Media, etc.)
+Hotel Lodging Required (Yes/No)
+Travel Visa Required (Yes/No)
+Any Further Info (optional)
+Profile Picture (optional, ≤50KB)
+
+
+Client-side validation for matching emails using JavaScript.
 Displays validation errors and success messages via SweetAlert2 popups (success: green checkmark, error: yellow warning).
 Modern design with Tailwind CSS, Poppins font, and Font Awesome icons.
+
+
+Admin Dashboard (/admin):
+
+Password-protected (set via ADMIN_PASSWORD in .env).
+Displays a table of all registered users with fields: Title, First Name, Family Name, Company/Organisation/University, Country of Origin, Email, Telephone, Age Group, Highest Qualification, Registration Category, Hotel Lodging, Travel Visa, Further Info, Confirmed (Yes/No), and Profile Picture.
+Uses DataTables for sorting, searching, and pagination.
+Profile pictures are displayed as clickable thumbnails, opening in a SweetAlert2 popup.
+Includes navigation and social media links consistent with other pages.
 
 
 Backend Functionality:
@@ -30,14 +55,16 @@ Admin Email: Notification to mololuwa.ibrahim@gmail.com with user details and op
 
 
 Validates profile picture size (≤50KB) with a custom 413 error handler for uploads exceeding 100KB.
+Validates matching email and confirm email fields (client-side and server-side).
 Stores user data in a PostgreSQL or SQLite database using Flask-SQLAlchemy and Flask-Migrate.
 Handles email confirmation via a unique token.
+Admin dashboard access secured with a simple password-based authentication (session-based).
 
 
 Technologies:
 
 Backend: Flask, Flask-SQLAlchemy, Flask-Migrate, PostgreSQL/SQLite, Python.
-Frontend: Tailwind CSS, Poppins font, Font Awesome, SweetAlert2, AOS, Typed.js.
+Frontend: Tailwind CSS, Poppins font, Font Awesome, SweetAlert2, AOS, Typed.js, DataTables, jQuery.
 APIs: Brevo for email delivery.
 Environment: Managed via .env file with python-dotenv.
 
@@ -66,14 +93,16 @@ Set Up Environment Variables:Create a .env file in the project root:
 # .env
 DATABASE_URL=postgresql://user:password@localhost:5432/your_database
 SECRET_KEY=your-secret-key
-BREVO_API_KEY=xkeysi12
+BREVO_API_KEY=xkeywdwdd
 EMAIL_FROM=mololuwa.ibrahim@gmail.com
+ADMIN_PASSWORD=admin123
 
 
 Replace DATABASE_URL with your PostgreSQL connection string or use sqlite:///users.db for SQLite.
 Generate a secure SECRET_KEY.
 Obtain BREVO_API_KEY from Brevo’s dashboard (API Keys section).
 Ensure EMAIL_FROM is a verified sender in Brevo.
+Set a secure ADMIN_PASSWORD for the admin dashboard.
 
 
 Set Up PostgreSQL (Optional):
@@ -119,11 +148,12 @@ Use the command:gunicorn --workers 3 app:app
 
 File Structure
 jam-ltd-webapp/
-├── app.py                    # Flask application with routes, email logic, and error handling
+├── app.py                    # Flask application with routes, email logic, and admin dashboard
 ├── models.py                 # SQLAlchemy User model for database
 ├── templates/
 │   ├── index.html            # Landing page with hero, about, services, CTA, and social media
-│   └── register.html         # Registration form with SweetAlert2 flash messages
+│   ├── register.html         # Registration form with SweetAlert2 flash messages
+│   └── admin.html            # Admin dashboard with DataTables for user management
 ├── .env                      # Environment variables (not tracked in git)
 ├── migrations/               # Flask-Migrate database migrations
 └── README.md                 # This file
@@ -140,26 +170,44 @@ Click "Register Now" to navigate to /register.
 Registration:
 
 At http://localhost:5000/register, fill in:
-Full Name
-Username
-Email Address
-State
-LGA
-Phone Number
+Title (dropdown: Ms., Mr., Mrs., Engr., Dr., Prof., Chief, Alhaji, Otunba, Other(s))
+First Name, Family Name
+Company/Organisation/University
+Country of Origin (dropdown with 249 countries)
+Telephone
+Email, Confirm Email
+Age Group (20-29, 30-39, etc.)
+Highest Educational Qualification (Diploma/Certificate, Bachelors, etc.)
+Registration Category (Support Team, Press Media, etc.)
+Hotel Lodging Required (Yes/No)
+Travel Visa Required (Yes/No)
+Any Further Info (optional)
 Profile Picture (optional, ≤50KB)
 
 
 Submit to register. SweetAlert2 popups display:
 Success: "Registration successful! Please check your email for confirmation." (green checkmark).
-Errors: e.g., "Profile picture must not exceed 50KB.", "Email already registered!" (yellow warning).
+Errors: e.g., "Profile picture must not exceed 50KB.", "Email already registered!", "Email and Confirm Email do not match." (yellow warning).
 
 
+
+
+Admin Dashboard:
+
+Visit http://localhost:5000/admin:
+Enter the admin password (set in .env, default: admin123).
+View a DataTables table with all user registrations, including Title, Country of Origin, and other fields.
+Click profile pictures to view full-size in a SweetAlert2 popup.
+Sort, search, and paginate the table.
+
+
+Incorrect passwords trigger a SweetAlert2 error popup.
 
 
 Emails:
 
 User: Receives a confirmation email with SEF-2025 details (event title, date, venue, unique access code).
-Admin: Receives a notification to mololuwa.ibrahim@gmail.com with user details and an optional picture attachment (profile_picture.jpg).
+Admin: Receives a notification to mololuwa.ibrahim@gmail.com with all user details and an optional picture attachment (profile_picture.jpg).
 
 
 Confirmation:
@@ -171,36 +219,42 @@ Redirects to / with a SweetAlert2 popup: "Registration confirmed successfully!".
 
 Notes
 
-Flash Messages: Both index.html and register.html use SweetAlert2 for consistent, modern popups (success: green checkmark, error: yellow warning, blue #3085d6 confirm button).
-Design: The landing page features world-class aesthetics with animated gradients, AOS scroll effects, Typed.js typewriter, and a responsive mobile menu. The registration form uses Tailwind CSS for a sleek, professional look.
+Flash Messages: Both index.html, register.html, and admin.html use SweetAlert2 for consistent, modern popups (success: green checkmark, error: yellow warning, blue #3085d6 confirm button).
+Design: The landing page features world-class aesthetics with animated gradients, AOS scroll effects, Typed.js typewriter, and a responsive mobile menu. The registration form and admin dashboard use Tailwind CSS for a sleek, professional look.
+Country Dropdown: The Country of Origin field uses a dropdown with 249 ISO 3166-1 countries, ensuring consistency and ease of use.
+Title Options: The Title dropdown includes culturally relevant options (e.g., Chief, Alhaji, Otunba) alongside standard titles.
 File Size Validation: Profile pictures are limited to 50KB, with a 100KB server limit (MAX_CONTENT_LENGTH). Exceeding either triggers a SweetAlert2 error popup.
 Email Limits: Each registration sends two emails, counting toward Brevo’s 300 emails/day free plan limit.
 Security:
 The 50KB picture limit minimizes storage issues.
-Add Flask-WTF for CSRF protection in production.
+Add Flask-WTF for CSRF protection in production for the registration and admin password forms.
 Verify EMAIL_FROM in Brevo.
+Set a secure ADMIN_PASSWORD in .env for the admin dashboard.
 
 
-Performance: Lazy-loaded images and minified CDNs (Tailwind, SweetAlert2, AOS, Typed.js) optimize load times.
+Performance: Lazy-loaded images, minified CDNs (Tailwind, SweetAlert2, AOS, Typed.js, DataTables), and client-side DataTables optimize load times. For large datasets, consider server-side pagination.
 
 Troubleshooting
 
 Flash Messages: If SweetAlert2 popups fail, check the CDN (https://cdn.jsdelivr.net/npm/sweetalert2@11) and browser console.
 Animations: Verify AOS (https://unpkg.com/aos@next) and Typed.js (https://cdnjs.cloudflare.com/ajax/libs/typed.js) CDNs. Ensure JavaScript is enabled.
+DataTables: Verify jQuery (https://code.jquery.com/jquery-3.5.1.min.js) and DataTables (https://cdn.datatables.net/1.11.5/) CDNs. Test sorting and searching.
 File Size Errors: Test with files >50KB and >100KB to confirm SweetAlert2 error popups.
 Email Issues: Check Brevo’s dashboard logs. Debug with print(response.text) in app.py.
 Database: Verify DATABASE_URL or use SQLite. Rerun migrations if needed:flask db migrate -m "Update migration"
 flask db upgrade
 
 
+Admin Access: If the password prompt persists, ensure ADMIN_PASSWORD is set in .env. Clear browser cookies if session issues occur.
 
 Future Enhancements
 
 Implement a functional newsletter signup form in the footer using Brevo’s API.
-Add client-side file size validation in register.html using JavaScript.
+Add client-side validation for fields like company_organisation or telephone (e.g., format checks).
 Develop a login system for the "Sign in" link in register.html.
 Integrate additional animations or Lottie files for services icons.
-Add a dashboard for admins to view registered users.
+Add CSV export or advanced filtering to the admin dashboard.
+Implement server-side pagination for the admin dashboard for large datasets.
 
 License
 © 2025 JODOR Asset Management (J.A.M) Ltd. All rights reserved.
