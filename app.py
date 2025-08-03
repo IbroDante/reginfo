@@ -20,9 +20,16 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_, desc
 import psycopg2, psycopg2cffi
 from werkzeug.exceptions import RequestEntityTooLarge
+from sqlalchemy.exc import OperationalError
 from dotenv import load_dotenv
+import logging
+import time
 
 load_dotenv()
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
@@ -39,8 +46,14 @@ app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_DEFAULT_SENDER'] = ('PlugCap App', '929aca001@smtp-brevo.com')
 app.config['BREVO_API_KEY'] = os.getenv('BREVO_API_KEY')
 app.config['EMAIL_FROM'] = os.getenv('EMAIL_FROM')
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024  # 100KB limit for uploads to allow slight overhead
+# app.config['MAX_CONTENT_LENGTH'] = 100 * 1024  # 100KB limit for uploads to allow slight overhead
 app.config['ADMIN_PASSWORD'] = os.getenv('ADMIN_PASSWORD')  
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'pool_size': 5,
+    'max_overflow': 10,
+    'pool_timeout': 30,
+    'pool_pre_ping': True,
+}
 
 mail = Mail(app)
 db.init_app(app)
@@ -50,11 +63,6 @@ migrate = Migrate(app, db)
 # Create database
 with app.app_context():
     db.create_all()
-
-@app.errorhandler(RequestEntityTooLarge)
-def handle_file_too_large(error):
-    flash('Profile picture must not exceed 50KB.', 'error')
-    return redirect(url_for('register'))
 
 def generate_access_code(length=5):
     """Generate a random 5-character alphanumeric access code."""
@@ -71,8 +79,13 @@ def admin():
         password = request.form.get('admin_password')
         if password == app.config['ADMIN_PASSWORD']:
             session['admin_authenticated'] = True
-            users = User.query.all()
-            return render_template('admin.html', users=users)
+            try:
+                users = User.query.all()
+                return render_template('admin.html', users=users)
+            except OperationalError as e:
+                logger.error(f"Database error in admin route: {str(e)}")
+                flash('Database connection error. Please try again later.', 'error')
+                return render_template('admin.html', users=None)
         else:
             flash('Incorrect admin password.', 'error')
             return render_template('admin.html', users=None)
@@ -80,8 +93,13 @@ def admin():
     if not session.get('admin_authenticated'):
         return render_template('admin.html', users=None)
     
-    users = User.query.all()
-    return render_template('admin.html', users=users)
+    try:
+        users = User.query.all()
+        return render_template('admin.html', users=users)
+    except OperationalError as e:
+        logger.error(f"Database error in admin route: {str(e)}")
+        flash('Database connection error. Please try again later.', 'error')
+        return render_template('admin.html', users=None)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -91,10 +109,10 @@ def register():
         if title == 'Other(s)':
             if not custom_title:
                 flash('Please provide a custom title for "Other(s)".', 'error')
-                return redirect(url_for('register'))
+                return render_template('register.html')
             if len(custom_title) > 10:
-                flash('Title must not exceed 10 characters.', 'error')
-                return redirect(url_for('register'))
+                flash('Custom title must not exceed 10 characters.', 'error')
+                return render_template('register.html')
             title = custom_title
         first_name = request.form['first_name']
         family_name = request.form['family_name']
@@ -113,25 +131,19 @@ def register():
 
         if email != confirm_email:
             flash('Email and Confirm Email do not match.', 'error')
-            return redirect(url_for('register'))
+            return render_template('register.html')
 
         if User.query.filter_by(email=email).first():
             flash('Email already registered!', 'error')
-            return redirect(url_for('register'))
+            return render_template('register.html')
 
         picture_data = None
         if picture_file:
             try:
-                picture_file.seek(0, os.SEEK_END)
-                file_size = picture_file.tell()
-                picture_file.seek(0)
-                if file_size > 50 * 1024:
-                    flash('Profile picture must not exceed 50KB.', 'error')
-                    return redirect(url_for('register'))
                 picture_data = base64.b64encode(picture_file.read()).decode('utf-8')
             except Exception as e:
                 flash(f'Error processing image: {str(e)}', 'error')
-                return redirect(url_for('register'))
+                return render_template('register.html')
 
         token = generate_access_code()
         while User.query.filter_by(confirmation_token=token).first():
@@ -157,14 +169,19 @@ def register():
             is_approved=False,
             disapproval_reason=None
         )
-        db.session.add(user)
-        db.session.commit()
-
-        send_user_receipt_email(email, first_name, family_name)
-        send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data)
-
-        flash('Your registration is received. A confirmation email will be sent to you shortly. Check your inbox, Spam or junk folders.', 'success')
-        return redirect(url_for('index'))
+        try:
+            db.session.add(user)
+            db.session.commit()
+            send_user_receipt_email(email, first_name, family_name)
+            send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data)
+            
+            flash('Your registration is received. A confirmation email will be sent to you shortly. Check your inbox, Spam or junk folders.', 'success')
+            return redirect(url_for('index'))
+        except OperationalError as e:
+            logger.error(f"Database error in register route: {str(e)}")
+            db.session.rollback()
+            flash('Database connection error. Please try again later.', 'error')
+            return render_template('register.html')
 
     return render_template('register.html')
 
@@ -180,11 +197,11 @@ def approve_user(user_id):
         return redirect(url_for('admin'))
 
     user.is_approved = True
-    user.disapproval_reason = None 
+    user.disapproval_reason = None  # Clear any previous disapproval reason
     db.session.commit()
 
     send_user_confirmation_email(user.email, user.confirmation_token, user.first_name, user.family_name)
-    flash(f'{user.first_name} {user.family_name} has been approved and confirmation email sent. Check your inbox, Spam or junk folders.', 'success')
+    flash(f'{user.first_name} {user.family_name} has been approved and confirmation email sent.', 'success')
     return redirect(url_for('admin'))
 
 @app.route('/disapprove/<int:user_id>', methods=['POST'])
@@ -205,7 +222,7 @@ def disapprove_user(user_id):
     db.session.commit()
 
     send_user_disapproval_email(user.email, user.first_name, user.family_name, disapproval_reason)
-    flash(f'{user.first_name} {user.family_name} has been disapproved. Check your inbox, Spam or junk folders.', 'success')
+    flash(f'{user.first_name} {user.family_name} has been disapproved.', 'success')
     return redirect(url_for('admin'))
 
 @app.route('/delete/<int:user_id>', methods=['POST'])
@@ -282,7 +299,10 @@ def send_user_confirmation_email(email, token, first_name, family_name):
             <head></head>
             <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
                 <p>Dear {first_name} {family_name},</p>
-                <p>Congratulations! Your registration for the <strong>Sustainable Energy Forum (SEF-2025)</strong> in Abuja has been approved by our committee.</p>
+                <p>Congratulations! Thank you for registering to attend the <strong>Sustainable Energy Forum (SEF-2025)</strong> in Abuja – an exclusive gathering to showcase 
+                Africas leading energy experts, Manufacturers, Energy traders, Product innovators for Oil & Gas, Renewables, Solar Systems & Hydro Power, 
+                Geothermal & Biofuels, Control Technology & Telecommunications, Data Mining and Siesmic Mapping other energy sector leaders with sustainable solutions and breakthrough projects. 
+            </p>
                 <p><strong>Kindly find below your event details and unique access code for a smooth registration and check-in experience. Just come ready to be captivated.</strong></p>
                 <ul>
                     <li><strong>Event Title:</strong> Sustainable Energy Forum (SEF-2025)</li>
@@ -328,7 +348,6 @@ def send_user_disapproval_email(email, first_name, family_name, disapproval_reas
                 <p>Dear {first_name} {family_name},</p>
                 <p>Thank you for your interest in the <strong>Sustainable Energy Forum (SEF-2025)</strong> in Abuja.</p>
                 <p>We regret to inform you that your registration has not been approved by our committee. The reason for this decision is: <strong>{disapproval_reason}</strong></p>
-                <p>Please contact us at <a href="mailto:{app.config['EMAIL_FROM']}">{app.config['EMAIL_FROM']}</a> for further details or to address any concerns.</p>
                 <p><strong>For updates and to join the conversation, follow us:</strong></p>
                 <ul>
                     <li>Via Instagram: <a href="https://www.instagram.com/jodor_a.m/">https://www.instagram.com/jodor_a.m/</a></li>
