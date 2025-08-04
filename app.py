@@ -5,7 +5,7 @@ import json
 import uuid
 import os
 from flask_mail import Mail, Message
-from models import db, User
+from models import db, User, Contact
 import base64
 import json
 import random
@@ -24,6 +24,8 @@ from sqlalchemy.exc import OperationalError
 from dotenv import load_dotenv
 import logging
 import time
+import re
+from datetime import datetime
 
 load_dotenv()
 
@@ -32,7 +34,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL") #render
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
@@ -197,7 +198,7 @@ def approve_user(user_id):
         return redirect(url_for('admin'))
 
     user.is_approved = True
-    user.disapproval_reason = None  # Clear any previous disapproval reason
+    user.disapproval_reason = None
     db.session.commit()
 
     send_user_confirmation_email(user.email, user.confirmation_token, user.first_name, user.family_name)
@@ -424,5 +425,64 @@ def send_admin_notification_email(email, token, title, first_name, family_name, 
     else:
         print(f"Failed to send admin email: {response.text}")
 
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form['name']
+        organisation = request.form['organisation']
+        telephone = request.form['telephone']
+        email = request.form['email']
+        inquiry = request.form['inquiry']
+        other_inquiry = request.form.get('other_inquiry', '')  # Optional field
+
+        # Validate email format
+        if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email):
+            flash('Invalid email address.', 'warning')
+            return render_template('index.html')
+
+        # Validate other_inquiry if inquiry is "Other Inquiry"
+        if inquiry == 'Other Inquiry' and not other_inquiry.strip():
+            flash('Please provide details for Other Inquiry.', 'warning')
+            return render_template('index.html')
+
+        # Store contact inquiry
+        contact_entry = Contact(
+            name=name,
+            organisation=organisation,
+            telephone=telephone,
+            email=email,
+            inquiry=inquiry,
+            other_inquiry=other_inquiry if other_inquiry.strip() else None
+        )
+        db.session.add(contact_entry)
+        db.session.commit()
+
+        # Send email to admin
+        try:
+            msg = Message(
+                subject=f'New Contact Inquiry from {name}',
+                recipients=[app.config['MAIL_USERNAME']],
+                body=f"""
+                New Contact Inquiry:
+                Name: {name}
+                Organisation: {organisation}
+                Telephone: {telephone}
+                Email: {email}
+                Nature of Inquiry: {inquiry}
+                Other Inquiry Details: {other_inquiry or 'None'}
+                Timestamp: {contact_entry.timestamp}
+                """
+            )
+            mail.send(msg)
+            flash('Your inquiry has been submitted successfully. We will contact you soon.', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Failed to send inquiry: {str(e)}', 'warning')
+            return render_template('index.html')
+
+        return render_template('index.html')
+    return render_template('index.html')
+    
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True)

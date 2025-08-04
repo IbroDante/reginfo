@@ -29,3 +29,13 @@ class User(db.Model):
     is_confirmed = db.Column(db.Boolean, default=False)
     is_approved = db.Column(db.Boolean, default=False)
     disapproval_reason = db.Column(db.Text)  
+
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    organisation = db.Column(db.String(100), nullable=False)
+    telephone = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    inquiry = db.Column(db.String(50), nullable=False)
+    other_inquiry = db.Column(db.Text, nullable=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
