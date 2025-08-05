@@ -425,6 +425,53 @@ def send_admin_notification_email(email, token, title, first_name, family_name, 
     else:
         print(f"Failed to send admin email: {response.text}")
 
+# Email sending function for contact inquiries
+def send_contact_notification_email(name, organisation, telephone, email, inquiry, other_inquiry, timestamp):
+    url = "https://api.brevo.com/v3/smtp/email"
+    payload = {
+        "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
+        "to": [{"email": app.config['EMAIL_FROM'], "name": "J.A.M Ltd Admin"}],
+        "subject": "New Contact Inquiry from J.A.M Ltd Website",
+        "htmlContent": f"""
+            <html>
+            <head></head>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <p>Dear J.A.M Ltd Admin,</p>
+                <p>A new contact inquiry has been submitted via the website. Below are the details:</p>
+                <ul>
+                    <li><strong>Name:</strong> {name}</li>
+                    <li><strong>Organisation:</strong> {organisation}</li>
+                    <li><strong>Telephone:</strong> {telephone}</li>
+                    <li><strong>Email:</strong> {email}</li>
+                    <li><strong>Nature of Inquiry:</strong> {inquiry}</li>
+                    <li><strong>Other Inquiry Details:</strong> {other_inquiry or 'None'}</li>
+                    <li><strong>Timestamp:</strong> {timestamp}</li>
+                </ul>
+                <p>Please review and respond to this inquiry as needed.</p>
+                <p>Best regards,</p>
+                <p><strong>J.A.M Ltd Contact System</strong></p>
+            </body>
+            </html>
+        """
+    }
+    payload = json.dumps(payload)
+    headers = {
+        "accept": "application/json",
+        "api-key": app.config['BREVO_API_KEY'],
+        "content-type": "application/json"
+    }
+    try:
+        response = requests.post(url, headers=headers, data=payload)
+        if response.status_code == 201:
+            logger.info(f"Contact email sent successfully to {app.config['EMAIL_FROM']}: {response.json()}")
+            return True
+        else:
+            logger.error(f"Failed to send contact email: {response.text}")
+            return False
+    except Exception as e:
+        logger.error(f"Exception while sending contact email: {str(e)}")
+        return False
+
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
@@ -433,16 +480,18 @@ def contact():
         telephone = request.form['telephone']
         email = request.form['email']
         inquiry = request.form['inquiry']
-        other_inquiry = request.form.get('other_inquiry', '')  # Optional field
+        other_inquiry = request.form.get('other_inquiry', '')
 
         # Validate email format
         if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email):
             flash('Invalid email address.', 'warning')
+            logger.error(f"Invalid email format: {email}")
             return render_template('index.html')
 
         # Validate other_inquiry if inquiry is "Other Inquiry"
         if inquiry == 'Other Inquiry' and not other_inquiry.strip():
             flash('Please provide details for Other Inquiry.', 'warning')
+            logger.error("Other Inquiry selected but no details provided")
             return render_template('index.html')
 
         # Store contact inquiry
@@ -454,35 +503,34 @@ def contact():
             inquiry=inquiry,
             other_inquiry=other_inquiry if other_inquiry.strip() else None
         )
-        db.session.add(contact_entry)
-        db.session.commit()
-
-        # Send email to admin
         try:
-            msg = Message(
-                subject=f'New Contact Inquiry from {name}',
-                recipients=[app.config['MAIL_USERNAME']],
-                body=f"""
-                New Contact Inquiry:
-                Name: {name}
-                Organisation: {organisation}
-                Telephone: {telephone}
-                Email: {email}
-                Nature of Inquiry: {inquiry}
-                Other Inquiry Details: {other_inquiry or 'None'}
-                Timestamp: {contact_entry.timestamp}
-                """
-            )
-            mail.send(msg)
-            flash('Your inquiry has been submitted successfully. We will contact you soon.', 'success')
+            db.session.add(contact_entry)
+            db.session.commit()
+            logger.info(f"Contact inquiry stored: {name}, {email}, {inquiry}")
         except Exception as e:
             db.session.rollback()
-            flash(f'Failed to send inquiry: {str(e)}', 'warning')
+            flash(f'Failed to store inquiry: {str(e)}', 'warning')
+            logger.error(f"Database error: {str(e)}")
             return render_template('index.html')
+
+        # Send email to admin
+        if send_contact_notification_email(
+            name=name,
+            organisation=organisation,
+            telephone=telephone,
+            email=email,
+            inquiry=inquiry,
+            other_inquiry=other_inquiry,
+            timestamp=contact_entry.timestamp
+        ):
+            flash('Your inquiry has been submitted successfully. We will contact you soon.', 'success')
+        else:
+            flash('Inquiry saved, but failed to send email to admin. Please try again later.', 'warning')
+            logger.error("Contact email sending failed, but inquiry was saved")
 
         return render_template('index.html')
     return render_template('index.html')
-    
+
 if __name__ == '__main__':
     db.create_all()
     app.run(debug=True)
