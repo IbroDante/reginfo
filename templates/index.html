@@ -64,40 +64,113 @@
         .dropdown:hover .dropdown-menu {
             display: block;
         }
-        .marquee {
-            display: flex;
+        /* Marquee Container */
+        .marquee-container {
+            background: linear-gradient(to right, #f1f5f9, #e2e8f0);
+            border-top: 1px solid #cbd5e1;
+            border-bottom: 1px solid #cbd5e1;
+            padding: 10px 0;
             overflow: hidden;
-            white-space: nowrap;
-            background-color: #12ac62;
+            position: relative;
+            min-height: 46px;
         }
-        .marquee-content {
+        
+        /* Marquee Track */
+        .marquee-track {
             display: flex;
-            animation: marquee 30s linear infinite;
+            position: absolute;
+            animation: marquee 90s linear infinite;
+            white-space: nowrap;
         }
+        
+        /* Marquee Animation */
         @keyframes marquee {
-            0% { transform: translateX(100%); }
+            100% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
-        .form-container {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border-radius: 0.75rem;
-        }
-        .loading-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+        
+        /* Marquee Item */
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            border-right: 1px solid #cbd5e1;
             height: 100%;
-            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Marquee Label */
+        .marquee-label {
+            background: #0ea5e9;
+            color: white;
+            border-radius: 4px;
+            padding: 2px 8px;
+            margin-right: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        /* Price Movement Indicators */
+        .price-up { color: #10b981; }
+        .price-down { color: #ef4444; }
+        .price-neutral { color: #64748b; }
+        
+        .price-up::before {
+            content: "▲";
+            font-size: 0.7em;
+            margin-right: 4px;
+        }
+        
+        .price-down::before {
+            content: "▼";
+            font-size: 0.7em;
+            margin-right: 4px;
+        }
+        
+        /* News Items */
+        .news-item {
+            background: linear-gradient(to right, #fde68a, #fcd34d);
+            color: #854d0e;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            margin-right: 10px;
+        }
+        
+        /* Header Styles */
+        .header-gradient {
+            background: linear-gradient(90deg, #0a2e52 0%, #0a4b78 100%);
+        }
+        
+        /* Ticker Controls */
+        .ticker-controls {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+        
+        .ticker-btn {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid #cbd5e1;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 20;
-            border-radius: 0.75rem;
-            display: none;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .loading-overlay.active {
-            display: flex;
+        
+        .ticker-btn:hover {
+            background: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
         }
     </style>
 </head>
@@ -194,36 +267,118 @@
         </div>
     </nav>
 
-    <!-- News Ticker/Marquee -->
-    <div class="marquee py-3 text-white text-sm">
-        <div class="marquee-content">
-            <div class="news-item px-4">
-                <i class="fas fa-bullhorn mr-2"></i>
-                <span>Register now for Sustainable Energy Forum (SEF-2025) - Limited seats available!</span>
+    <!-- Enhanced Marquee Section -->
+    <div class="marquee-container relative">
+        <!-- Marquee Track -->
+        <div class="marquee-track">
+            <!-- Commodity Items -->
+            <div class="marquee-item">
+                <span class="marquee-label">OIL</span>
+                <span class="price-up">66.59 (+0.18)</span>
             </div>
-            <div class="news-item px-4">
-                <i class="fas fa-bullhorn mr-2"></i>
-                <span>J.A.M Ltd launches new Aqua Marine Asset Management division</span>
+            <div class="marquee-item">
+                <span class="marquee-label">BRENT</span>
+                <span class="price-up">66.59 (+0.16)</span>
             </div>
-            <div class="news-item px-4">
-                <i class="fas fa-bullhorn mr-2"></i>
-                <span>New investment opportunities in sustainable infrastructure projects</span>
+            <div class="marquee-item">
+                <span class="marquee-label">WTI</span>
+                <span class="price-neutral">63.88 (unch)</span>
             </div>
-            <div class="news-item px-4">
-                <i class="fas fa-bullhorn mr-2"></i>
-                <span>Exclusive webinar: Future of Commodity Asset Management - Sep 15, 2025</span>
+            <div class="marquee-item">
+                <span class="marquee-label">GAS</span>
+                <span class="price-down">2.990 (-0.077)</span>
+            </div>
+            <div class="marquee-item">
+                <span class="marquee-label">ETHANOL</span>
+                <span class="price-down">592.67 (-2.67)</span>
+            </div>
+            <div class="marquee-item">
+                <span class="marquee-label">GASOIL</span>
+                <span class="price-up">675.50 (+5.25)</span>
+            </div>
+            <div class="marquee-item">
+                <span class="marquee-label">UK GAS</span>
+                <span class="price-down">79.53 (-1.51)</span>
+            </div>
+            
+            <!-- News Items -->
+            <div class="marquee-item">
+                <span class="news-item">
+                    <i class="fas fa-bullhorn mr-1"></i> SEF-2025: Early bird registration now open!
+                </span>
+            </div>
+            <div class="marquee-item">
+                <span class="news-item">
+                    <i class="fas fa-star mr-1"></i> New investment opportunities in sustainable infrastructure
+                </span>
+            </div>
+            <div class="marquee-item">
+                <span class="news-item">
+                    <i class="fas fa-calendar mr-1"></i> Exclusive webinar: Future of Commodity Asset Management
+                </span>
+            </div>
+            
+            <!-- Duplicate for seamless looping -->
+            <div class="marquee-item">
+                <span class="marquee-label">OIL</span>
+                <span class="price-up">66.59 (+0.18)</span>
+            </div>
+            <div class="marquee-item">
+                <span class="marquee-label">BRENT</span>
+                <span class="price-up">66.59 (+0.16)</span>
+            </div>
+            <div class="marquee-item">
+                <span class="marquee-label">WTI</span>
+                <span class="price-neutral">63.88 (unch)</span>
+            </div>
+            <div class="marquee-item">
+                <span class="marquee-label">GAS</span>
+                <span class="price-down">2.990 (-0.077)</span>
+            </div>
+            <div class="marquee-item">
+                <span class="marquee-label">ETHANOL</span>
+                <span class="price-down">592.67 (-2.67)</span>
+            </div>
+            <div class="marquee-item">
+                <span class="marquee-label">GASOIL</span>
+                <span class="price-up">675.50 (+5.25)</span>
+            </div>
+            <div class="marquee-item">
+                <span class="marquee-label">UK GAS</span>
+                <span class="price-down">79.53 (-1.51)</span>
+            </div>
+            
+            <div class="marquee-item">
+                <span class="news-item">
+                    <i class="fas fa-bullhorn mr-1"></i> SEF-2025: Early bird registration now open!
+                </span>
+            </div>
+            <div class="marquee-item">
+                <span class="news-item">
+                    <i class="fas fa-star mr-1"></i> New investment opportunities in sustainable infrastructure
+                </span>
+            </div>
+            <div class="marquee-item">
+                <span class="news-item">
+                    <i class="fas fa-calendar mr-1"></i> Exclusive webinar: Future of Commodity Asset Management
+                </span>
+            </div>
+        </div>
+        
+        <!-- Ticker Controls -->
+        <div >
+            <div class="ticker-btn" id="pauseBtn">
+            </div>
+            <div class="ticker-btn" id="playBtn">
             </div>
         </div>
     </div>
 
     <!-- Breadcrumbs -->
     <div class="bg-gray-100 py-3 px-4">
-        <div class="max-w-7xl mx-auto">
-            <div class="breadcrumb text-sm">
-                <a href="#" class="hover:underline">Home</a> &gt;
-                <a href="#" class="hover:underline">Events</a> &gt;
-                <span class="text-gray-600">Sustainable Energy Forum 2025</span>
-            </div>
+        <div class="breadcrumb text-sm">
+            <a href="#" class="hover:underline">Home</a> &gt;
+            <span class="text-gray-600">Sustainable Energy Forum 2025</span>
         </div>
     </div>
 
@@ -233,15 +388,13 @@
             <img class="w-full h-full object-cover opacity-50" src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Renewable Energy" loading="lazy">
         </div>
         <div class="relative max-w-7xl mx-auto py-32 px-4 sm:py-48 sm:px-6 lg:px-8 text-center">
-           
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
                 Welcome to <span id="typed" class="text-yellow-300"></span>
             </h1>
             <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
                 Register for the Sustainable Energy Forum (SEF-2025).
             </p>
-                <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
-   
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
                 Date: 29-30th September, 2025. Click on the button below and start your journey towards a sustainable future.            
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
@@ -256,24 +409,24 @@
     </div>
 
     <!-- Stats Section -->
-<section id="stats" class="py-16 bg-white" data-aos="fade-up">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid md:grid-cols-3 gap-8 text-center">
-            <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="100">
-                <h3 class="text-4xl font-bold text-blue-900 counter" data-target="1500">0</h3>
-                <p class="text-gray-600 mt-2">Attendees</p>
-            </div>
-            <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="200">
-                <h3 class="text-4xl font-bold text-blue-900 counter" data-target="700">0</h3>
-                <p class="text-gray-600 mt-2">Conference Delegates</p>
-            </div>
-            <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="300">
-                <h3 class="text-4xl font-bold text-blue-900 counter" data-target="150">0</h3>
-                <p class="text-gray-600 mt-2">Global Exhibitors</p>
+    <section id="stats" class="py-16 bg-white" data-aos="fade-up">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="100">
+                    <h3 class="text-4xl font-bold text-blue-900 counter" data-target="1500">0</h3>
+                    <p class="text-gray-600 mt-2">Attendees</p>
+                </div>
+                <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="200">
+                    <h3 class="text-4xl font-bold text-blue-900 counter" data-target="700">0</h3>
+                    <p class="text-gray-600 mt-2">Conference Delegates</p>
+                </div>
+                <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="300">
+                    <h3 class="text-4xl font-bold text-blue-900 counter" data-target="150">0</h3>
+                    <p class="text-gray-600 mt-2">Global Exhibitors</p>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -774,187 +927,232 @@
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-<script>
-    AOS.init({ duration: 1000, once: true });
+    <script>
+        // Pause/Play functionality for the marquee
+        document.addEventListener('DOMContentLoaded', function() {
+            const marqueeTrack = document.querySelector('.marquee-track');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const playBtn = document.getElementById('playBtn');
+            
+            pauseBtn.addEventListener('click', function() {
+                marqueeTrack.style.animationPlayState = 'paused';
+                pauseBtn.style.display = 'none';
+                playBtn.style.display = 'flex';
+            });
+            
+            playBtn.addEventListener('click', function() {
+                marqueeTrack.style.animationPlayState = 'running';
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'flex';
+            });
+            
+            // Initially show pause button
+            playBtn.style.display = 'none';
+            
+            // Hover to pause functionality
+            marqueeTrack.addEventListener('mouseenter', function() {
+                this.style.animationPlayState = 'paused';
+                pauseBtn.style.display = 'none';
+                playBtn.style.display = 'flex';
+            });
+            
+            marqueeTrack.addEventListener('mouseleave', function() {
+                this.style.animationPlayState = 'running';
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'flex';
+            });
+        });
+    </script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
 
-    // Typed.js for hero text
-    new Typed('#typed', {
-        strings: ['JODOR Asset Management (J.A.M) Ltd'],
-        typeSpeed: 100,
-        backSpeed: 50,
-        loop: false
-    });
+        // Typed.js for hero text
+        new Typed('#typed', {
+            strings: ['JODOR Asset Management (J.A.M) Ltd'],
+            typeSpeed: 100,
+            backSpeed: 50,
+            loop: false
+        });
 
-    // Mobile menu toggle
-    $('#menu-toggle').click(function() {
-        $('#mobile-menu').toggleClass('hidden');
-    });
+        // Mobile menu toggle
+        $('#menu-toggle').click(function() {
+            $('#mobile-menu').toggleClass('hidden');
+        });
 
-    // Mobile dropdown toggle
-    $('.dropdown > button').click(function() {
-        $(this).siblings('.dropdown-content').toggleClass('hidden');
-    });
+        // Mobile dropdown toggle
+        $('.dropdown > button').click(function() {
+            $(this).siblings('.dropdown-content').toggleClass('hidden');
+        });
 
-    // Sticky navbar
-    $(window).scroll(function() {
-        if ($(this).scrollTop() > 50) {
-            $('.navbar').addClass('navbar-scrolled');
-        } else {
-            $('.navbar').removeClass('navbar-scrolled');
-        }
-    });
-
-    // Smooth scrolling for navigation links
-    $('a[href*="#"]').not('[href="#"]').click(function(event) {
-        if (
-            location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') &&
-            location.hostname == this.hostname
-        ) {
-            event.preventDefault();
-            var target = $(this.hash);
-            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
-            if (target.length) {
-                $('html, body').animate({
-                    scrollTop: target.offset().top - 80 // Adjust for fixed navbar height
-                }, 1000);
-                // Close mobile menu if open
-                $('#mobile-menu').addClass('hidden');
-                return false;
+        // Sticky navbar
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 50) {
+                $('.navbar').addClass('navbar-scrolled');
+            } else {
+                $('.navbar').removeClass('navbar-scrolled');
             }
-        }
-    });
+        });
 
-    // Counter animation for stats section
-    function startCounter() {
-        $('.counter').each(function() {
-            var $this = $(this);
-            var countTo = parseInt($this.attr('data-target'), 10);
-            if (isNaN(countTo)) {
-                console.error('Invalid data-target value for counter:', $this.attr('data-target'));
-                return;
-            }
-            var duration = 2000; // Animation duration in milliseconds
-            var steps = 60; // Number of steps for smooth animation
-            var increment = countTo / steps;
-            var current = 0;
-
-            var counterInterval = setInterval(function() {
-                current += increment;
-                if (current >= countTo) {
-                    current = countTo;
-                    $this.text(countTo.toLocaleString()); // Format with commas
-                    clearInterval(counterInterval);
-                } else {
-                    $this.text(Math.floor(current).toLocaleString()); // Format with commas
+        // Smooth scrolling for navigation links
+        $('a[href*="#"]').not('[href="#"]').click(function(event) {
+            if (
+                location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') &&
+                location.hostname == this.hostname
+            ) {
+                event.preventDefault();
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top - 80 // Adjust for fixed navbar height
+                    }, 1000);
+                    // Close mobile menu if open
+                    $('#mobile-menu').addClass('hidden');
+                    return false;
                 }
-            }, duration / steps);
-        });
-    }
-
-    // Trigger counter when stats section is in view using IntersectionObserver
-    const statsSection = document.getElementById('stats');
-    let counterStarted = false;
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !counterStarted) {
-                console.log('Stats section is visible, starting counter...');
-                startCounter();
-                counterStarted = true; // Ensure it runs only once
-                observer.unobserve(statsSection); // Stop observing after triggering
             }
         });
-    }, {
-        threshold: 0.5 // Trigger when 50% of the section is visible
-    });
 
-    if (statsSection) {
-        observer.observe(statsSection);
-    } else {
-        console.error('Stats section not found');
-    }
+        // Counter animation for stats section
+        function startCounter() {
+            $('.counter').each(function() {
+                var $this = $(this);
+                var countTo = parseInt($this.attr('data-target'), 10);
+                if (isNaN(countTo)) {
+                    console.error('Invalid data-target value for counter:', $this.attr('data-target'));
+                    return;
+                }
+                var duration = 2000; // Animation duration in milliseconds
+                var steps = 60; // Number of steps for smooth animation
+                var increment = countTo / steps;
+                var current = 0;
 
-    // Fallback: Trigger counter on page load if IntersectionObserver fails
-    $(document).ready(function() {
-        if (!counterStarted) {
-            console.log('Fallback: Starting counter on page load');
-            startCounter();
-            counterStarted = true;
-        }
-    });
-
-    // Handle Other Inquiry textarea visibility
-    $('#inquiry').on('change', function() {
-        const otherInquiryContainer = $('#other-inquiry-container');
-        const otherInquiryInput = $('#other_inquiry');
-        if ($(this).val() === 'Other Inquiry') {
-            otherInquiryContainer.removeClass('hidden').attr('data-aos', 'fade-up');
-            AOS.refresh();
-            otherInquiryInput.prop('required', true);
-            otherInquiryInput.focus();
-        } else {
-            otherInquiryContainer.addClass('hidden');
-            otherInquiryInput.prop('required', false).val('');
-        }
-    });
-
-    // Contact form submission
-    $('#contact-form').on('submit', function(e) {
-        e.preventDefault();
-        const form = $(this);
-        const loadingOverlay = form.closest('.form-container').find('.loading-overlay');
-        loadingOverlay.addClass('active');
-
-        $.ajax({
-            url: form.attr('action'),
-            type: 'POST',
-            data: form.serialize(),
-            success: function(response) {
-                loadingOverlay.removeClass('active');
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(response, 'text/html');
-                const scripts = doc.querySelectorAll('script');
-                let hasFlashMessages = false;
-
-                scripts.forEach(script => {
-                    if (script.textContent.includes('Swal.fire')) {
-                        hasFlashMessages = true;
-                        eval(script.textContent);
+                var counterInterval = setInterval(function() {
+                    current += increment;
+                    if (current >= countTo) {
+                        current = countTo;
+                        $this.text(countTo.toLocaleString()); // Format with commas
+                        clearInterval(counterInterval);
+                    } else {
+                        $this.text(Math.floor(current).toLocaleString()); // Format with commas
                     }
-                });
+                }, duration / steps);
+            });
+        }
 
-                if (!hasFlashMessages) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: 'Your inquiry has been submitted successfully.',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        form[0].reset();
-                        $('#other-inquiry-container').addClass('hidden');
-                        $('#other_inquiry').prop('required', false).val('');
-                        $('#message').val('');
-                        $('#inquiry').val('');
-                    });
+        // Trigger counter when stats section is in view using IntersectionObserver
+        const statsSection = document.getElementById('stats');
+        let counterStarted = false;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !counterStarted) {
+                    console.log('Stats section is visible, starting counter...');
+                    startCounter();
+                    counterStarted = true; // Ensure it runs only once
+                    observer.unobserve(statsSection); // Stop observing after triggering
                 }
-            },
-            error: function(xhr) {
-                loadingOverlay.removeClass('active');
-                let errorMessage = 'An error occurred during submission.';
-                if (xhr.responseText) {
-                    try {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(xhr.responseText, 'text/html');
-                        const scripts = doc.querySelectorAll('script');
-                        let errorHandled = false;
-                        scripts.forEach(script => {
-                            if (script.textContent.includes('Swal.fire')) {
-                                errorHandled = true;
-                                eval(script.textContent);
-                            }
+            });
+        }, {
+            threshold: 0.5 // Trigger when 50% of the section is visible
+        });
+
+        if (statsSection) {
+            observer.observe(statsSection);
+        } else {
+            console.error('Stats section not found');
+        }
+
+        // Fallback: Trigger counter on page load if IntersectionObserver fails
+        $(document).ready(function() {
+            if (!counterStarted) {
+                console.log('Fallback: Starting counter on page load');
+                startCounter();
+                counterStarted = true;
+            }
+        });
+
+        // Handle Other Inquiry textarea visibility
+        $('#inquiry').on('change', function() {
+            const otherInquiryContainer = $('#other-inquiry-container');
+            const otherInquiryInput = $('#other_inquiry');
+            if ($(this).val() === 'Other Inquiry') {
+                otherInquiryContainer.removeClass('hidden').attr('data-aos', 'fade-up');
+                AOS.refresh();
+                otherInquiryInput.prop('required', true);
+                otherInquiryInput.focus();
+            } else {
+                otherInquiryContainer.addClass('hidden');
+                otherInquiryInput.prop('required', false).val('');
+            }
+        });
+
+        // Contact form submission
+        $('#contact-form').on('submit', function(e) {
+            e.preventDefault();
+            const form = $(this);
+            const loadingOverlay = form.closest('.form-container').find('.loading-overlay');
+            loadingOverlay.addClass('active');
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                success: function(response) {
+                    loadingOverlay.removeClass('active');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(response, 'text/html');
+                    const scripts = doc.querySelectorAll('script');
+                    let hasFlashMessages = false;
+
+                    scripts.forEach(script => {
+                        if (script.textContent.includes('Swal.fire')) {
+                            hasFlashMessages = true;
+                            eval(script.textContent);
+                        }
+                    });
+
+                    if (!hasFlashMessages) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Your inquiry has been submitted successfully.',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            form[0].reset();
+                            $('#other-inquiry-container').addClass('hidden');
+                            $('#other_inquiry').prop('required', false).val('');
+                            $('#message').val('');
+                            $('#inquiry').val('');
                         });
-                        if (!errorHandled) {
+                    }
+                },
+                error: function(xhr) {
+                    loadingOverlay.removeClass('active');
+                    let errorMessage = 'An error occurred during submission.';
+                    if (xhr.responseText) {
+                        try {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(xhr.responseText, 'text/html');
+                            const scripts = doc.querySelectorAll('script');
+                            let errorHandled = false;
+                            scripts.forEach(script => {
+                                if (script.textContent.includes('Swal.fire')) {
+                                    errorHandled = true;
+                                    eval(script.textContent);
+                                }
+                            });
+                            if (!errorHandled) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Error',
+                                    text: errorMessage,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        } catch (e) {
                             Swal.fire({
                                 icon: 'warning',
                                 title: 'Error',
@@ -963,7 +1161,7 @@
                                 confirmButtonText: 'OK'
                             });
                         }
-                    } catch (e) {
+                    } else {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Error',
@@ -972,18 +1170,9 @@
                             confirmButtonText: 'OK'
                         });
                     }
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Error',
-                        text: errorMessage,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    });
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
