@@ -172,6 +172,29 @@
             color: white;
             border-color: #0ea5e9;
         }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            border-radius: 0.75rem;
+            display: none;
+        }
+        .loading-overlay.active {
+            display: flex;
+        }
+        @media (max-width: 640px) {
+            .form-container {
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -725,9 +748,11 @@
             </div>
             <div class="max-w-lg mx-auto bg-white rounded-xl form-container p-8 relative">
                 
-
-                
-
+                <div class="loading-overlay">
+                    <div class="flexindexes:1px; font-size:1rem; line-height:1.5rem;">                    <i class="fas fa-spinner fa-spin text-blue-600 text-2xl"></i>
+                    <span class="text-gray-700 font-medium">Submitting...</span>
+                </div>
+                </div>
                 <form id="contact-form" method="POST" action="{{ url_for('contact') }}" class="space-y-6">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
@@ -777,6 +802,7 @@
                             aria-describedby="other_inquiry_help"></textarea>
                         <p id="other_inquiry_help" class="sr-only">Enter details for your other inquiry.</p>
                     </div>
+
                     <div>
                         <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
                         <textarea id="message" name="message" rows="4"
@@ -784,9 +810,10 @@
                             aria-describedby="message_help"></textarea>
                         <p id="message_help" class="sr-only">Enter your message or additional details.</p>
                     </div>
+                    
                     <div>
                         <button type="submit" 
-                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 cta-button">
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
                             Submit Inquiry
                         </button>
                     </div>
@@ -794,6 +821,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- Testimonial Carousel -->
     <div class="mt-16" data-aos="fade-up">
@@ -1123,8 +1151,7 @@
                             form[0].reset();
                             $('#other-inquiry-container').addClass('hidden');
                             $('#other_inquiry').prop('required', false).val('');
-                            $('#message').val('');
-                            $('#inquiry').val('');
+                            $('#inquiry').val(''); // Reset dropdown
                         });
                     }
                 },
