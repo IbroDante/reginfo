@@ -142,6 +142,9 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
+        .third-mail-btn {
+            display: none;
+        }
         @media (max-width: 768px) {
             .dataTable th, .dataTable td {
                 padding: 8px 12px;
@@ -171,7 +174,6 @@
                     <a href="/" class="flex items-center text-sm font-medium text-gray-600 hover:text-blue-600 transition duration-150">
                         <i class="fas fa-home mr-1"></i> Home
                     </a>
-                    
                 </div>
             </div>
         </div>
@@ -252,7 +254,7 @@
                             </thead>
                             <tbody class="divide-y divide-gray-200">
                                 {% for user in users %}
-                                <tr class="hover:bg-slate-50 transition">
+                                <tr class="hover:bg-slate-50 transition" data-user-id="{{ user.id }}">
                                     <td class="px-4 py-4 whitespace-nowrap">{{ user.id }}</td>
                                     <td class="px-4 py-4 whitespace-nowrap">{{ user.confirmation_token }}</td>
                                     <td class="px-4 py-4 whitespace-nowrap">
@@ -315,9 +317,7 @@
                                             {{ 'Yes' if user.is_confirmed else 'No' }}
                                         </span>
                                     </td>
-
                                     <td class="px-4 py-4">{{ user.respond_contact or 'N/A' }}</td>
-                        
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         {% if user.is_approved %}
                                         <span class="status-badge status-approved">
@@ -343,13 +343,11 @@
                                                 </button>
                                             </form>
                                             {% endif %}
-
-                                            <form action="{{ url_for('third_mail', user_id=user.id) }}" method="POST" class="inline respond-form">
+                                            <form action="{{ url_for('third_mail', user_id=user.id) }}" method="POST" class="inline respond-form third-mail-btn">
                                                 <button type="submit" class="action-btn btn-respond">
                                                     <i class="fas fa-reply mr-1"></i> Send a Third Mail
                                                 </button>
                                             </form>
-
                                             <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST" class="inline">
                                                 <button type="submit" class="action-btn btn-delete">
                                                     <i class="fas fa-trash mr-1"></i> Delete
@@ -379,63 +377,63 @@
             </div>
 
             <!-- Contacts Table -->
-<div class="bg-white rounded-xl admin-container overflow-hidden">
-    <div class="p-6">
-        <div class="table-responsive">
-            <table id="contactsTable" class="min-w-full divide-y divide-gray-200">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-3 text-left">ID</th>
-                        <th class="px-4 py-3 text-left">Name</th>
-                        <th class="px-4 py-3 text-left">Organisation</th>
-                        <th class="px-4 py-3 text-left">Telephone</th>
-                        <th class="px-4 py-3 text-left">Email</th>
-                        <th class="px-4 py-3 text-left">Inquiry</th>
-                        <th class="px-4 py-3 text-left">Other Inquiry</th>
-                        <th class="px-4 py-3 text-left">Message</th>
-                        <th class="px-4 py-3 text-left">Response</th>
-                        <th class="px-4 py-3 text-left">Timestamp</th>
-                        <th class="px-4 py-3 text-left">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    {% for contact in contacts %}
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="px-4 py-4 whitespace-nowrap">{{ contact.id }}</td>
-                        <td class="px-4 py-4">{{ contact.name }}</td>
-                        <td class="px-4 py-4">{{ contact.organisation }}</td>
-                        <td class="px-4 py-4 whitespace-nowrap">{{ contact.telephone }}</td>
-                        <td class="px-4 py-4">{{ contact.email }}</td>
-                        <td class="px-4 py-4">
-                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                {{ contact.inquiry }}
-                            </span>
-                        </td>
-                        <td class="px-4 py-4">{{ contact.other_inquiry or 'N/A' }}</td>
-                        <td class="px-4 py-4">{{ contact.message or 'N/A' }}</td>
-                        <td class="px-4 py-4">{{ contact.respond_contact or 'N/A' }}</td>
-                        <td class="px-4 py-4 whitespace-nowrap">{{ contact.timestamp }}</td>
-                        <td class="px-4 py-4 whitespace-nowrap">
-                            <div class="flex space-x-2">
-                                <form action="{{ url_for('respond_contact', contact_id=contact.id) }}" method="POST" class="inline respond-form">
-                                    <button type="submit" class="action-btn btn-respond">
-                                        <i class="fas fa-reply mr-1"></i> Respond
-                                    </button>
-                                </form>
-                                <form action="{{ url_for('delete_contact', contact_id=contact.id) }}" method="POST" class="inline">
-                                    <button type="submit" class="action-btn btn-delete">
-                                        <i class="fas fa-trash mr-1"></i> Delete
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+            <div class="bg-white rounded-xl admin-container overflow-hidden">
+                <div class="p-6">
+                    <div class="table-responsive">
+                        <table id="contactsTable" class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-3 text-left">ID</th>
+                                    <th class="px-4 py-3 text-left">Name</th>
+                                    <th class="px-4 py-3 text-left">Organisation</th>
+                                    <th class="px-4 py-3 text-left">Telephone</th>
+                                    <th class="px-4 py-3 text-left">Email</th>
+                                    <th class="px-4 py-3 text-left">Inquiry</th>
+                                    <th class="px-4 py-3 text-left">Other Inquiry</th>
+                                    <th class="px-4 py-3 text-left">Message</th>
+                                    <th class="px-4 py-3 text-left">Response</th>
+                                    <th class="px-4 py-3 text-left">Timestamp</th>
+                                    <th class="px-4 py-3 text-left">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                {% for contact in contacts %}
+                                <tr class="hover:bg-slate-50 transition">
+                                    <td class="px-4 py-4 whitespace-nowrap">{{ contact.id }}</td>
+                                    <td class="px-4 py-4">{{ contact.name }}</td>
+                                    <td class="px-4 py-4">{{ contact.organisation }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap">{{ contact.telephone }}</td>
+                                    <td class="px-4 py-4">{{ contact.email }}</td>
+                                    <td class="px-4 py-4">
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                                            {{ contact.inquiry }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-4">{{ contact.other_inquiry or 'N/A' }}</td>
+                                    <td class="px-4 py-4">{{ contact.message or 'N/A' }}</td>
+                                    <td class="px-4 py-4">{{ contact.respond_contact or 'N/A' }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap">{{ contact.timestamp }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap">
+                                        <div class="flex space-x-2">
+                                            <form action="{{ url_for('respond_contact', contact_id=contact.id) }}" method="POST" class="inline respond-form">
+                                                <button type="submit" class="action-btn btn-respond">
+                                                    <i class="fas fa-reply mr-1"></i> Respond
+                                                </button>
+                                            </form>
+                                            <form action="{{ url_for('delete_contact', contact_id=contact.id) }}" method="POST" class="inline">
+                                                <button type="submit" class="action-btn btn-delete">
+                                                    <i class="fas fa-trash mr-1"></i> Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         {% endif %}
     </div>
 
@@ -528,6 +526,8 @@
             $('.btn-approve').on('click', function(e) {
                 e.preventDefault();
                 const form = $(this).closest('form');
+                const row = form.closest('tr');
+                const userId = row.data('user-id');
                 Swal.fire({
                     title: 'Confirm Approval',
                     text: 'Are you sure you want to approve this registration?',
@@ -538,7 +538,23 @@
                     confirmButtonText: 'Yes, Approve'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        form.submit();
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: 'POST',
+                            data: form.serialize(),
+                            success: function(response) {
+                                // Refresh the page or update the row dynamically
+                                location.reload(); // Simple reload for now; adjust for AJAX if needed
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Failed to approve registration.',
+                                    confirmButtonColor: '#3b82f6'
+                                });
+                            }
+                        });
                     }
                 });
             });
@@ -647,6 +663,28 @@
                     background: 'transparent',
                     backdrop: 'rgba(0,0,0,0.8)'
                 });
+            });
+
+            // Show third mail button after approval
+            function updateThirdMailButton() {
+                $('tr').each(function() {
+                    const row = $(this);
+                    const userId = row.data('user-id');
+                    const isApproved = row.find('.status-approved').length > 0;
+                    if (isApproved) {
+                        row.find('.third-mail-btn').show();
+                    } else {
+                        row.find('.third-mail-btn').hide();
+                    }
+                });
+            }
+
+            // Initial call to set button visibility
+            updateThirdMailButton();
+
+            // Re-run on table draw (e.g., after filtering or pagination)
+            $('#usersTable').on('draw.dt', function() {
+                updateThirdMailButton();
             });
         });
     </script>
