@@ -74,6 +74,10 @@ def generate_access_code(length=5):
 def index():
     return render_template('index.html')
 
+@app.route('/index2')
+def index2():
+    return render_template('index2.html')
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
