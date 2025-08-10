@@ -245,6 +245,7 @@
                                     <th class="px-4 py-3 text-left">Further Info</th>
                                     <th class="px-4 py-3 text-left">Disapproval Reason</th>
                                     <th class="px-4 py-3 text-left">Confirmed</th>
+                                    <th class="px-4 py-3 text-left">Response</th>
                                     <th class="px-4 py-3 text-left">Status</th>
                                     <th class="px-4 py-3 text-left">Actions</th>
                                 </tr>
@@ -314,6 +315,9 @@
                                             {{ 'Yes' if user.is_confirmed else 'No' }}
                                         </span>
                                     </td>
+
+                                    <td class="px-4 py-4">{{ user.respond_contact or 'N/A' }}</td>
+                        
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         {% if user.is_approved %}
                                         <span class="status-badge status-approved">
@@ -339,6 +343,13 @@
                                                 </button>
                                             </form>
                                             {% endif %}
+
+                                            <form action="{{ url_for('third_mail', user_id=user.id) }}" method="POST" class="inline respond-form">
+                                                <button type="submit" class="action-btn btn-respond">
+                                                    <i class="fas fa-reply mr-1"></i> Send a Third Mail
+                                                </button>
+                                            </form>
+
                                             <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST" class="inline">
                                                 <button type="submit" class="action-btn btn-delete">
                                                     <i class="fas fa-trash mr-1"></i> Delete

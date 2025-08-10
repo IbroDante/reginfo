@@ -108,7 +108,6 @@ def admin():
         flash('Database connection error. Please try again later.', 'error')
         return render_template('admin.html', users=None, contacts=None)
 
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form_data = {}
@@ -272,6 +271,59 @@ def delete_contact(contact_id):
         logger.error(f"Failed to delete contact ID {contact_id}: {str(e)}")
     return redirect(url_for('admin'))
     
+@app.route('/third_mail/<int:user_id>', methods=['POST'])
+def third_mail(user_id):
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+
+    user = User.query.get_or_404(user_id)
+    response_message = request.form.get('response_message')  # Matches frontend
+
+    if not response_message:
+        flash('Please provide a response message.', 'error')
+        logger.warning(f"Response message missing for contact ID {user_id}")
+        return redirect(url_for('admin'))
+
+    try:
+        user.respond_contact = response_message
+        db.session.commit()
+        logger.info(f"Stored response for contact ID {user_id}: {response_message}")
+
+        # Send response email
+        if send_user_respond_email(
+            user.title,
+            user.first_name,
+            user.family_name,
+            user.company_organisation,
+            user.country_of_origin,
+            user.telephone,
+            user.email,
+            user.confirm_email,
+            user.age_group,
+            user.highest_qualification,
+            user.registration_category,
+            user.hotel_lodging,
+            user.travel_visa,
+            user.further_info,
+            user.picture,
+            user.confirmation_token,
+            user.is_confirmed,
+            user.is_approved,
+            user.disapproval_reason,
+            user.respond_contact,
+            response_message
+        ):
+            flash(f'Response sent to {user.first_name} {user.family_name} successfully.', 'success')
+        else:
+            flash(f'Response saved for {user.first_name} {user.family_name}, but failed to send email.', 'error')
+            logger.error(f"Failed to send response email for contact ID {user_id}")
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Failed to process response: {str(e)}', 'error')
+        logger.error(f"Database error for contact ID {user_id}: {str(e)}")
+    return redirect(url_for('admin'))
+
 # Respond Contact Route
 @app.route('/respond_contact/<int:contact_id>', methods=['POST'])
 def respond_contact(contact_id):
@@ -444,6 +496,58 @@ def send_user_disapproval_email(email, first_name, family_name, disapproval_reas
         print(f"Disapproval email sent successfully: {response.json()}")
     else:
         print(f"Failed to send disapproval email: {response.text}")
+
+def send_user_respond_email(title, first_name, family_name, company_organisation, country_of_origin, telephone, email, confirm_email, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture, confirmation_token, is_confirmed, is_approved, disapproval_reason, respond_contact, response_message):
+    url = "https://api.brevo.com/v3/smtp/email"
+    payload = {
+        "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
+        "to": [{"email": email, "name": f"{first_name} {family_name}"}],
+        "subject": "Venue Confirmation for Sustainable Energy Forum (SEF-2025)",
+        "htmlContent": f"""
+            <html>
+            <head></head>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <p>Dear {first_name} {family_name},</p>
+                <p>Thank you for your registration regarding the <strong>Sustainable Energy Forum (SEF-2025)</strong> in Abuja. heres the venue:</p>
+                <p><strong>Venue:</strong> {response_message}</p>
+                <p><strong>Kindly find below your event details and unique access code for a smooth registration and check-in experience. Just come ready to be captivated.</strong></p>
+                <ul>
+                    <li><strong>Event Title:</strong> Sustainable Energy Forum (SEF-2025)</li>
+                    <li><strong>Name:</strong> {first_name} {family_name}</li>
+                    <li><strong>Date:</strong> September 29-30th, 2025</li>
+                    <li><strong>Time:</strong> 10:00 AM (Daily)</li>
+                    <li><strong>Venue:</strong> Central Business District, Abuja</li>
+                    <li><strong>Unique Access Code:</strong> {confirmation_token}</li>
+
+                </ul>
+                <p><strong>For updates and to join the conversation, follow us:</strong></p>
+                <ul>
+                    <li>Via Instagram: <a href="https://www.instagram.com/jodor_a.m/">https://www.instagram.com/jodor_a.m/</a></li>
+                    <li>Via LinkedIn: <a href="https://www.linkedin.com/jodor-a-m-ltd/">https://www.linkedin.com/jodor-a-m-ltd/</a></li>
+                </ul>
+                <p>We appreciate your interest and look forward to assisting you further.</p>
+                <p>Best regards,</p>
+                <p><strong>J.A.M Ltd Team</strong></p>
+            </body>
+            </html>
+        """
+    }
+    headers = {
+        "accept": "application/json",
+        "api-key": app.config['BREVO_API_KEY'],
+        "content-type": "application/json"
+    }
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)  # Add timeout
+        if response.status_code == 201:
+            logger.info(f"user third responce email sent successfully to {email}: {response.json()}")
+            return True
+        else:
+            logger.error(f"Failed to send third response email to {email}: {response.text}")
+            return False
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Exception while sending third response email to {email}: {str(e)}")
+        return False
 
 def send_contact_respond_email(name, organisation, telephone, email, inquiry, other_inquiry, message, response_message):
     url = "https://api.brevo.com/v3/smtp/email"

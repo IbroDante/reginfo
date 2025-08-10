@@ -29,6 +29,7 @@ class User(db.Model):
     is_confirmed = db.Column(db.Boolean, default=False)
     is_approved = db.Column(db.Boolean, default=False)
     disapproval_reason = db.Column(db.Text)  
+    respond_contact = db.Column(db.Text)
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
