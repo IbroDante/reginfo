@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JODOR Asset Management (J.A.M) Ltd</title>
+    <title>JODOR Asset Management (J.A.M) Ltd | Sustainable Energy Forum</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
     <style>
@@ -16,15 +16,18 @@
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
         }
+        .header-gradient {
+            background: linear-gradient(90deg, #0a2e52 0%, #0a4b78 100%);
+        }
         .hero-gradient {
             background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            animation: gradient 15s ease infinite;
             background-size: 200% 200%;
         }
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .newsletter-bg {
+            background-color: #f8f9fa;
+            background-image: url('https://www.energyconnects.com/static/images/newsletter-bg.png');
+            background-repeat: no-repeat;
+            background-position: right center;
         }
         .navbar {
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -33,25 +36,47 @@
             background-color: rgba(255, 255, 255, 0.95);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .feature-card {
+        .article-card, .stat-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        .article-card:hover, .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-        .cta-button {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .event-tag {
+            background-color: #e74c3c;
         }
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        .featured-tag {
+            background-color: #f39c12;
         }
-        .social-icon {
-            transition: transform 0.3s ease;
+        .sponsored-tag {
+            background-color: #2ecc71;
         }
-        .social-icon:hover {
-            transform: scale(1.2);
+        .breadcrumb {
+            color: #7f8c8d;
+        }
+        .breadcrumb a:hover {
+            color: #3498db;
+        }
+        .footer-links a:hover {
+            color: #3498db;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        .marquee {
+            display: flex;
+            overflow: hidden;
+            white-space: nowrap;
+            background-color: #12ac62;
+        }
+        .marquee-content {
+            display: flex;
+            animation: marquee 30s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
         .form-container {
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -74,31 +99,62 @@
         .loading-overlay.active {
             display: flex;
         }
-        @media (max-width: 640px) {
-            .form-container {
-                padding: 1.5rem;
-            }
-        }
     </style>
 </head>
-<body class="bg-gray-50">
-    <!-- Navigation -->
-    <nav class="navbar fixed top-0 left-0 w-full bg-white z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
-                        <svg class="h-12 w-12 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                        </svg>
-                        <span class="ml-3 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-900">J.A.M Ltd</span>
-                    </div>
+<body class="bg-gray-100">
+    <!-- Top Header -->
+    <div class="header-gradient text-white text-sm py-2 px-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <span><i class="fas fa-clock mr-1"></i> September 29-30, 2025</span>
+                <span><i class="fas fa-map-marker-alt mr-1"></i> Abuja, Nigeria</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <a href="https://www.facebook.com/jodoram" class="hover:text-blue-300"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://twitter.com/jodoram" class="hover:text-blue-300"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/company/jodoram" class="hover:text-blue-300"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://www.instagram.com/jodoram" class="hover:text-blue-300"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.youtube.com/jodoram" class="hover:text-blue-300"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="navbar bg-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 flex items-center">
+                    <svg class="h-12 w-12 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    <span class="ml-3 text-2xl font-bold text-gray-800">J.A.M Ltd</span>
                 </div>
-                <div class="hidden md:flex items-center space-x-10">
-                    <a href="#about" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium text-lg">About</a>
-                    <a href="#services" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium text-lg">Services</a>
-                    <a href="#contact" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium text-lg">Contact</a>
-                    <a href="{{ url_for('register') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold text-lg cta-button">Register</a>
+                <div class="hidden md:flex items-center space-x-8">
+                    <div class="dropdown relative">
+                        <button class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium flex items-center">
+                            About <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div class="dropdown-menu absolute hidden bg-white shadow-lg rounded-md mt-2 py-1 w-48 z-50">
+                            <a href="#about" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Our Company</a>
+                            <a href="#about" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Leadership</a>
+                            <a href="#about" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Partners</a>
+                        </div>
+                    </div>
+                    <div class="dropdown relative">
+                        <button class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium flex items-center">
+                            SEF-2025 <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                        </button>
+                        <div class="dropdown-menu absolute hidden bg-white shadow-lg rounded-md mt-2 py-1 w-48 z-50">
+                            <a href="#event-details" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Agenda</a>
+                            <a href="#speakers" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Speakers</a>
+                            <a href="#event-details" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Venue</a>
+                        </div>
+                    </div>
+                    <a href="#services" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Services</a>
+                    <a href="#news" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">News</a>
+                    <a href="#gallery" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Gallery</a>
+                    <a href="#contact" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Contact</a>
+                    <a href="{{ url_for('register') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold cta-button">Register</a>
                 </div>
                 <div class="md:hidden flex items-center">
                     <button id="menu-toggle" class="text-gray-700 hover:text-blue-600 focus:outline-none">
@@ -107,114 +163,336 @@
                 </div>
             </div>
             <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
-                <div class="px-4 pt-4 pb-6 space-y-4">
-                    <a href="#about" class="block text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">About</a>
+                <div class="px-4 pt-2 pb-4 space-y-2">
+                    <div class="dropdown">
+                        <button class="w-full flex justify-between items-center text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">
+                            About <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="dropdown-content hidden pl-4">
+                            <a href="#about" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Our Company</a>
+                            <a href="#about" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Leadership</a>
+                            <a href="#about" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Partners</a>
+                        </div>
+                    </div>
+                    <div class="dropdown">
+                        <button class="w-full flex justify-between items-center text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">
+                            SEF-2025 <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div class="dropdown-content hidden pl-4">
+                            <a href="#event-details" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Agenda</a>
+                            <a href="#speakers" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Speakers</a>
+                            <a href="#event-details" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Venue</a>
+                        </div>
+                    </div>
                     <a href="#services" class="block text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Services</a>
+                    <a href="#news" class="block text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">News</a>
+                    <a href="#gallery" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Gallery</a>
                     <a href="#contact" class="block text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Contact</a>
-                    <a href="{{ url_for('register') }}" class="block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold text-center">Register</a>
+                    <a href="{{ url_for('register') }}" class="block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold text-center cta-button">Register</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-gradient text-white min-h-screen flex items-center justify-center relative overflow-hidden" data-aos="fade-up">
-        <div class="absolute inset-0 opacity-20">
-            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236aa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
-                 alt="Sustainable Energy Background" class="w-full h-full object-cover" loading="lazy">
+    <!-- News Ticker/Marquee -->
+    <div class="marquee py-3 text-white text-sm">
+        <div class="marquee-content">
+            <div class="news-item px-4">
+                <i class="fas fa-bullhorn mr-2"></i>
+                <span>Register now for Sustainable Energy Forum (SEF-2025) - Limited seats available!</span>
+            </div>
+            <div class="news-item px-4">
+                <i class="fas fa-bullhorn mr-2"></i>
+                <span>J.A.M Ltd launches new Aqua Marine Asset Management division</span>
+            </div>
+            <div class="news-item px-4">
+                <i class="fas fa-bullhorn mr-2"></i>
+                <span>New investment opportunities in sustainable infrastructure projects</span>
+            </div>
+            <div class="news-item px-4">
+                <i class="fas fa-bullhorn mr-2"></i>
+                <span>Exclusive webinar: Future of Commodity Asset Management - Sep 15, 2025</span>
+            </div>
         </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+    </div>
+
+    <!-- Breadcrumbs -->
+    <div class="bg-gray-100 py-3 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="breadcrumb text-sm">
+                <a href="#" class="hover:underline">Home</a> &gt;
+                <a href="#" class="hover:underline">Events</a> &gt;
+                <span class="text-gray-600">Sustainable Energy Forum 2025</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <div class="relative bg-gray-900" data-aos="fade-up">
+        <div class="absolute inset-0">
+            <img class="w-full h-full object-cover opacity-50" src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Renewable Energy" loading="lazy">
+        </div>
+        <div class="relative max-w-7xl mx-auto py-32 px-4 sm:py-48 sm:px-6 lg:px-8 text-center">
+           
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
                 Welcome to <span id="typed" class="text-yellow-300"></span>
             </h1>
-            <p class="text-lg md:text-2xl mb-10 font-medium max-w-3xl mx-auto">
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
                 Register for the Sustainable Energy Forum (SEF-2025).
-                <p class="text-lg md:text-2xl mb-10 font-medium max-w-3xl mx-auto">Date: 29-30th September, 2025.
-                Click on the button below and start your journey towards a sustainable future.</p>
             </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-6">
-                <a href="{{ url_for('register') }}" 
-                   class="bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-lg shadow-lg cta-button text-lg" 
-                   aria-label="Register for SEF-2025">
-                    Register Now <i class="fas fa-arrow-right ml-2"></i>
+                <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+   
+                Date: 29-30th September, 2025. Click on the button below and start your journey towards a sustainable future.            
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="{{ url_for('register') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded cta-button">
+                    Register Now
                 </a>
-                <a href="#about" 
-                   class="bg-white hover:bg-gray-100 text-blue-900 font-bold py-3 px-8 rounded-lg shadow-lg cta-button text-lg" 
-                   aria-label="Learn more about J.A.M Ltd">
+                <a href="#about" class="bg-white hover:bg-gray-100 text-gray-800 font-bold py-3 px-8 rounded cta-button">
                     Learn More
                 </a>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- About Section -->
-    <section id="about" class="py-20 bg-white" data-aos="fade-up">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-900 mb-4">About J.A.M Ltd</h2>
-                <div class="w-24 h-1 bg-blue-600 mx-auto mb-6"></div>
-                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
-                    JODOR Asset Management (J.A.M) Ltd, is a 21st century forward-looking asset management company founded on a rock-solid foundation to unlock value in Africa's most dynamic market.
-                </p>
+    <!-- Stats Section -->
+<section id="stats" class="py-16 bg-white" data-aos="fade-up">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-8 text-center">
+            <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="100">
+                <h3 class="text-4xl font-bold text-blue-900 counter" data-target="1500">0</h3>
+                <p class="text-gray-600 mt-2">Attendees</p>
             </div>
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div data-aos="fade-right">
-                    <p class="text-gray-600 mb-6">
-                        We are a widely known brand in the multi-strategy asset management arena and have come a long way from our initial founding to our business restructuring in recent years and beyond.
-                    </p>
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">Our Business Focus Include </h3>
-                    <ul class="space-y-3 text-gray-600">
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-blue-600 mr-3 mt-1"></i>
-                            Commodity Asset Management
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-blue-600 mr-3 mt-1"></i>
-                            Technology Asset Management
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-blue-600 mr-3 mt-1"></i>
-                            Infrastructure Asset Management
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-blue-600 mr-3 mt-1"></i>
-                            Human Capital Asset Management
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-blue-600 mr-3 mt-1"></i>
-                            Aqua Marine Asset Management
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-blue-600 mr-3 mt-1"></i>
-                            Investment Research and Project Execution
-                        </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-check-circle text-blue-600 mr-3 mt-1"></i>
-                            Trade Advisory and Consulting
-                        </li>
-                    </ul>
-                    <p class="text-gray-600 mt-6">
-                        We apply cutting-edge research, machine learning, artificial intelligence, and advanced technology to drive sustainable growth and development on critical projects.
-                    </p>
-                    <p class="text-gray-600 mt-4">
-                        We aim to be Africa's premier asset management firm, driving innovation across key critical sectors, and delivering unparalleled value to our clients,
-                        and we are a dedicated team of professionals with vast experience across multiple cities, countries and jurisdictions, and we work head over 
-                        heels in the prompt delivery and the swift execution of project deliverables across major sectors.
-                        <p class="text-gray-600 mt-6">
+            <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="200">
+                <h3 class="text-4xl font-bold text-blue-900 counter" data-target="700">0</h3>
+                <p class="text-gray-600 mt-2">Conference Delegates</p>
+            </div>
+            <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="300">
+                <h3 class="text-4xl font-bold text-blue-900 counter" data-target="150">0</h3>
+                <p class="text-gray-600 mt-2">Global Exhibitors</p>
+            </div>
+        </div>
+    </div>
+</section>
 
-                        We pride ourselves in time (T) based results, using the PIE methodology.
-                    </p>
- 
-                    </p>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Main Article Content -->
+            <div class="lg:w-2/3">
+                <article id="about" class="bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">EVENT</span>
+                            <span class="text-gray-500 text-sm">September 10, 2024</span>
+                        </div>
+                        <h1 class="text-3xl font-bold text-gray-900 mb-4">
+                            JODOR Asset Management (J.A.M Ltd) to Host Sustainable Energy Forum 2025 in Abuja
+                        </h1>
+                        <div class="flex items-center mb-6">
+                            <div class="flex items-center">
+                                <img class="w-10 h-10 rounded-full mr-3" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Author" loading="lazy">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">By David Okafor</p>
+                                    <p class="text-sm text-gray-500">Senior Editor</p>
+                                </div>
+                            </div>
+                            <div class="ml-auto flex space-x-3">
+                                <button class="text-gray-400 hover:text-blue-500">
+                                    <i class="fab fa-facebook-f"></i>
+                                </button>
+                                <button class="text-gray-400 hover:text-blue-400">
+                                    <i class="fab fa-twitter"></i>
+                                </button>
+                                <button class="text-gray-400 hover:text-red-500">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="prose max-w-none mb-8">
+                            <p class="text-lg text-gray-700 mb-4">
+                                JODOR Asset Management (J.A.M) Ltd, a leading 21st century forward-looking asset management company, is proud to announce the Sustainable Energy Forum (SEF-2025), scheduled for September 29-30, 2025 in Abuja, Nigeria.
+                            </p>
+                            <p class="text-gray-700 mb-4">
+                                The forum will bring together industry leaders, policymakers, investors, and innovators to discuss the future of sustainable energy in Africa. With the continent's energy demands growing rapidly, SEF-2025 aims to foster collaboration and showcase cutting-edge solutions.
+                            </p>
+                            <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">About J.A.M Ltd</h2>
+                            <p class="text-gray-700 mb-4">
+                                JODOR Asset Management (J.A.M) Ltd, is a 21st century forward-looking asset management company founded on a rock-solid foundation to unlock value in Africa's most dynamic market.
+
+                                We are a widely known brand in the multi-strategy asset management arena and have come a long way from our initial founding to our business restructuring in recent years and beyond.                            </p>
+                            <p class="text-gray-700 mb-4">
+                                Our Business Focus Include
+                            </p>
+                            <ul class="list-disc pl-6 mb-6 text-gray-700">
+                                <li class="mb-2">Commodity Asset Management</li>
+                                <li class="mb-2">Technology Asset Management</li>
+                                <li class="mb-2">Infrastructure Asset Management</li>
+                                <li class="mb-2">Human Capital Asset Management</li>
+                                <li class="mb-2">Aqua Marine Asset Management</li>
+                                <li class="mb-2">Investment Research and Project Execution</li>
+                                <li class="mb-2">Trade Advisory and Consulting</li>
+                            </ul>
+                            <p class="text-gray-700 mb-4">
+                                We apply cutting-edge research, machine learning, artificial intelligence, and advanced technology to drive sustainable growth and development on critical projects.
+
+                                We aim to be Africa's premier asset management firm, driving innovation across key critical sectors, and delivering unparalleled value to our clients, and we are a dedicated team of professionals with vast experience across multiple cities, countries and jurisdictions, and we work head over heels in the prompt delivery and the swift execution of project deliverables across major sectors.
+                                
+                                We pride ourselves in time (T) based results, using the PIE methodology.
+                            </p>
+                            <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Forum Highlights</h2>
+                            <p class="text-gray-700 mb-4">
+                                The Sustainable Energy Forum 2025 will feature:
+                            </p>
+                            <ul class="list-disc pl-6 mb-6 text-gray-700">
+                                <li class="mb-2">Keynote addresses from industry pioneers</li>
+                                <li class="mb-2">Panel discussions on renewable energy integration</li>
+                                <li class="mb-2">Technology showcase of innovative solutions</li>
+                                <li class="mb-2">Networking opportunities with investors and policymakers</li>
+                                <li class="mb-2">Workshops on sustainable energy financing</li>
+                            </ul>
+                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                                <p class="text-blue-700 font-medium">
+                                    "We're at a critical juncture for Africa's energy future. SEF-2025 will provide the platform needed to accelerate our transition to sustainable energy solutions," said CEO Dr Engr Nduka.
+                                </p>
+                            </div>
+                            <p class="text-gray-700 mb-6">
+                                Early bird registration is now open for the Sustainable Energy Forum 2025. Companies interested in sponsorship opportunities should contact the J.A.M Ltd events team.
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                                <a href="{{ url_for('register') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded text-center cta-button">
+                                    Register Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                <!-- Related Articles -->
+                <div id="news" class="mt-12" data-aos="fade-up">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6">Related News</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="100">
+                            <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Renewable Energy" loading="lazy">
+                            <div class="p-6">
+                                <div class="flex items-center mb-2">
+                                    <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">FEATURED</span>
+                                    <span class="text-gray-500 text-sm">August 15, 2024</span>
+                                </div>
+                                <h4 class="text-xl font-bold text-gray-900 mb-2">Africa's Renewable Energy Potential</h4>
+                                <p class="text-gray-600 mb-4">Exploring the untapped opportunities in solar and wind energy across the continent.</p>
+                                <a href="#" class="text-blue-600 hover:underline font-medium">Read More →</a>
+                            </div>
+                        </article>
+                        <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                            <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Investment" loading="lazy">
+                            <div class="p-6">
+                                <div class="flex items-center mb-2">
+                                    <span class="sponsored-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">SPONSORED</span>
+                                    <span class="text-gray-500 text-sm">July 28, 2024</span>
+                                </div>
+                                <h4 class="text-xl font-bold text-gray-900 mb-2">Investment Trends in Sustainable Energy</h4>
+                                <p class="text-gray-600 mb-4">How investors are positioning themselves in Africa's growing green energy sector.</p>
+                                <a href="#" class="text-blue-600 hover:underline font-medium">Read More →</a>
+                            </div>
+                        </article>
+                    </div>
                 </div>
-                <div class="relative rounded-xl overflow-hidden shadow-xl" data-aos="fade-left">
-                    <div class="absolute inset-0 bg-gradient-to-r from-blue-600/50 to-transparent"></div>
-                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                         alt="J.A.M Team" class="w-full h-auto object-cover" loading="lazy">
+            </div>
+            <!-- Sidebar -->
+            <div class="lg:w-1/3">
+                <!-- Newsletter -->
+                <div class="newsletter-bg rounded-lg shadow-md p-6 mb-8" data-aos="fade-up">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Stay Updated</h3>
+                    <p class="text-gray-700 mb-4">Subscribe to our newsletter for the latest updates on SEF-2025.</p>
+                    <form class="space-y-4">
+                        <input type="text" placeholder="Your Name" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="email" placeholder="Email Address" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cta-button">
+                            Subscribe
+                        </button>
+                    </form>
+                </div>
+                <!-- Event Details -->
+                <div id="event-details" class="bg-white rounded-lg shadow-md p-6 mb-8" data-aos="fade-up">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Event Details</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-calendar-alt text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Date</h4>
+                                <p class="text-gray-600">September 29-30, 2025</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Venue</h4>
+                                <p class="text-gray-600">Central Area, Abuja, Nigeria</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-clock text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Time</h4>
+                                <p class="text-gray-600">9:00 AM - 6:00 PM daily</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Speakers -->
+                <div id="speakers" class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Featured Speakers</h3>
+                    <div class="space-y-6">
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="https://randomuser.me/api/portraits/men/42.jpg" alt="Speaker" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Dr. Amina Mohammed</h4>
+                                <p class="text-gray-600 text-sm">Director, African Energy Commission</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="https://randomuser.me/api/portraits/women/63.jpg" alt="Speaker" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Dr. Engr Nduka</h4>
+                                <p class="text-gray-600 text-sm">CEO, JODOR Asset Management (J.A.M Ltd)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="https://randomuser.me/api/portraits/men/75.jpg" alt="Speaker" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Prof. Kwame Nkrumah</h4>
+                                <p class="text-gray-600 text-sm">Energy Economist, University of Lagos</p>
+                            </div>
+                        </div>
+                        <div class="text-center pt-2">
+                            <a href="#" class="text-blue-600 hover:underline font-medium">View All Speakers →</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Partners Section -->
+    <div class="bg-gray-100 py-12 px-4" data-aos="fade-up">
+        <div class="max-w-7xl mx-auto">
+            <h3 class="text-2xl font-bold text-center text-gray-900 mb-8">Our Partners</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div class="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm">
+                    <img src="https://via.placeholder.com/150x60?text=Partner+1" alt="Partner 1" class="h-12 object-contain" loading="lazy">
+                </div>
+                <div class="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm">
+                    <img src="https://via.placeholder.com/150x60?text=Partner+2" alt="Partner 2" class="h-12 object-contain" loading="lazy">
+                </div>
+                <div class="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm">
+                    <img src="https://via.placeholder.com/150x60?text=Partner+3" alt="Partner 3" class="h-12 object-contain" loading="lazy">
+                </div>
+                <div class="flex items-center justify-center p-4 bg-white rounded-lg shadow-sm">
+                    <img src="https://via.placeholder.com/150x60?text=Partner+4" alt="Partner 4" class="h-12 object-contain" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Services Section -->
     <section id="services" class="py-20 bg-gray-50" data-aos="fade-up">
@@ -292,9 +570,10 @@
             </div>
             <div class="max-w-lg mx-auto bg-white rounded-xl form-container p-8 relative">
                 <div class="loading-overlay">
-                    <div class="flexindexes:1px; font-size:1rem; line-height:1.5rem;">                    <i class="fas fa-spinner fa-spin text-blue-600 text-2xl"></i>
-                    <span class="text-gray-700 font-medium">Submitting...</span>
-                </div>
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-spinner fa-spin text-blue-600 text-2xl"></i>
+                        <span class="text-gray-700 font-medium">Submitting...</span>
+                    </div>
                 </div>
                 <form id="contact-form" method="POST" action="{{ url_for('contact') }}" class="space-y-6">
                     <div>
@@ -346,8 +625,15 @@
                         <p id="other_inquiry_help" class="sr-only">Enter details for your other inquiry.</p>
                     </div>
                     <div>
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+                        <textarea id="message" name="message" rows="4"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" 
+                            aria-describedby="message_help"></textarea>
+                        <p id="message_help" class="sr-only">Enter your message or additional details.</p>
+                    </div>
+                    <div>
                         <button type="submit" 
-                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">
+                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 cta-button">
                             Submit Inquiry
                         </button>
                     </div>
@@ -382,209 +668,293 @@
             </div>
         </div>
     </div>
-    <br>    <br>
-    <br>
+    <br><br><br>
 
-</div>
-</section>
+    <!-- CTA Section -->
+    <section class="py-20 bg-gradient-to-r from-blue-900 to-blue-600 text-white" data-aos="fade-up">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-4xl font-bold mb-6">Unlock Your Financial Potential</h2>
+            <p class="text-xl mb-10 max-w-3xl mx-auto">
+                Join JODOR Asset Management (J.A.M) Ltd for world-class investment solutions tailored to your global ambitions.
+            </p>
+            <a href="{{ url_for('register') }}" 
+               class="inline-block bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold py-4 px-10 rounded-lg shadow-lg cta-button text-lg">
+                Register Now <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </section>
 
-<!-- CTA Section -->
-<section class="py-20 bg-gradient-to-r from-blue-900 to-blue-600 text-white" data-aos="fade-up">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h2 class="text-4xl font-bold mb-6">Unlock Your Financial Potential</h2>
-    <p class="text-xl mb-10 max-w-3xl mx-auto">
-        Join JODOR Asset Management (J.A.M) Ltd for world-class investment solutions tailored to your global ambitions.
-    </p>
-    <a href="{{ url_for('register') }}" 
-       class="inline-block bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold py-4 px-10 rounded-lg shadow-lg cta-button text-lg">
-        Register Now <i class="fas fa-arrow-right ml-2"></i>
-    </a>
-</div>
-</section>
-
-<!-- Social Media Section -->
-<section class="py-16 bg-gray-100" data-aos="fade-up">
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">Join the Global Conversation</h2>
-    <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-        Stay updated with J.A.M Ltd on our social media channels.
-    </p>
-    <div class="flex justify-center space-x-8">
-        <a href="https://www.instagram.com/jodor_a.m/" target="_blank" class="social-icon transition duration-300">
-            <i class="fab fa-instagram text-pink-600 text-3xl"></i>
-            <span class="sr-only">Instagram</span>
-        </a>
-        <a href="https://www.linkedin.com/jodor-a-m-ltd/" target="_blank" class="social-icon transition duration-300">
-            <i class="fab fa-linkedin-in text-blue-700 text-3xl"></i>
-            <span class="sr-only">LinkedIn</span>
-        </a>
-    </div>
-</div>
-</section>
-
-   
-<!-- Footer -->
-<footer class="bg-gray-900 text-white pt-16 pb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid md:grid-cols-4 gap-12">
-            <div>
-                <h3 class="text-lg font-semibold mb-4">JODOR Asset Management (J.A.M) Ltd</h3>
-                <p class="text-gray-400">
-                    A 21st century leader in asset management, empowering wealth creation worldwide.
-                </p>
-            </div>
-            <div>
-                <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
-                <ul class="space-y-2">
-                    <li><a href="#about" class="text-gray-400 hover:text-white transition duration-200">About</a></li>
-                    <li><a href="#services" class="text-gray-400 hover:text-white transition duration-200">Services</a></li>
-                    <li><a href="#contact" class="text-gray-400 hover:text-white transition duration-200">Contact</a></li>
-                    <li><a href="{{ url_for('register') }}" class="text-gray-400 hover:text-white transition duration-200">Register</a></li>
-                </ul>
-            </div>
-           
-            <div>
-                <h3 class="text-lg font-semibold mb-4">Newsletter</h3>
-                <form class="space-y-4">
-                    <input type="email" placeholder="Enter your email" class="w-full px-4 py-2 rounded-lg bg-gray-800 text-gray-200 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold">Subscribe</button>
-                </form>
+    <!-- Social Media Section -->
+    <section class="py-16 bg-gray-100" data-aos="fade-up">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Join the Global Conversation</h2>
+            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                Stay updated with J.A.M Ltd on our social media channels.
+            </p>
+            <div class="flex justify-center space-x-8">
+                <a href="https://www.instagram.com/jodor_a.m/" target="_blank" class="social-icon transition duration-300">
+                    <i class="fab fa-instagram text-pink-600 text-3xl"></i>
+                    <span class="sr-only">Instagram</span>
+                </a>
+                <a href="https://www.linkedin.com/jodor-a-m-ltd/" target="_blank" class="social-icon transition duration-300">
+                    <i class="fab fa-linkedin-in text-blue-700 text-3xl"></i>
+                    <span class="sr-only">LinkedIn</span>
+                </a>
             </div>
         </div>
-        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-500 text-sm">
-            <p>&copy; <script>document.write(new Date().getFullYear());</script> Plug Technologies LTD. All rights reserved.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-12 pb-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-lg font-bold mb-4">JODOR Asset Management</h4>
+                    <p class="text-gray-400 mb-4">
+                        A 21st century forward-looking asset management company founded to unlock value in Africa's most dynamic markets.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://www.facebook.com/jodoram" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://twitter.com/jodoram" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.linkedin.com/company/jodoram" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.instagram.com/jodoram" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 footer-links">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#services" class="text-gray-400 hover:text-white">Services</a></li>
+                        <li><a href="#news" class="text-gray-400 hover:text-white">News</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">SEF-2025</h4>
+                    <ul class="space-y-2 footer-links">
+                        <li><a href="#event-details" class="text-gray-400 hover:text-white">Agenda</a></li>
+                        <li><a href="#speakers" class="text-gray-400 hover:text-white">Speakers</a></li>
+                        <li><a href="#event-details" class="text-gray-400 hover:text-white">Venue</a></li>
+                        <li><a href="{{ url_for('register') }}" class="text-gray-400 hover:text-white">Register</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Sponsors</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Contact Us</h4>
+                    <address class="text-gray-400 not-italic">
+                        <p class="mb-2"><i class="fas fa-map-marker-alt mr-2"></i> 123 Business District, Abuja, Nigeria</p>
+                        <p class="mb-2"><i class="fas fa-phone-alt mr-2"></i> +234 123 456 7890</p>
+                        <p class="mb-2"><i class="fas fa-envelope mr-2"></i> info@jodoram.com</p>
+                    </address>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center text-gray-500 text-sm">
+                <p>&copy; <script>document.write(new Date().getFullYear());</script> JODOR Asset Management (J.A.M) Ltd. All rights reserved.</p>
+            </div>
         </div>
-    </div>
     </footer>
-    
 
     <!-- SweetAlert2 Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <script>
-                    Swal.fire({
-                        icon: '{{ 'success' if category == 'success' else 'warning' }}',
-                        title: '{{ 'Success' if category == 'success' else 'Error' }}',
-                        text: '{{ message }}',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    });
-                </script>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <script>
+            Swal.fire({
+                icon: '{{ 'success' if category == 'success' else 'warning' }}',
+                title: '{{ 'Success' if category == 'success' else 'Error' }}',
+                text: '{{ message }}',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        </script>
+        {% endfor %}
+    {% endif %}
     {% endwith %}
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>
-        AOS.init({ duration: 1000, once: true });
+<script>
+    AOS.init({ duration: 1000, once: true });
 
-        // Typed.js for hero text
-        new Typed('#typed', {
-            strings: ['JODOR Asset Management (J.A.M) Ltd'],
-            typeSpeed: 100,
-            backSpeed: 50,
-            loop: false
+    // Typed.js for hero text
+    new Typed('#typed', {
+        strings: ['JODOR Asset Management (J.A.M) Ltd'],
+        typeSpeed: 100,
+        backSpeed: 50,
+        loop: false
+    });
+
+    // Mobile menu toggle
+    $('#menu-toggle').click(function() {
+        $('#mobile-menu').toggleClass('hidden');
+    });
+
+    // Mobile dropdown toggle
+    $('.dropdown > button').click(function() {
+        $(this).siblings('.dropdown-content').toggleClass('hidden');
+    });
+
+    // Sticky navbar
+    $(window).scroll(function() {
+        if ($(this).scrollTop() > 50) {
+            $('.navbar').addClass('navbar-scrolled');
+        } else {
+            $('.navbar').removeClass('navbar-scrolled');
+        }
+    });
+
+    // Smooth scrolling for navigation links
+    $('a[href*="#"]').not('[href="#"]').click(function(event) {
+        if (
+            location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') &&
+            location.hostname == this.hostname
+        ) {
+            event.preventDefault();
+            var target = $(this.hash);
+            target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+            if (target.length) {
+                $('html, body').animate({
+                    scrollTop: target.offset().top - 80 // Adjust for fixed navbar height
+                }, 1000);
+                // Close mobile menu if open
+                $('#mobile-menu').addClass('hidden');
+                return false;
+            }
+        }
+    });
+
+    // Counter animation for stats section
+    function startCounter() {
+        $('.counter').each(function() {
+            var $this = $(this);
+            var countTo = parseInt($this.attr('data-target'), 10);
+            if (isNaN(countTo)) {
+                console.error('Invalid data-target value for counter:', $this.attr('data-target'));
+                return;
+            }
+            var duration = 2000; // Animation duration in milliseconds
+            var steps = 60; // Number of steps for smooth animation
+            var increment = countTo / steps;
+            var current = 0;
+
+            var counterInterval = setInterval(function() {
+                current += increment;
+                if (current >= countTo) {
+                    current = countTo;
+                    $this.text(countTo.toLocaleString()); // Format with commas
+                    clearInterval(counterInterval);
+                } else {
+                    $this.text(Math.floor(current).toLocaleString()); // Format with commas
+                }
+            }, duration / steps);
         });
+    }
 
-        // Sticky navbar
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('navbar-scrolled');
-            } else {
-                navbar.classList.remove('navbar-scrolled');
+    // Trigger counter when stats section is in view using IntersectionObserver
+    const statsSection = document.getElementById('stats');
+    let counterStarted = false;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !counterStarted) {
+                console.log('Stats section is visible, starting counter...');
+                startCounter();
+                counterStarted = true; // Ensure it runs only once
+                observer.unobserve(statsSection); // Stop observing after triggering
             }
         });
+    }, {
+        threshold: 0.5 // Trigger when 50% of the section is visible
+    });
 
-        // Mobile menu toggle
-        const menuToggle = document.getElementById('menu-toggle');
-        const mobileMenu = document.getElementById('mobile-menu');
-        menuToggle.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+    if (statsSection) {
+        observer.observe(statsSection);
+    } else {
+        console.error('Stats section not found');
+    }
 
-        // Handle Other Inquiry textarea visibility
-        $('#inquiry').on('change', function() {
-            const otherInquiryContainer = $('#other-inquiry-container');
-            const otherInquiryInput = $('#other_inquiry');
-            if ($(this).val() === 'Other Inquiry') {
-                otherInquiryContainer.removeClass('hidden').attr('data-aos', 'fade-up');
-                AOS.refresh(); // Refresh AOS to animate the textarea
-                otherInquiryInput.prop('required', true);
-                otherInquiryInput.focus(); // Focus on the textarea
-            } else {
-                otherInquiryContainer.addClass('hidden');
-                otherInquiryInput.prop('required', false).val(''); // Clear and remove required
-            }
-        });
+    // Fallback: Trigger counter on page load if IntersectionObserver fails
+    $(document).ready(function() {
+        if (!counterStarted) {
+            console.log('Fallback: Starting counter on page load');
+            startCounter();
+            counterStarted = true;
+        }
+    });
 
-        // Contact form submission
-        $('#contact-form').on('submit', function(e) {
-            e.preventDefault();
-            const form = $(this);
-            const loadingOverlay = form.closest('.form-container').find('.loading-overlay');
-            loadingOverlay.addClass('active');
+    // Handle Other Inquiry textarea visibility
+    $('#inquiry').on('change', function() {
+        const otherInquiryContainer = $('#other-inquiry-container');
+        const otherInquiryInput = $('#other_inquiry');
+        if ($(this).val() === 'Other Inquiry') {
+            otherInquiryContainer.removeClass('hidden').attr('data-aos', 'fade-up');
+            AOS.refresh();
+            otherInquiryInput.prop('required', true);
+            otherInquiryInput.focus();
+        } else {
+            otherInquiryContainer.addClass('hidden');
+            otherInquiryInput.prop('required', false).val('');
+        }
+    });
 
-            $.ajax({
-                url: form.attr('action'),
-                type: 'POST',
-                data: form.serialize(),
-                success: function(response) {
-                    loadingOverlay.removeClass('active');
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(response, 'text/html');
-                    const scripts = doc.querySelectorAll('script');
-                    let hasFlashMessages = false;
+    // Contact form submission
+    $('#contact-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = $(this);
+        const loadingOverlay = form.closest('.form-container').find('.loading-overlay');
+        loadingOverlay.addClass('active');
 
-                    scripts.forEach(script => {
-                        if (script.textContent.includes('Swal.fire')) {
-                            hasFlashMessages = true;
-                            eval(script.textContent);
-                        }
-                    });
+        $.ajax({
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            success: function(response) {
+                loadingOverlay.removeClass('active');
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(response, 'text/html');
+                const scripts = doc.querySelectorAll('script');
+                let hasFlashMessages = false;
 
-                    if (!hasFlashMessages) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: 'Your inquiry has been submitted successfully.',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK'
-                        }).then(() => {
-                            form[0].reset();
-                            $('#other-inquiry-container').addClass('hidden');
-                            $('#other_inquiry').prop('required', false).val('');
-                            $('#inquiry').val(''); // Reset dropdown
-                        });
+                scripts.forEach(script => {
+                    if (script.textContent.includes('Swal.fire')) {
+                        hasFlashMessages = true;
+                        eval(script.textContent);
                     }
-                },
-                error: function(xhr) {
-                    loadingOverlay.removeClass('active');
-                    let errorMessage = 'An error occurred during submission.';
-                    if (xhr.responseText) {
-                        try {
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(xhr.responseText, 'text/html');
-                            const scripts = doc.querySelectorAll('script');
-                            let errorHandled = false;
-                            scripts.forEach(script => {
-                                if (script.textContent.includes('Swal.fire')) {
-                                    errorHandled = true;
-                                    eval(script.textContent);
-                                }
-                            });
-                            if (!errorHandled) {
-                                Swal.fire({
-                                    icon: 'warning',
-                                    title: 'Error',
-                                    text: errorMessage,
-                                    confirmButtonColor: '#3085d6',
-                                    confirmButtonText: 'OK'
-                                });
+                });
+
+                if (!hasFlashMessages) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Your inquiry has been submitted successfully.',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        form[0].reset();
+                        $('#other-inquiry-container').addClass('hidden');
+                        $('#other_inquiry').prop('required', false).val('');
+                        $('#message').val('');
+                        $('#inquiry').val('');
+                    });
+                }
+            },
+            error: function(xhr) {
+                loadingOverlay.removeClass('active');
+                let errorMessage = 'An error occurred during submission.';
+                if (xhr.responseText) {
+                    try {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(xhr.responseText, 'text/html');
+                        const scripts = doc.querySelectorAll('script');
+                        let errorHandled = false;
+                        scripts.forEach(script => {
+                            if (script.textContent.includes('Swal.fire')) {
+                                errorHandled = true;
+                                eval(script.textContent);
                             }
-                        } catch (e) {
+                        });
+                        if (!errorHandled) {
                             Swal.fire({
                                 icon: 'warning',
                                 title: 'Error',
@@ -593,7 +963,7 @@
                                 confirmButtonText: 'OK'
                             });
                         }
-                    } else {
+                    } catch (e) {
                         Swal.fire({
                             icon: 'warning',
                             title: 'Error',
@@ -602,9 +972,18 @@
                             confirmButtonText: 'OK'
                         });
                     }
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Error',
+                        text: errorMessage,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
                 }
-            });
+            }
         });
-    </script>
+    });
+</script>
 </body>
 </html>

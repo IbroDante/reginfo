@@ -17,7 +17,7 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 import ssl
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_, desc
+from sqlalchemy import or_, desc, func
 import psycopg2, psycopg2cffi
 from werkzeug.exceptions import RequestEntityTooLarge
 from sqlalchemy.exc import OperationalError
@@ -82,69 +82,76 @@ def admin():
             session['admin_authenticated'] = True
             try:
                 users = User.query.all()
-                return render_template('admin.html', users=users)
+                contacts = Contact.query.all()
+                return render_template('admin.html', users=users, contacts=contacts)
             except OperationalError as e:
                 logger.error(f"Database error in admin route: {str(e)}")
                 flash('Database connection error. Please try again later.', 'error')
-                return render_template('admin.html', users=None)
+                return render_template('admin.html', users=None, contacts=None)
         else:
             flash('Incorrect admin password.', 'error')
-            return render_template('admin.html', users=None)
+            return render_template('admin.html', users=None, contacts=None)
     
     if not session.get('admin_authenticated'):
-        return render_template('admin.html', users=None)
+        return render_template('admin.html', users=None, contacts=None)
     
     try:
         users = User.query.all()
-        return render_template('admin.html', users=users)
+        contacts = Contact.query.all()
+        return render_template('admin.html', users=users, contacts=contacts)
     except OperationalError as e:
         logger.error(f"Database error in admin route: {str(e)}")
         flash('Database connection error. Please try again later.', 'error')
-        return render_template('admin.html', users=None)
+        return render_template('admin.html', users=None, contacts=None)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    form_data = {}
     if request.method == 'POST':
-        title = request.form['title']
-        custom_title = request.form.get('custom_title', '')
+        form_data = request.form.to_dict()
+        title = form_data.get('title')
+        custom_title = form_data.get('custom_title', '')
         if title == 'Other(s)':
             if not custom_title:
-                flash('Please provide a custom title for "Other(s)".', 'error')
-                return render_template('register.html')
+                return jsonify({'status': 'error', 'message': 'Please provide a custom title for "Other(s)".'}), 400
             if len(custom_title) > 10:
-                flash('Custom title must not exceed 10 characters.', 'error')
-                return render_template('register.html')
+                return jsonify({'status': 'error', 'message': 'Custom title must not exceed 10 characters.'}), 400
+            form_data['title'] = custom_title
             title = custom_title
-        first_name = request.form['first_name']
-        family_name = request.form['family_name']
-        company_organisation = request.form['company_organisation']
-        country_of_origin = request.form['country_of_origin']
-        telephone = request.form['telephone']
-        email = request.form['email']
-        confirm_email = request.form['confirm_email']
-        age_group = request.form['age_group']
-        highest_qualification = request.form['highest_qualification']
-        registration_category = request.form['registration_category']
-        hotel_lodging = request.form['hotel_lodging'] == 'Yes'
-        travel_visa = request.form['travel_visa'] == 'Yes'
-        further_info = request.form.get('further_info', '')
+        first_name = form_data.get('first_name')
+        family_name = form_data.get('family_name')
+        company_organisation = form_data.get('company_organisation')
+        country_of_origin = form_data.get('country_of_origin')
+        telephone = form_data.get('telephone')
+        email = form_data.get('email').lower()  # Normalize email to lowercase
+        confirm_email = form_data.get('confirm_email').lower()
+        age_group = form_data.get('age_group')
+        highest_qualification = form_data.get('highest_qualification')
+        registration_category = form_data.get('registration_category')
+        hotel_lodging = form_data.get('hotel_lodging') == 'Yes'
+        travel_visa = form_data.get('travel_visa') == 'Yes'
+        further_info = form_data.get('further_info', '')
         picture_file = request.files.get('picture')
 
         if email != confirm_email:
-            flash('Email and Confirm Email do not match.', 'error')
-            return render_template('register.html')
+            return jsonify({'status': 'error', 'message': 'Email and Confirm Email do not match.'}), 400
 
-        if User.query.filter_by(email=email).first():
-            flash('Email already registered!', 'error')
-            return render_template('register.html')
+        # Case-insensitive email check
+        existing_user = User.query.filter(func.lower(User.email) == email).first()
+        if existing_user:
+            logger.info(f"Email check: Found existing email {email} in database")
+            return jsonify({'status': 'error', 'message': 'Email already registered! Please use a different email.'}), 400
+        else:
+            logger.info(f"Email check: No existing email found for {email}")
 
         picture_data = None
         if picture_file:
             try:
                 picture_data = base64.b64encode(picture_file.read()).decode('utf-8')
             except Exception as e:
-                flash(f'Error processing image: {str(e)}', 'error')
-                return render_template('register.html')
+                logger.error(f"Error processing image for {email}: {str(e)}")
+                return jsonify({'status': 'error', 'message': f'Error processing image: {str(e)}'}), 400
 
         token = generate_access_code()
         while User.query.filter_by(confirmation_token=token).first():
@@ -173,18 +180,19 @@ def register():
         try:
             db.session.add(user)
             db.session.commit()
+            logger.info(f"User registered successfully: {email}")
             send_user_receipt_email(email, first_name, family_name)
             send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data)
-            
-            flash('Your registration is received. A confirmation email will be sent to you shortly. Check your inbox, Spam or junk folders.', 'success')
-            return redirect(url_for('index'))
+            return jsonify({
+                'status': 'success',
+                'message': 'Your registration is received. A confirmation email will be sent to you shortly. Check your inbox, Spam or junk folders.'
+            }), 200
         except OperationalError as e:
-            logger.error(f"Database error in register route: {str(e)}")
+            logger.error(f"Database error in register route for {email}: {str(e)}")
             db.session.rollback()
-            flash('Database connection error. Please try again later.', 'error')
-            return render_template('register.html')
+            return jsonify({'status': 'error', 'message': 'Database connection error. Please try again later.'}), 500
 
-    return render_template('register.html')
+    return render_template('register.html', form_data=form_data)
 
 @app.route('/approve/<int:user_id>', methods=['POST'])
 def approve_user(user_id):
@@ -238,6 +246,67 @@ def delete_user(user_id):
     db.session.delete(user)
     db.session.commit()
     flash(f'{first_name} {family_name} has been deleted.', 'success')
+    return redirect(url_for('admin'))
+
+# Delete Contact Route
+@app.route('/delete_contact/<int:contact_id>', methods=['POST'])
+def delete_contact(contact_id):
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+
+    contact = Contact.query.get_or_404(contact_id)
+    name = contact.name
+    try:
+        db.session.delete(contact)
+        db.session.commit()
+        flash(f'Contact inquiry from {name} has been deleted.', 'success')
+        logger.info(f"Deleted contact ID {contact_id} for {name}")
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Failed to delete contact: {str(e)}', 'error')
+        logger.error(f"Failed to delete contact ID {contact_id}: {str(e)}")
+    return redirect(url_for('admin'))
+    
+# Respond Contact Route
+@app.route('/respond_contact/<int:contact_id>', methods=['POST'])
+def respond_contact(contact_id):
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+
+    contact = Contact.query.get_or_404(contact_id)
+    response_message = request.form.get('response_message')  # Matches frontend
+
+    if not response_message:
+        flash('Please provide a response message.', 'error')
+        logger.warning(f"Response message missing for contact ID {contact_id}")
+        return redirect(url_for('admin'))
+
+    try:
+        contact.respond_contact = response_message
+        db.session.commit()
+        logger.info(f"Stored response for contact ID {contact_id}: {response_message}")
+
+        # Send response email
+        if send_contact_respond_email(
+            contact.name,
+            contact.organisation,
+            contact.telephone,
+            contact.email,
+            contact.inquiry,
+            contact.other_inquiry,
+            contact.message,
+            response_message
+        ):
+            flash(f'Response sent to {contact.name} successfully.', 'success')
+        else:
+            flash(f'Response saved for {contact.name}, but failed to send email.', 'error')
+            logger.error(f"Failed to send response email for contact ID {contact_id}")
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Failed to process response: {str(e)}', 'error')
+        logger.error(f"Database error for contact ID {contact_id}: {str(e)}")
     return redirect(url_for('admin'))
 
 @app.route('/confirm/<token>')
@@ -372,6 +441,58 @@ def send_user_disapproval_email(email, first_name, family_name, disapproval_reas
     else:
         print(f"Failed to send disapproval email: {response.text}")
 
+def send_contact_respond_email(name, organisation, telephone, email, inquiry, other_inquiry, message, response_message):
+    url = "https://api.brevo.com/v3/smtp/email"
+    payload = {
+        "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
+        "to": [{"email": email, "name": name}],
+        "subject": "Response to Your Inquiry for Sustainable Energy Forum (SEF-2025)",
+        "htmlContent": f"""
+            <html>
+            <head></head>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <p>Dear {name},</p>
+                <p>Thank you for your inquiry regarding the <strong>Sustainable Energy Forum (SEF-2025)</strong> in Abuja. We have reviewed your submission, and our response is below:</p>
+                <p><strong>Our Response:</strong> {response_message}</p>
+                <p><strong>Your Inquiry Details:</strong></p>
+                <ul>
+                    <li><strong>Name:</strong> {name}</li>
+                    <li><strong>Organisation:</strong> {organisation}</li>
+                    <li><strong>Telephone:</strong> {telephone}</li>
+                    <li><strong>Email:</strong> {email}</li>
+                    <li><strong>Inquiry Type:</strong> {inquiry}</li>
+                    <li><strong>Other Inquiry Details:</strong> {other_inquiry or 'None'}</li>
+                    <li><strong>Message:</strong> {message or 'None'}</li>
+                </ul>
+                <p><strong>For updates and to join the conversation, follow us:</strong></p>
+                <ul>
+                    <li>Via Instagram: <a href="https://www.instagram.com/jodor_a.m/">https://www.instagram.com/jodor_a.m/</a></li>
+                    <li>Via LinkedIn: <a href="https://www.linkedin.com/jodor-a-m-ltd/">https://www.linkedin.com/jodor-a-m-ltd/</a></li>
+                </ul>
+                <p>We appreciate your interest and look forward to assisting you further.</p>
+                <p>Best regards,</p>
+                <p><strong>J.A.M Ltd Team</strong></p>
+            </body>
+            </html>
+        """
+    }
+    headers = {
+        "accept": "application/json",
+        "api-key": app.config['BREVO_API_KEY'],
+        "content-type": "application/json"
+    }
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)  # Add timeout
+        if response.status_code == 201:
+            logger.info(f"Contact response email sent successfully to {email}: {response.json()}")
+            return True
+        else:
+            logger.error(f"Failed to send contact response email to {email}: {response.text}")
+            return False
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Exception while sending contact response email to {email}: {str(e)}")
+        return False
+
 def send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data):
     url = "https://api.brevo.com/v3/smtp/email"
     payload = {
@@ -426,7 +547,7 @@ def send_admin_notification_email(email, token, title, first_name, family_name, 
         print(f"Failed to send admin email: {response.text}")
 
 # Email sending function for contact inquiries
-def send_contact_notification_email(name, organisation, telephone, email, inquiry, other_inquiry, timestamp):
+def send_contact_notification_email(name, organisation, telephone, email, inquiry, other_inquiry, message, timestamp):
     url = "https://api.brevo.com/v3/smtp/email"
     payload = {
         "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
@@ -445,6 +566,7 @@ def send_contact_notification_email(name, organisation, telephone, email, inquir
                     <li><strong>Email:</strong> {email}</li>
                     <li><strong>Nature of Inquiry:</strong> {inquiry}</li>
                     <li><strong>Other Inquiry Details:</strong> {other_inquiry or 'None'}</li>
+                    <li><strong>Message:</strong> {message or 'None'}</li>
                     <li><strong>Timestamp:</strong> {timestamp}</li>
                 </ul>
                 <p>Please review and respond to this inquiry as needed.</p>
@@ -481,6 +603,7 @@ def contact():
         email = request.form['email']
         inquiry = request.form['inquiry']
         other_inquiry = request.form.get('other_inquiry', '')
+        message = request.form.get('message', '')
 
         # Validate email format
         if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email):
@@ -501,7 +624,9 @@ def contact():
             telephone=telephone,
             email=email,
             inquiry=inquiry,
-            other_inquiry=other_inquiry if other_inquiry.strip() else None
+            other_inquiry=other_inquiry if other_inquiry.strip() else None,
+            message=message if message.strip() else None
+
         )
         try:
             db.session.add(contact_entry)
@@ -521,6 +646,7 @@ def contact():
             email=email,
             inquiry=inquiry,
             other_inquiry=other_inquiry,
+            message=message,
             timestamp=contact_entry.timestamp
         ):
             flash('Your inquiry has been submitted successfully. We will contact you soon.', 'success')

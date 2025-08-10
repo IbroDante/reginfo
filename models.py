@@ -38,4 +38,6 @@ class Contact(db.Model):
     email = db.Column(db.String(120), nullable=False)
     inquiry = db.Column(db.String(50), nullable=False)
     other_inquiry = db.Column(db.Text, nullable=True)
+    message = db.Column(db.Text, nullable=True)
+    respond_contact = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)

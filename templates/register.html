@@ -73,260 +73,260 @@
                     <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
                     <select id="title" name="title" required 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
-                        <option value="" disabled selected>Select Title</option>
-                        <option value="Ms.">Ms.</option>
-                        <option value="Mr.">Mr.</option>
-                        <option value="Mrs.">Mrs.</option>
-                        <option value="Engr.">Engr.</option>
-                        <option value="Dr.">Dr.</option>
-                        <option value="Prof.">Prof.</option>
-                        <option value="Chief">Chief</option>
-                        <option value="Alhaji">Alhaji</option>
-                        <option value="Otunba">Otunba</option>
-                        <option value="Other(s)">Other(s)</option>
+                        <option value="" disabled {% if not form_data.title %}selected{% endif %}>Select Title</option>
+                        <option value="Ms." {% if form_data.title == 'Ms.' %}selected{% endif %}>Ms.</option>
+                        <option value="Mr." {% if form_data.title == 'Mr.' %}selected{% endif %}>Mr.</option>
+                        <option value="Mrs." {% if form_data.title == 'Mrs.' %}selected{% endif %}>Mrs.</option>
+                        <option value="Engr." {% if form_data.title == 'Engr.' %}selected{% endif %}>Engr.</option>
+                        <option value="Dr." {% if form_data.title == 'Dr.' %}selected{% endif %}>Dr.</option>
+                        <option value="Prof." {% if form_data.title == 'Prof.' %}selected{% endif %}>Prof.</option>
+                        <option value="Chief" {% if form_data.title == 'Chief' %}selected{% endif %}>Chief</option>
+                        <option value="Alhaji" {% if form_data.title == 'Alhaji' %}selected{% endif %}>Alhaji</option>
+                        <option value="Otunba" {% if form_data.title == 'Otunba' %}selected{% endif %}>Otunba</option>
+                        <option value="Other(s)" {% if form_data.title == 'Other(s)' %}selected{% endif %}>Other(s)</option>
                     </select>
                 </div>
-                <div id="custom-title-container" class="hidden">
+                <div id="custom-title-container" class="{% if form_data.title != 'Other(s)' %}hidden{% endif %}">
                     <label for="custom_title" class="block text-sm font-medium text-gray-700 mb-1">Input your Title</label>
-                    <input type="text" id="custom_title" name="custom_title" maxlength="10"
+                    <input type="text" id="custom_title" name="custom_title" maxlength="10" value="{{ form_data.custom_title | default('') }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                        <input type="text" id="first_name" name="first_name" required 
+                        <input type="text" id="first_name" name="first_name" required value="{{ form_data.first_name | default('') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
                     </div>
                     <div>
                         <label for="family_name" class="block text-sm font-medium text-gray-700 mb-1">Family Name</label>
-                        <input type="text" id="family_name" name="family_name" required 
+                        <input type="text" id="family_name" name="family_name" required value="{{ form_data.family_name | default('') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
                     </div>
                 </div>
 
                 <div>
                     <label for="company_organisation" class="block text-sm font-medium text-gray-700 mb-1">Company/Organisation/University</label>
-                    <input type="text" id="company_organisation" name="company_organisation" required 
+                    <input type="text" id="company_organisation" name="company_organisation" required value="{{ form_data.company_organisation | default('') }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
                 </div>
 
                 <div>
                     <label for="country_of_origin" class="block text-sm font-medium text-gray-700 mb-1">Country of Origin</label>
                     <select id="country_of_origin" name="country_of_origin" required class="w-full">
-                        <option value="" disabled selected>Select Country</option>
-                        <option value="Afghanistan">Afghanistan</option>
-                        <option value="Albania">Albania</option>
-                        <option value="Algeria">Algeria</option>
-                        <option value="Andorra">Andorra</option>
-                        <option value="Angola">Angola</option>
-                        <option value="Antigua and Barbuda">Antigua and Barbuda</option>
-                        <option value="Argentina">Argentina</option>
-                        <option value="Armenia">Armenia</option>
-                        <option value="Australia">Australia</option>
-                        <option value="Austria">Austria</option>
-                        <option value="Azerbaijan">Azerbaijan</option>
-                        <option value="Bahamas">Bahamas</option>
-                        <option value="Bahrain">Bahrain</option>
-                        <option value="Bangladesh">Bangladesh</option>
-                        <option value="Barbados">Barbados</option>
-                        <option value="Belarus">Belarus</option>
-                        <option value="Belgium">Belgium</option>
-                        <option value="Belize">Belize</option>
-                        <option value="Benin">Benin</option>
-                        <option value="Bhutan">Bhutan</option>
-                        <option value="Bolivia">Bolivia</option>
-                        <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
-                        <option value="Botswana">Botswana</option>
-                        <option value="Brazil">Brazil</option>
-                        <option value="Brunei">Brunei</option>
-                        <option value="Bulgaria">Bulgaria</option>
-                        <option value="Burkina Faso">Burkina Faso</option>
-                        <option value="Burundi">Burundi</option>
-                        <option value="Cabo Verde">Cabo Verde</option>
-                        <option value="Cambodia">Cambodia</option>
-                        <option value="Cameroon">Cameroon</option>
-                        <option value="Canada">Canada</option>
-                        <option value="Central African Republic">Central African Republic</option>
-                        <option value="Chad">Chad</option>
-                        <option value="Chile">Chile</option>
-                        <option value="China">China</option>
-                        <option value="Colombia">Colombia</option>
-                        <option value="Comoros">Comoros</option>
-                        <option value="Congo (Congo-Brazzaville)">Congo (Congo-Brazzaville)</option>
-                        <option value="Costa Rica">Costa Rica</option>
-                        <option value="Croatia">Croatia</option>
-                        <option value="Cuba">Cuba</option>
-                        <option value="Cyprus">Cyprus</option>
-                        <option value="Czechia">Czechia</option>
-                        <option value="Democratic Republic of the Congo">Democratic Republic of the Congo</option>
-                        <option value="Denmark">Denmark</option>
-                        <option value="Djibouti">Djibouti</option>
-                        <option value="Dominica">Dominica</option>
-                        <option value="Dominican Republic">Dominican Republic</option>
-                        <option value="Ecuador">Ecuador</option>
-                        <option value="Egypt">Egypt</option>
-                        <option value="El Salvador">El Salvador</option>
-                        <option value="Equatorial Guinea">Equatorial Guinea</option>
-                        <option value="Eritrea">Eritrea</option>
-                        <option value="Estonia">Estonia</option>
-                        <option value="Eswatini">Eswatini</option>
-                        <option value="Ethiopia">Ethiopia</option>
-                        <option value="Fiji">Fiji</option>
-                        <option value="Finland">Finland</option>
-                        <option value="France">France</option>
-                        <option value="Gabon">Gabon</option>
-                        <option value="Gambia">Gambia</option>
-                        <option value="Georgia">Georgia</option>
-                        <option value="Germany">Germany</option>
-                        <option value="Ghana">Ghana</option>
-                        <option value="Greece">Greece</option>
-                        <option value="Grenada">Grenada</option>
-                        <option value="Guatemala">Guatemala</option>
-                        <option value="Guinea">Guinea</option>
-                        <option value="Guinea-Bissau">Guinea-Bissau</option>
-                        <option value="Guyana">Guyana</option>
-                        <option value="Haiti">Haiti</option>
-                        <option value="Honduras">Honduras</option>
-                        <option value="Hungary">Hungary</option>
-                        <option value="Iceland">Iceland</option>
-                        <option value="India">India</option>
-                        <option value="Indonesia">Indonesia</option>
-                        <option value="Iran">Iran</option>
-                        <option value="Iraq">Iraq</option>
-                        <option value="Ireland">Ireland</option>
-                        <option value="Israel">Israel</option>
-                        <option value="Italy">Italy</option>
-                        <option value="Jamaica">Jamaica</option>
-                        <option value="Japan">Japan</option>
-                        <option value="Jordan">Jordan</option>
-                        <option value="Kazakhstan">Kazakhstan</option>
-                        <option value="Kenya">Kenya</option>
-                        <option value="Kiribati">Kiribati</option>
-                        <option value="Kuwait">Kuwait</option>
-                        <option value="Kyrgyzstan">Kyrgyzstan</option>
-                        <option value="Laos">Laos</option>
-                        <option value="Latvia">Latvia</option>
-                        <option value="Lebanon">Lebanon</option>
-                        <option value="Lesotho">Lesotho</option>
-                        <option value="Liberia">Liberia</option>
-                        <option value="Libya">Libya</option>
-                        <option value="Liechtenstein">Liechtenstein</option>
-                        <option value="Lithuania">Lithuania</option>
-                        <option value="Luxembourg">Luxembourg</option>
-                        <option value="Madagascar">Madagascar</option>
-                        <option value="Malawi">Malawi</option>
-                        <option value="Malaysia">Malaysia</option>
-                        <option value="Maldives">Maldives</option>
-                        <option value="Mali">Mali</option>
-                        <option value="Malta">Malta</option>
-                        <option value="Marshall Islands">Marshall Islands</option>
-                        <option value="Mauritania">Mauritania</option>
-                        <option value="Mauritius">Mauritius</option>
-                        <option value="Mexico">Mexico</option>
-                        <option value="Micronesia">Micronesia</option>
-                        <option value="Moldova">Moldova</option>
-                        <option value="Monaco">Monaco</option>
-                        <option value="Mongolia">Mongolia</option>
-                        <option value="Montenegro">Montenegro</option>
-                        <option value="Morocco">Morocco</option>
-                        <option value="Mozambique">Mozambique</option>
-                        <option value="Myanmar">Myanmar</option>
-                        <option value="Namibia">Namibia</option>
-                        <option value="Nauru">Nauru</option>
-                        <option value="Nepal">Nepal</option>
-                        <option value="Netherlands">Netherlands</option>
-                        <option value="New Zealand">New Zealand</option>
-                        <option value="Nicaragua">Nicaragua</option>
-                        <option value="Niger">Niger</option>
-                        <option value="Nigeria">Nigeria</option>
-                        <option value="North Korea">North Korea</option>
-                        <option value="North Macedonia">North Macedonia</option>
-                        <option value="Norway">Norway</option>
-                        <option value="Oman">Oman</option>
-                        <option value="Pakistan">Pakistan</option>
-                        <option value="Palau">Palau</option>
-                        <option value="Palestine">Palestine</option>
-                        <option value="Panama">Panama</option>
-                        <option value="Papua New Guinea">Papua New Guinea</option>
-                        <option value="Paraguay">Paraguay</option>
-                        <option value="Peru">Peru</option>
-                        <option value="Philippines">Philippines</option>
-                        <option value="Poland">Poland</option>
-                        <option value="Portugal">Portugal</option>
-                        <option value="Qatar">Qatar</option>
-                        <option value="Romania">Romania</option>
-                        <option value="Russia">Russia</option>
-                        <option value="Rwanda">Rwanda</option>
-                        <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
-                        <option value="Saint Lucia">Saint Lucia</option>
-                        <option value="Saint Vincent and the Grenadines">Saint Vincent and the Grenadines</option>
-                        <option value="Samoa">Samoa</option>
-                        <option value="San Marino">San Marino</option>
-                        <option value="Sao Tome and Principe">Sao Tome and Principe</option>
-                        <option value="Saudi Arabia">Saudi Arabia</option>
-                        <option value="Senegal">Senegal</option>
-                        <option value="Serbia">Serbia</option>
-                        <option value="Seychelles">Seychelles</option>
-                        <option value="Sierra Leone">Sierra Leone</option>
-                        <option value="Singapore">Singapore</option>
-                        <option value="Slovakia">Slovakia</option>
-                        <option value="Slovenia">Slovenia</option>
-                        <option value="Solomon Islands">Solomon Islands</option>
-                        <option value="Somalia">Somalia</option>
-                        <option value="South Africa">South Africa</option>
-                        <option value="South Korea">South Korea</option>
-                        <option value="South Sudan">South Sudan</option>
-                        <option value="Spain">Spain</option>
-                        <option value="Sri Lanka">Sri Lanka</option>
-                        <option value="Sudan">Sudan</option>
-                        <option value="Suriname">Suriname</option>
-                        <option value="Sweden">Sweden</option>
-                        <option value="Switzerland">Switzerland</option>
-                        <option value="Syria">Syria</option>
-                        <option value="Taiwan">Taiwan</option>
-                        <option value="Tajikistan">Tajikistan</option>
-                        <option value="Tanzania">Tanzania</option>
-                        <option value="Thailand">Thailand</option>
-                        <option value="Timor-Leste">Timor-Leste</option>
-                        <option value="Togo">Togo</option>
-                        <option value="Tonga">Tonga</option>
-                        <option value="Trinidad and Tobago">Trinidad and Tobago</option>
-                        <option value="Tunisia">Tunisia</option>
-                        <option value="Turkey">Turkey</option>
-                        <option value="Turkmenistan">Turkmenistan</option>
-                        <option value="Tuvalu">Tuvalu</option>
-                        <option value="Uganda">Uganda</option>
-                        <option value="Ukraine">Ukraine</option>
-                        <option value="United Arab Emirates">United Arab Emirates</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="United States">United States</option>
-                        <option value="Uruguay">Uruguay</option>
-                        <option value="Uzbekistan">Uzbekistan</option>
-                        <option value="Vanuatu">Vanuatu</option>
-                        <option value="Venezuela">Venezuela</option>
-                        <option value="Vietnam">Vietnam</option>
-                        <option value="Yemen">Yemen</option>
-                        <option value="Zambia">Zambia</option>
-                        <option value="Zimbabwe">Zimbabwe</option>
+                        <option value="" disabled {% if not form_data.country_of_origin %}selected{% endif %}>Select Country</option>
+                        <option value="Afghanistan" {% if form_data.country_of_origin == 'Afghanistan' %}selected{% endif %}>Afghanistan</option>
+                        <option value="Albania" {% if form_data.country_of_origin == 'Albania' %}selected{% endif %}>Albania</option>
+                        <option value="Algeria" {% if form_data.country_of_origin == 'Algeria' %}selected{% endif %}>Algeria</option>
+                        <option value="Andorra" {% if form_data.country_of_origin == 'Andorra' %}selected{% endif %}>Andorra</option>
+                        <option value="Angola" {% if form_data.country_of_origin == 'Angola' %}selected{% endif %}>Angola</option>
+                        <option value="Antigua and Barbuda" {% if form_data.country_of_origin == 'Antigua and Barbuda' %}selected{% endif %}>Antigua and Barbuda</option>
+                        <option value="Argentina" {% if form_data.country_of_origin == 'Argentina' %}selected{% endif %}>Argentina</option>
+                        <option value="Armenia" {% if form_data.country_of_origin == 'Armenia' %}selected{% endif %}>Armenia</option>
+                        <option value="Australia" {% if form_data.country_of_origin == 'Australia' %}selected{% endif %}>Australia</option>
+                        <option value="Austria" {% if form_data.country_of_origin == 'Austria' %}selected{% endif %}>Austria</option>
+                        <option value="Azerbaijan" {% if form_data.country_of_origin == 'Azerbaijan' %}selected{% endif %}>Azerbaijan</option>
+                        <option value="Bahamas" {% if form_data.country_of_origin == 'Bahamas' %}selected{% endif %}>Bahamas</option>
+                        <option value="Bahrain" {% if form_data.country_of_origin == 'Bahrain' %}selected{% endif %}>Bahrain</option>
+                        <option value="Bangladesh" {% if form_data.country_of_origin == 'Bangladesh' %}selected{% endif %}>Bangladesh</option>
+                        <option value="Barbados" {% if form_data.country_of_origin == 'Barbados' %}selected{% endif %}>Barbados</option>
+                        <option value="Belarus" {% if form_data.country_of_origin == 'Belarus' %}selected{% endif %}>Belarus</option>
+                        <option value="Belgium" {% if form_data.country_of_origin == 'Belgium' %}selected{% endif %}>Belgium</option>
+                        <option value="Belize" {% if form_data.country_of_origin == 'Belize' %}selected{% endif %}>Belize</option>
+                        <option value="Benin" {% if form_data.country_of_origin == 'Benin' %}selected{% endif %}>Benin</option>
+                        <option value="Bhutan" {% if form_data.country_of_origin == 'Bhutan' %}selected{% endif %}>Bhutan</option>
+                        <option value="Bolivia" {% if form_data.country_of_origin == 'Bolivia' %}selected{% endif %}>Bolivia</option>
+                        <option value="Bosnia and Herzegovina" {% if form_data.country_of_origin == 'Bosnia and Herzegovina' %}selected{% endif %}>Bosnia and Herzegovina</option>
+                        <option value="Botswana" {% if form_data.country_of_origin == 'Botswana' %}selected{% endif %}>Botswana</option>
+                        <option value="Brazil" {% if form_data.country_of_origin == 'Brazil' %}selected{% endif %}>Brazil</option>
+                        <option value="Brunei" {% if form_data.country_of_origin == 'Brunei' %}selected{% endif %}>Brunei</option>
+                        <option value="Bulgaria" {% if form_data.country_of_origin == 'Bulgaria' %}selected{% endif %}>Bulgaria</option>
+                        <option value="Burkina Faso" {% if form_data.country_of_origin == 'Burkina Faso' %}selected{% endif %}>Burkina Faso</option>
+                        <option value="Burundi" {% if form_data.country_of_origin == 'Burundi' %}selected{% endif %}>Burundi</option>
+                        <option value="Cabo Verde" {% if form_data.country_of_origin == 'Cabo Verde' %}selected{% endif %}>Cabo Verde</option>
+                        <option value="Cambodia" {% if form_data.country_of_origin == 'Cambodia' %}selected{% endif %}>Cambodia</option>
+                        <option value="Cameroon" {% if form_data.country_of_origin == 'Cameroon' %}selected{% endif %}>Cameroon</option>
+                        <option value="Canada" {% if form_data.country_of_origin == 'Canada' %}selected{% endif %}>Canada</option>
+                        <option value="Central African Republic" {% if form_data.country_of_origin == 'Central African Republic' %}selected{% endif %}>Central African Republic</option>
+                        <option value="Chad" {% if form_data.country_of_origin == 'Chad' %}selected{% endif %}>Chad</option>
+                        <option value="Chile" {% if form_data.country_of_origin == 'Chile' %}selected{% endif %}>Chile</option>
+                        <option value="China" {% if form_data.country_of_origin == 'China' %}selected{% endif %}>China</option>
+                        <option value="Colombia" {% if form_data.country_of_origin == 'Colombia' %}selected{% endif %}>Colombia</option>
+                        <option value="Comoros" {% if form_data.country_of_origin == 'Comoros' %}selected{% endif %}>Comoros</option>
+                        <option value="Congo (Congo-Brazzaville)" {% if form_data.country_of_origin == 'Congo (Congo-Brazzaville)' %}selected{% endif %}>Congo (Congo-Brazzaville)</option>
+                        <option value="Costa Rica" {% if form_data.country_of_origin == 'Costa Rica' %}selected{% endif %}>Costa Rica</option>
+                        <option value="Croatia" {% if form_data.country_of_origin == 'Croatia' %}selected{% endif %}>Croatia</option>
+                        <option value="Cuba" {% if form_data.country_of_origin == 'Cuba' %}selected{% endif %}>Cuba</option>
+                        <option value="Cyprus" {% if form_data.country_of_origin == 'Cyprus' %}selected{% endif %}>Cyprus</option>
+                        <option value="Czechia" {% if form_data.country_of_origin == 'Czechia' %}selected{% endif %}>Czechia</option>
+                        <option value="Democratic Republic of the Congo" {% if form_data.country_of_origin == 'Democratic Republic of the Congo' %}selected{% endif %}>Democratic Republic of the Congo</option>
+                        <option value="Denmark" {% if form_data.country_of_origin == 'Denmark' %}selected{% endif %}>Denmark</option>
+                        <option value="Djibouti" {% if form_data.country_of_origin == 'Djibouti' %}selected{% endif %}>Djibouti</option>
+                        <option value="Dominica" {% if form_data.country_of_origin == 'Dominica' %}selected{% endif %}>Dominica</option>
+                        <option value="Dominican Republic" {% if form_data.country_of_origin == 'Dominican Republic' %}selected{% endif %}>Dominican Republic</option>
+                        <option value="Ecuador" {% if form_data.country_of_origin == 'Ecuador' %}selected{% endif %}>Ecuador</option>
+                        <option value="Egypt" {% if form_data.country_of_origin == 'Egypt' %}selected{% endif %}>Egypt</option>
+                        <option value="El Salvador" {% if form_data.country_of_origin == 'El Salvador' %}selected{% endif %}>El Salvador</option>
+                        <option value="Equatorial Guinea" {% if form_data.country_of_origin == 'Equatorial Guinea' %}selected{% endif %}>Equatorial Guinea</option>
+                        <option value="Eritrea" {% if form_data.country_of_origin == 'Eritrea' %}selected{% endif %}>Eritrea</option>
+                        <option value="Estonia" {% if form_data.country_of_origin == 'Estonia' %}selected{% endif %}>Estonia</option>
+                        <option value="Eswatini" {% if form_data.country_of_origin == 'Eswatini' %}selected{% endif %}>Eswatini</option>
+                        <option value="Ethiopia" {% if form_data.country_of_origin == 'Ethiopia' %}selected{% endif %}>Ethiopia</option>
+                        <option value="Fiji" {% if form_data.country_of_origin == 'Fiji' %}selected{% endif %}>Fiji</option>
+                        <option value="Finland" {% if form_data.country_of_origin == 'Finland' %}selected{% endif %}>Finland</option>
+                        <option value="France" {% if form_data.country_of_origin == 'France' %}selected{% endif %}>France</option>
+                        <option value="Gabon" {% if form_data.country_of_origin == 'Gabon' %}selected{% endif %}>Gabon</option>
+                        <option value="Gambia" {% if form_data.country_of_origin == 'Gambia' %}selected{% endif %}>Gambia</option>
+                        <option value="Georgia" {% if form_data.country_of_origin == 'Georgia' %}selected{% endif %}>Georgia</option>
+                        <option value="Germany" {% if form_data.country_of_origin == 'Germany' %}selected{% endif %}>Germany</option>
+                        <option value="Ghana" {% if form_data.country_of_origin == 'Ghana' %}selected{% endif %}>Ghana</option>
+                        <option value="Greece" {% if form_data.country_of_origin == 'Greece' %}selected{% endif %}>Greece</option>
+                        <option value="Grenada" {% if form_data.country_of_origin == 'Grenada' %}selected{% endif %}>Grenada</option>
+                        <option value="Guatemala" {% if form_data.country_of_origin == 'Guatemala' %}selected{% endif %}>Guatemala</option>
+                        <option value="Guinea" {% if form_data.country_of_origin == 'Guinea' %}selected{% endif %}>Guinea</option>
+                        <option value="Guinea-Bissau" {% if form_data.country_of_origin == 'Guinea-Bissau' %}selected{% endif %}>Guinea-Bissau</option>
+                        <option value="Guyana" {% if form_data.country_of_origin == 'Guyana' %}selected{% endif %}>Guyana</option>
+                        <option value="Haiti" {% if form_data.country_of_origin == 'Haiti' %}selected{% endif %}>Haiti</option>
+                        <option value="Honduras" {% if form_data.country_of_origin == 'Honduras' %}selected{% endif %}>Honduras</option>
+                        <option value="Hungary" {% if form_data.country_of_origin == 'Hungary' %}selected{% endif %}>Hungary</option>
+                        <option value="Iceland" {% if form_data.country_of_origin == 'Iceland' %}selected{% endif %}>Iceland</option>
+                        <option value="India" {% if form_data.country_of_origin == 'India' %}selected{% endif %}>India</option>
+                        <option value="Indonesia" {% if form_data.country_of_origin == 'Indonesia' %}selected{% endif %}>Indonesia</option>
+                        <option value="Iran" {% if form_data.country_of_origin == 'Iran' %}selected{% endif %}>Iran</option>
+                        <option value="Iraq" {% if form_data.country_of_origin == 'Iraq' %}selected{% endif %}>Iraq</option>
+                        <option value="Ireland" {% if form_data.country_of_origin == 'Ireland' %}selected{% endif %}>Ireland</option>
+                        <option value="Israel" {% if form_data.country_of_origin == 'Israel' %}selected{% endif %}>Israel</option>
+                        <option value="Italy" {% if form_data.country_of_origin == 'Italy' %}selected{% endif %}>Italy</option>
+                        <option value="Jamaica" {% if form_data.country_of_origin == 'Jamaica' %}selected{% endif %}>Jamaica</option>
+                        <option value="Japan" {% if form_data.country_of_origin == 'Japan' %}selected{% endif %}>Japan</option>
+                        <option value="Jordan" {% if form_data.country_of_origin == 'Jordan' %}selected{% endif %}>Jordan</option>
+                        <option value="Kazakhstan" {% if form_data.country_of_origin == 'Kazakhstan' %}selected{% endif %}>Kazakhstan</option>
+                        <option value="Kenya" {% if form_data.country_of_origin == 'Kenya' %}selected{% endif %}>Kenya</option>
+                        <option value="Kiribati" {% if form_data.country_of_origin == 'Kiribati' %}selected{% endif %}>Kiribati</option>
+                        <option value="Kuwait" {% if form_data.country_of_origin == 'Kuwait' %}selected{% endif %}>Kuwait</option>
+                        <option value="Kyrgyzstan" {% if form_data.country_of_origin == 'Kyrgyzstan' %}selected{% endif %}>Kyrgyzstan</option>
+                        <option value="Laos" {% if form_data.country_of_origin == 'Laos' %}selected{% endif %}>Laos</option>
+                        <option value="Latvia" {% if form_data.country_of_origin == 'Latvia' %}selected{% endif %}>Latvia</option>
+                        <option value="Lebanon" {% if form_data.country_of_origin == 'Lebanon' %}selected{% endif %}>Lebanon</option>
+                        <option value="Lesotho" {% if form_data.country_of_origin == 'Lesotho' %}selected{% endif %}>Lesotho</option>
+                        <option value="Liberia" {% if form_data.country_of_origin == 'Liberia' %}selected{% endif %}>Liberia</option>
+                        <option value="Libya" {% if form_data.country_of_origin == 'Libya' %}selected{% endif %}>Libya</option>
+                        <option value="Liechtenstein" {% if form_data.country_of_origin == 'Liechtenstein' %}selected{% endif %}>Liechtenstein</option>
+                        <option value="Lithuania" {% if form_data.country_of_origin == 'Lithuania' %}selected{% endif %}>Lithuania</option>
+                        <option value="Luxembourg" {% if form_data.country_of_origin == 'Luxembourg' %}selected{% endif %}>Luxembourg</option>
+                        <option value="Madagascar" {% if form_data.country_of_origin == 'Madagascar' %}selected{% endif %}>Madagascar</option>
+                        <option value="Malawi" {% if form_data.country_of_origin == 'Malawi' %}selected{% endif %}>Malawi</option>
+                        <option value="Malaysia" {% if form_data.country_of_origin == 'Malaysia' %}selected{% endif %}>Malaysia</option>
+                        <option value="Maldives" {% if form_data.country_of_origin == 'Maldives' %}selected{% endif %}>Maldives</option>
+                        <option value="Mali" {% if form_data.country_of_origin == 'Mali' %}selected{% endif %}>Mali</option>
+                        <option value="Malta" {% if form_data.country_of_origin == 'Malta' %}selected{% endif %}>Malta</option>
+                        <option value="Marshall Islands" {% if form_data.country_of_origin == 'Marshall Islands' %}selected{% endif %}>Marshall Islands</option>
+                        <option value="Mauritania" {% if form_data.country_of_origin == 'Mauritania' %}selected{% endif %}>Mauritania</option>
+                        <option value="Mauritius" {% if form_data.country_of_origin == 'Mauritius' %}selected{% endif %}>Mauritius</option>
+                        <option value="Mexico" {% if form_data.country_of_origin == 'Mexico' %}selected{% endif %}>Mexico</option>
+                        <option value="Micronesia" {% if form_data.country_of_origin == 'Micronesia' %}selected{% endif %}>Micronesia</option>
+                        <option value="Moldova" {% if form_data.country_of_origin == 'Moldova' %}selected{% endif %}>Moldova</option>
+                        <option value="Monaco" {% if form_data.country_of_origin == 'Monaco' %}selected{% endif %}>Monaco</option>
+                        <option value="Mongolia" {% if form_data.country_of_origin == 'Mongolia' %}selected{% endif %}>Mongolia</option>
+                        <option value="Montenegro" {% if form_data.country_of_origin == 'Montenegro' %}selected{% endif %}>Montenegro</option>
+                        <option value="Morocco" {% if form_data.country_of_origin == 'Morocco' %}selected{% endif %}>Morocco</option>
+                        <option value="Mozambique" {% if form_data.country_of_origin == 'Mozambique' %}selected{% endif %}>Mozambique</option>
+                        <option value="Myanmar" {% if form_data.country_of_origin == 'Myanmar' %}selected{% endif %}>Myanmar</option>
+                        <option value="Namibia" {% if form_data.country_of_origin == 'Namibia' %}selected{% endif %}>Namibia</option>
+                        <option value="Nauru" {% if form_data.country_of_origin == 'Nauru' %}selected{% endif %}>Nauru</option>
+                        <option value="Nepal" {% if form_data.country_of_origin == 'Nepal' %}selected{% endif %}>Nepal</option>
+                        <option value="Netherlands" {% if form_data.country_of_origin == 'Netherlands' %}selected{% endif %}>Netherlands</option>
+                        <option value="New Zealand" {% if form_data.country_of_origin == 'New Zealand' %}selected{% endif %}>New Zealand</option>
+                        <option value="Nicaragua" {% if form_data.country_of_origin == 'Nicaragua' %}selected{% endif %}>Nicaragua</option>
+                        <option value="Niger" {% if form_data.country_of_origin == 'Niger' %}selected{% endif %}>Niger</option>
+                        <option value="Nigeria" {% if form_data.country_of_origin == 'Nigeria' %}selected{% endif %}>Nigeria</option>
+                        <option value="North Korea" {% if form_data.country_of_origin == 'North Korea' %}selected{% endif %}>North Korea</option>
+                        <option value="North Macedonia" {% if form_data.country_of_origin == 'North Macedonia' %}selected{% endif %}>North Macedonia</option>
+                        <option value="Norway" {% if form_data.country_of_origin == 'Norway' %}selected{% endif %}>Norway</option>
+                        <option value="Oman" {% if form_data.country_of_origin == 'Oman' %}selected{% endif %}>Oman</option>
+                        <option value="Pakistan" {% if form_data.country_of_origin == 'Pakistan' %}selected{% endif %}>Pakistan</option>
+                        <option value="Palau" {% if form_data.country_of_origin == 'Palau' %}selected{% endif %}>Palau</option>
+                        <option value="Palestine" {% if form_data.country_of_origin == 'Palestine' %}selected{% endif %}>Palestine</option>
+                        <option value="Panama" {% if form_data.country_of_origin == 'Panama' %}selected{% endif %}>Panama</option>
+                        <option value="Papua New Guinea" {% if form_data.country_of_origin == 'Papua New Guinea' %}selected{% endif %}>Papua New Guinea</option>
+                        <option value="Paraguay" {% if form_data.country_of_origin == 'Paraguay' %}selected{% endif %}>Paraguay</option>
+                        <option value="Peru" {% if form_data.country_of_origin == 'Peru' %}selected{% endif %}>Peru</option>
+                        <option value="Philippines" {% if form_data.country_of_origin == 'Philippines' %}selected{% endif %}>Philippines</option>
+                        <option value="Poland" {% if form_data.country_of_origin == 'Poland' %}selected{% endif %}>Poland</option>
+                        <option value="Portugal" {% if form_data.country_of_origin == 'Portugal' %}selected{% endif %}>Portugal</option>
+                        <option value="Qatar" {% if form_data.country_of_origin == 'Qatar' %}selected{% endif %}>Qatar</option>
+                        <option value="Romania" {% if form_data.country_of_origin == 'Romania' %}selected{% endif %}>Romania</option>
+                        <option value="Russia" {% if form_data.country_of_origin == 'Russia' %}selected{% endif %}>Russia</option>
+                        <option value="Rwanda" {% if form_data.country_of_origin == 'Rwanda' %}selected{% endif %}>Rwanda</option>
+                        <option value="Saint Kitts and Nevis" {% if form_data.country_of_origin == 'Saint Kitts and Nevis' %}selected{% endif %}>Saint Kitts and Nevis</option>
+                        <option value="Saint Lucia" {% if form_data.country_of_origin == 'Saint Lucia' %}selected{% endif %}>Saint Lucia</option>
+                        <option value="Saint Vincent and the Grenadines" {% if form_data.country_of_origin == 'Saint Vincent and the Grenadines' %}selected{% endif %}>Saint Vincent and the Grenadines</option>
+                        <option value="Samoa" {% if form_data.country_of_origin == 'Samoa' %}selected{% endif %}>Samoa</option>
+                        <option value="San Marino" {% if form_data.country_of_origin == 'San Marino' %}selected{% endif %}>San Marino</option>
+                        <option value="Sao Tome and Principe" {% if form_data.country_of_origin == 'Sao Tome and Principe' %}selected{% endif %}>Sao Tome and Principe</option>
+                        <option value="Saudi Arabia" {% if form_data.country_of_origin == 'Saudi Arabia' %}selected{% endif %}>Saudi Arabia</option>
+                        <option value="Senegal" {% if form_data.country_of_origin == 'Senegal' %}selected{% endif %}>Senegal</option>
+                        <option value="Serbia" {% if form_data.country_of_origin == 'Serbia' %}selected{% endif %}>Serbia</option>
+                        <option value="Seychelles" {% if form_data.country_of_origin == 'Seychelles' %}selected{% endif %}>Seychelles</option>
+                        <option value="Sierra Leone" {% if form_data.country_of_origin == 'Sierra Leone' %}selected{% endif %}>Sierra Leone</option>
+                        <option value="Singapore" {% if form_data.country_of_origin == 'Singapore' %}selected{% endif %}>Singapore</option>
+                        <option value="Slovakia" {% if form_data.country_of_origin == 'Slovakia' %}selected{% endif %}>Slovakia</option>
+                        <option value="Slovenia" {% if form_data.country_of_origin == 'Slovenia' %}selected{% endif %}>Slovenia</option>
+                        <option value="Solomon Islands" {% if form_data.country_of_origin == 'Solomon Islands' %}selected{% endif %}>Solomon Islands</option>
+                        <option value="Somalia" {% if form_data.country_of_origin == 'Somalia' %}selected{% endif %}>Somalia</option>
+                        <option value="South Africa" {% if form_data.country_of_origin == 'South Africa' %}selected{% endif %}>South Africa</option>
+                        <option value="South Korea" {% if form_data.country_of_origin == 'South Korea' %}selected{% endif %}>South Korea</option>
+                        <option value="South Sudan" {% if form_data.country_of_origin == 'South Sudan' %}selected{% endif %}>South Sudan</option>
+                        <option value="Spain" {% if form_data.country_of_origin == 'Spain' %}selected{% endif %}>Spain</option>
+                        <option value="Sri Lanka" {% if form_data.country_of_origin == 'Sri Lanka' %}selected{% endif %}>Sri Lanka</option>
+                        <option value="Sudan" {% if form_data.country_of_origin == 'Sudan' %}selected{% endif %}>Sudan</option>
+                        <option value="Suriname" {% if form_data.country_of_origin == 'Suriname' %}selected{% endif %}>Suriname</option>
+                        <option value="Sweden" {% if form_data.country_of_origin == 'Sweden' %}selected{% endif %}>Sweden</option>
+                        <option value="Switzerland" {% if form_data.country_of_origin == 'Switzerland' %}selected{% endif %}>Switzerland</option>
+                        <option value="Syria" {% if form_data.country_of_origin == 'Syria' %}selected{% endif %}>Syria</option>
+                        <option value="Taiwan" {% if form_data.country_of_origin == 'Taiwan' %}selected{% endif %}>Taiwan</option>
+                        <option value="Tajikistan" {% if form_data.country_of_origin == 'Tajikistan' %}selected{% endif %}>Tajikistan</option>
+                        <option value="Tanzania" {% if form_data.country_of_origin == 'Tanzania' %}selected{% endif %}>Tanzania</option>
+                        <option value="Thailand" {% if form_data.country_of_origin == 'Thailand' %}selected{% endif %}>Thailand</option>
+                        <option value="Timor-Leste" {% if form_data.country_of_origin == 'Timor-Leste' %}selected{% endif %}>Timor-Leste</option>
+                        <option value="Togo" {% if form_data.country_of_origin == 'Togo' %}selected{% endif %}>Togo</option>
+                        <option value="Tonga" {% if form_data.country_of_origin == 'Tonga' %}selected{% endif %}>Tonga</option>
+                        <option value="Trinidad and Tobago" {% if form_data.country_of_origin == 'Trinidad and Tobago' %}selected{% endif %}>Trinidad and Tobago</option>
+                        <option value="Tunisia" {% if form_data.country_of_origin == 'Tunisia' %}selected{% endif %}>Tunisia</option>
+                        <option value="Turkey" {% if form_data.country_of_origin == 'Turkey' %}selected{% endif %}>Turkey</option>
+                        <option value="Turkmenistan" {% if form_data.country_of_origin == 'Turkmenistan' %}selected{% endif %}>Turkmenistan</option>
+                        <option value="Tuvalu" {% if form_data.country_of_origin == 'Tuvalu' %}selected{% endif %}>Tuvalu</option>
+                        <option value="Uganda" {% if form_data.country_of_origin == 'Uganda' %}selected{% endif %}>Uganda</option>
+                        <option value="Ukraine" {% if form_data.country_of_origin == 'Ukraine' %}selected{% endif %}>Ukraine</option>
+                        <option value="United Arab Emirates" {% if form_data.country_of_origin == 'United Arab Emirates' %}selected{% endif %}>United Arab Emirates</option>
+                        <option value="United Kingdom" {% if form_data.country_of_origin == 'United Kingdom' %}selected{% endif %}>United Kingdom</option>
+                        <option value="United States" {% if form_data.country_of_origin == 'United States' %}selected{% endif %}>United States</option>
+                        <option value="Uruguay" {% if form_data.country_of_origin == 'Uruguay' %}selected{% endif %}>Uruguay</option>
+                        <option value="Uzbekistan" {% if form_data.country_of_origin == 'Uzbekistan' %}selected{% endif %}>Uzbekistan</option>
+                        <option value="Vanuatu" {% if form_data.country_of_origin == 'Vanuatu' %}selected{% endif %}>Vanuatu</option>
+                        <option value="Venezuela" {% if form_data.country_of_origin == 'Venezuela' %}selected{% endif %}>Venezuela</option>
+                        <option value="Vietnam" {% if form_data.country_of_origin == 'Vietnam' %}selected{% endif %}>Vietnam</option>
+                        <option value="Yemen" {% if form_data.country_of_origin == 'Yemen' %}selected{% endif %}>Yemen</option>
+                        <option value="Zambia" {% if form_data.country_of_origin == 'Zambia' %}selected{% endif %}>Zambia</option>
+                        <option value="Zimbabwe" {% if form_data.country_of_origin == 'Zimbabwe' %}selected{% endif %}>Zimbabwe</option>
                     </select>
                 </div>
 
                 <div>
                     <label for="telephone" class="block text-sm font-medium text-gray-700 mb-1">Telephone</label>
-                    <input type="tel" id="telephone" name="telephone" required 
+                    <input type="tel" id="telephone" name="telephone" required value="{{ form_data.telephone | default('') }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                        <input type="email" id="email" name="email" required 
+                        <input type="email" id="email" name="email" required value="{{ form_data.email | default('') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
                     </div>
                     <div>
                         <label for="confirm_email" class="block text-sm font-medium text-gray-700 mb-1">Confirm Email</label>
-                        <input type="email" id="confirm_email" name="confirm_email" required 
+                        <input type="email" id="confirm_email" name="confirm_email" required value="{{ form_data.confirm_email | default('') }}"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
                     </div>
                 </div>
@@ -335,13 +335,13 @@
                     <label for="age_group" class="block text-sm font-medium text-gray-700 mb-1">Age Group</label>
                     <select id="age_group" name="age_group" required 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
-                        <option value="" disabled selected>Select Age Group</option>
-                        <option value="20-29">20-29</option>
-                        <option value="30-39">30-39</option>
-                        <option value="40-49">40-49</option>
-                        <option value="50-59">50-59</option>
-                        <option value="60-69">60-69</option>
-                        <option value="70-79">70-79</option>
+                        <option value="" disabled {% if not form_data.age_group %}selected{% endif %}>Select Age Group</option>
+                        <option value="20-29" {% if form_data.age_group == '20-29' %}selected{% endif %}>20-29</option>
+                        <option value="30-39" {% if form_data.age_group == '30-39' %}selected{% endif %}>30-39</option>
+                        <option value="40-49" {% if form_data.age_group == '40-49' %}selected{% endif %}>40-49</option>
+                        <option value="50-59" {% if form_data.age_group == '50-59' %}selected{% endif %}>50-59</option>
+                        <option value="60-69" {% if form_data.age_group == '60-69' %}selected{% endif %}>60-69</option>
+                        <option value="70-79" {% if form_data.age_group == '70-79' %}selected{% endif %}>70-79</option>
                     </select>
                 </div>
 
@@ -349,11 +349,11 @@
                     <label for="highest_qualification" class="block text-sm font-medium text-gray-700 mb-1">Highest Educational Qualification</label>
                     <select id="highest_qualification" name="highest_qualification" required 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
-                        <option value="" disabled selected>Select Qualification</option>
-                        <option value="Diploma/Certificate">Diploma/Certificate</option>
-                        <option value="Bachelors Degree">Bachelors Degree</option>
-                        <option value="Masters Degree">Masters Degree</option>
-                        <option value="Doctorate Degree">Doctorate Degree</option>
+                        <option value="" disabled {% if not form_data.highest_qualification %}selected{% endif %}>Select Qualification</option>
+                        <option value="Diploma/Certificate" {% if form_data.highest_qualification == 'Diploma/Certificate' %}selected{% endif %}>Diploma/Certificate</option>
+                        <option value="Bachelors Degree" {% if form_data.highest_qualification == 'Bachelors Degree' %}selected{% endif %}>Bachelors Degree</option>
+                        <option value="Masters Degree" {% if form_data.highest_qualification == 'Masters Degree' %}selected{% endif %}>Masters Degree</option>
+                        <option value="Doctorate Degree" {% if form_data.highest_qualification == 'Doctorate Degree' %}selected{% endif %}>Doctorate Degree</option>
                     </select>
                 </div>
 
@@ -361,14 +361,14 @@
                     <label for="registration_category" class="block text-sm font-medium text-gray-700 mb-1">Registration Category</label>
                     <select id="registration_category" name="registration_category" required 
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
-                        <option value="" disabled selected>Select Category</option>
-                        <option value="Support Team">Support Team</option>
-                        <option value="Press Media">Press Media</option>
-                        <option value="Delegate Participant">Delegate Participant</option>
-                        <option value="VIP Exhibitor">VIP Exhibitor</option>
-                        <option value="VIP Delegate">VIP Delegate</option>
-                        <option value="VIP Speaker">VIP Speaker</option>
-                        <option value="VVIP">VVIP</option>
+                        <option value="" disabled {% if not form_data.registration_category %}selected{% endif %}>Select Category</option>
+                        <option value="Support Team" {% if form_data.registration_category == 'Support Team' %}selected{% endif %}>Support Team</option>
+                        <option value="Press Media" {% if form_data.registration_category == 'Press Media' %}selected{% endif %}>Press Media</option>
+                        <option value="Delegate Participant" {% if form_data.registration_category == 'Delegate Participant' %}selected{% endif %}>Delegate Participant</option>
+                        <option value="VIP Exhibitor" {% if form_data.registration_category == 'VIP Exhibitor' %}selected{% endif %}>VIP Exhibitor</option>
+                        <option value="VIP Delegate" {% if form_data.registration_category == 'VIP Delegate' %}selected{% endif %}>VIP Delegate</option>
+                        <option value="VIP Speaker" {% if form_data.registration_category == 'VIP Speaker' %}selected{% endif %}>VIP Speaker</option>
+                        <option value="VVIP" {% if form_data.registration_category == 'VVIP' %}selected{% endif %}>VVIP</option>
                     </select>
                 </div>
 
@@ -376,11 +376,11 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Hotel Lodging Required</label>
                     <div class="flex space-x-4">
                         <label class="flex items-center">
-                            <input type="radio" name="hotel_lodging" value="Yes" required class="mr-2">
+                            <input type="radio" name="hotel_lodging" value="Yes" {% if form_data.hotel_lodging == 'Yes' %}checked{% endif %} required class="mr-2">
                             Yes
                         </label>
                         <label class="flex items-center">
-                            <input type="radio" name="hotel_lodging" value="No" class="mr-2">
+                            <input type="radio" name="hotel_lodging" value="No" {% if form_data.hotel_lodging == 'No' %}checked{% endif %} class="mr-2">
                             No
                         </label>
                     </div>
@@ -390,11 +390,11 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Travel Visa Required</label>
                     <div class="flex space-x-4">
                         <label class="flex items-center">
-                            <input type="radio" name="travel_visa" value="Yes" required class="mr-2">
+                            <input type="radio" name="travel_visa" value="Yes" {% if form_data.travel_visa == 'Yes' %}checked{% endif %} required class="mr-2">
                             Yes
                         </label>
                         <label class="flex items-center">
-                            <input type="radio" name="travel_visa" value="No" class="mr-2">
+                            <input type="radio" name="travel_visa" value="No" {% if form_data.travel_visa == 'No' %}checked{% endif %} class="mr-2">
                             No
                         </label>
                     </div>
@@ -403,18 +403,18 @@
                 <div>
                     <label for="further_info" class="block text-sm font-medium text-gray-700 mb-1">Any Further Info</label>
                     <textarea id="further_info" name="further_info" rows="4" 
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"></textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">{{ form_data.further_info | default('') }}</textarea>
                 </div>
 
                 <div>
-                    <label for="picture" class="block text-sm font-medium text-gray-700 mb-1">Upload Recent Picture </label>
+                    <label for="picture" class="block text-sm font-medium text-gray-700 mb-1">Upload Recent Picture</label>
                     <div class="mt-1 flex items-center">
                         <span class="inline-block h-12 w-12 rounded-full overflow-hidden bg-gray-100 mr-4">
                             <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </span>
-                        <input type="file" id="picture" name="picture" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp" 
+                        <input type="file" id="picture" name="picture" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp" required
                             class="py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
                     </div>
                 </div>
@@ -426,7 +426,6 @@
                     </button>
                 </div>
             </form>
-
         </div>
     </div>
 
@@ -477,6 +476,11 @@
                 width: '100%'
             });
 
+            // Set selected country if form_data is present
+            {% if form_data.country_of_origin %}
+                $('#country_of_origin').val('{{ form_data.country_of_origin }}').trigger('change');
+            {% endif %}
+
             // Show/hide custom title input based on title selection
             $('#title').on('change', function() {
                 if ($(this).val() === 'Other(s)') {
@@ -487,6 +491,12 @@
                     $('#custom_title').prop('required', false).val('');
                 }
             });
+
+            // Trigger custom title visibility on load
+            if ($('#title').val() === 'Other(s)') {
+                $('#custom-title-container').removeClass('hidden');
+                $('#custom_title').prop('required', true);
+            }
 
             // Image compression function
             async function compressImage(file, targetSizeKB = 50) {
@@ -499,7 +509,7 @@
                             const ctx = canvas.getContext('2d');
                             let width = img.width;
                             let height = img.height;
-                            const maxDimension = 1024; // Limit max dimension for performance
+                            const maxDimension = 1024;
                             if (width > height) {
                                 if (width > maxDimension) {
                                     height *= maxDimension / width;
@@ -528,7 +538,7 @@
                                         quality -= 0.1;
                                         tryCompress(quality, callback);
                                     }
-                                }, 'image/jpeg', currentQuality); // Force JPEG output
+                                }, 'image/jpeg', currentQuality);
                             }
 
                             tryCompress(quality, function(compressedBlob) {
@@ -596,89 +606,52 @@
                 try {
                     let formData = new FormData(this);
                     if (file) {
-                        // Compress the image
                         const compressedBlob = await compressImage(file, 50);
-                        formData.set('picture', compressedBlob, 'profile_picture.jpg'); // Set as JPEG
+                        formData.set('picture', compressedBlob, 'profile_picture.jpg');
                     }
 
-                    // Submit the form via AJAX
                     $.ajax({
                         url: $(this).attr('action'),
                         type: 'POST',
                         data: formData,
                         processData: false,
                         contentType: false,
+                        dataType: 'json',
                         success: function(response) {
-                            // Parse the response for SweetAlert scripts
-                            const parser = new DOMParser();
-                            const doc = parser.parseFromString(response, 'text/html');
-                            const scripts = doc.querySelectorAll('script');
-                            let hasFlashMessages = false;
-
-                            scripts.forEach(script => {
-                                if (script.textContent.includes('Swal.fire')) {
-                                    hasFlashMessages = true;
-                                    // Execute the SweetAlert script and wait for user confirmation
-                                    const swalScript = document.createElement('script');
-                                    swalScript.textContent = script.textContent.replace(
-                                        /Swal\.fire\(([\s\S]*?)\);/,
-                                        `Swal.fire($1).then((result) => {
-                                            if (result.isConfirmed) {
-                                                window.location.href = '{{ url_for("index") }}';
-                                            }
-                                        });`
-                                    );
-                                    document.body.appendChild(swalScript);
-                                }
-                            });
-
-                            // If no flash messages, redirect immediately
-                            if (!hasFlashMessages) {
-                                window.location.href = '{{ url_for("index") }}';
-                            }
-                        },
-                        error: function(xhr) {
-                            // Handle server-side errors
-                            let errorMessage = 'An error occurred during submission.';
-                            if (xhr.responseText) {
-                                try {
-                                    const parser = new DOMParser();
-                                    const doc = parser.parseFromString(xhr.responseText, 'text/html');
-                                    const scripts = doc.querySelectorAll('script');
-                                    let errorHandled = false;
-                                    scripts.forEach(script => {
-                                        if (script.textContent.includes('Swal.fire')) {
-                                            errorHandled = true;
-                                            eval(script.textContent); // Execute SweetAlert from response
-                                        }
-                                    });
-                                    if (!errorHandled) {
-                                        Swal.fire({
-                                            icon: 'warning',
-                                            title: 'Error',
-                                            text: errorMessage,
-                                            confirmButtonColor: '#3085d6',
-                                            confirmButtonText: 'OK'
-                                        });
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: response.message,
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'OK'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = '{{ url_for("index") }}';
                                     }
-                                } catch (e) {
-                                    Swal.fire({
-                                        icon: 'warning',
-                                        title: 'Error',
-                                        text: errorMessage,
-                                        confirmButtonColor: '#3085d6',
-                                        confirmButtonText: 'OK'
-                                    });
-                                }
+                                });
                             } else {
                                 Swal.fire({
                                     icon: 'warning',
                                     title: 'Error',
-                                    text: errorMessage,
+                                    text: response.message,
                                     confirmButtonColor: '#3085d6',
                                     confirmButtonText: 'OK'
                                 });
                             }
+                        },
+                        error: function(xhr) {
+                            let errorMessage = 'An error occurred during submission.';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                            }
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Error',
+                                text: errorMessage,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                            });
                         }
                     });
                 } catch (error) {
