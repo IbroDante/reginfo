@@ -34,7 +34,8 @@ services:
     plan: free
     region: oregon
     buildCommand: pip install -r requirements.txt
-    startCommand: celery -A app.celery worker --concurrency=2 --loglevel=info
+    startCommand: python -m celery -A celery_worker.celery worker --concurrency=2 --loglevel=info
+    
     envVars:
       - key: REDIS_URL
         value: redis://red-d0qs96ripnbc73emomu0:6379
