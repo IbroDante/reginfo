@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: examapp
+    name: jamltd
     env: python
     plan: free
     region: oregon
@@ -10,12 +10,11 @@ services:
       flask db migrate || true
       flask db upgrade
     startCommand: gunicorn -k gevent -w 4 app:app
-    worker: celery -A app.celery worker --concurrency=2 --loglevel=info
     envVars:
       - key: REDIS_URL
         value: redis://red-d0qs96ripnbc73emomu0:6379
       - key: DATABASE_URL
-        value: postgresql://your-db-url
+        value: postgresql://jamltddb_kr5r_user:WzAggUN2Aiq5t4rcuCkU06k3eWJIciFh@dpg-d2chv03uibrs738h84t0-a/jamltddb_kr5r
       - key: POSTGRES_DB
         sync: true
       - key: POSTGRES_USER
@@ -25,9 +24,30 @@ services:
       - key: POSTGRES_HOST
         value: postgres
     disk:
-      name: exam_app
+      name: jamltd_static
       mountPath: /static/uploads
       sizeGB: 5
+
+  - type: worker          
+    name: jamltd-worker  
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A app.celery worker --concurrency=2 --loglevel=info
+    envVars:
+      - key: REDIS_URL
+        value: redis://red-d0qs96ripnbc73emomu0:6379
+      - key: DATABASE_URL
+        value: postgresql://jamltddb_kr5r_user:WzAggUN2Aiq5t4rcuCkU06k3eWJIciFh@dpg-d2chv03uibrs738h84t0-a/jamltddb_kr5r
+      - key: POSTGRES_DB
+        sync: true
+      - key: POSTGRES_USER
+        sync: true
+      - key: POSTGRES_PASSWORD
+        sync: true
+      - key: POSTGRES_HOST
+        value: postgres
 
   - type: pserv
     name: postgres
@@ -40,19 +60,3 @@ services:
       sizeGB: 10
     envVars:
       - fromGroup: postgres
-
-static:
-  - path: /static
-    source: static
-
-envVarGroups:
-  - name: postgres
-    envVars:
-      - key: POSTGRES_DB
-        value: intime_nsmy
-      - key: POSTGRES_USER
-        value: ibrahimlolu
-      - key: POSTGRES_PASSWORD
-        value: 1QK3zpmye1WQlvxHCibrswdwsSgzqR4w
-      - key: POSTGRES_HOST
-        value: dpg-cq7alatds78s738u05l0-a

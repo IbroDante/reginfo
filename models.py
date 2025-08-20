@@ -42,3 +42,17 @@ class Contact(db.Model):
     message = db.Column(db.Text, nullable=True)
     respond_contact = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+class BulkMessage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(255), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(50), default="Pending")
+    progress = db.Column(db.Float, default=0.0)
+    total_recipients = db.Column(db.Integer, default=0)
+    sent_count = db.Column(db.Integer, default=0)
+    attachment_name = db.Column(db.String(255), nullable=True)
+
+    def __repr__(self):
+        return f"<BulkMessage {self.subject} ({self.status})>"

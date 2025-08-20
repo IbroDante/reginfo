@@ -250,8 +250,7 @@
                     <a href="#news" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">News</a>
                     <a href="#gallery" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Gallery</a>
                     <a href="#contact" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Contact</a>
-                    <a href="{{ url_for('index2') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold cta-button">Old Design</a>
-
+                    <a href="{{ url_for('index2') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold cta-button">IPE</a>
                     <a href="{{ url_for('register') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded font-semibold cta-button">Register</a>
                 </div>
                 <div class="md:hidden flex items-center">
@@ -404,6 +403,12 @@
         <div class="breadcrumb text-sm">
             <a href="#" class="hover:underline">Home</a> &gt;
             <span class="text-gray-600">Sustainable Energy Forum 2025</span>
+            </div>
+
+        <div class="text-center mt-2">
+            <span class="text-gray-600">Countdown to the Event</span>
+
+            <h2 class="text-4xl font-extrabold text-red-600 animate-pulse" id="flashyCountdown">Loading...</h2>
         </div>
     </div>
 
@@ -438,15 +443,15 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-3 gap-8 text-center">
                 <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="100">
-                    <h3 class="text-4xl font-bold text-blue-900 counter" data-target="1500">0</h3>
+                    <h3 class="text-4xl font-bold text-blue-900 counter" data-target="1000+">0</h3>
                     <p class="text-gray-600 mt-2">Attendees</p>
                 </div>
                 <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="200">
-                    <h3 class="text-4xl font-bold text-blue-900 counter" data-target="700">0</h3>
-                    <p class="text-gray-600 mt-2">Conference Delegates</p>
+                    <h4 class="text-4xl font-bold text-blue-900 counter" data-target="120">0</h4>
+                    <p class="text-gray-600 mt-2">Speakers</p>
                 </div>
                 <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="300">
-                    <h3 class="text-4xl font-bold text-blue-900 counter" data-target="150">0</h3>
+                    <h3 class="text-4xl font-bold text-blue-900 counter" data-target="50">0</h3>
                     <p class="text-gray-600 mt-2">Global Exhibitors</p>
                 </div>
             </div>
@@ -461,42 +466,20 @@
                 <article id="about" class="bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up">
                     <div class="p-6">
                         <div class="flex items-center mb-4">
-                            <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">EVENT</span>
-                            <span class="text-gray-500 text-sm">September 10, 2024</span>
+                            <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">About</span>
                         </div>
-                        <h1 class="text-3xl font-bold text-gray-900 mb-4">
-                            JODOR Asset Management (J.A.M Ltd) to Host Sustainable Energy Forum 2025 in Abuja
-                        </h1>
-                        <div class="flex items-center mb-6">
-                            <div class="flex items-center">
-                                <img class="w-10 h-10 rounded-full mr-3" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Author" loading="lazy">
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900">By David Okafor</p>
-                                    <p class="text-sm text-gray-500">Senior Editor</p>
-                                </div>
-                            </div>
-                            <div class="ml-auto flex space-x-3">
-                                <button class="text-gray-400 hover:text-blue-500">
-                                    <i class="fab fa-facebook-f"></i>
-                                </button>
-                                <button class="text-gray-400 hover:text-blue-400">
-                                    <i class="fab fa-twitter"></i>
-                                </button>
-                                <button class="text-gray-400 hover:text-red-500">
-                                    <i class="fab fa-linkedin-in"></i>
-                                </button>
-                            </div>
-                        </div>
+                        
+                        
                         <div class="prose max-w-none mb-8">
-                            <p class="text-lg text-gray-700 mb-4">
-                                JODOR Asset Management (J.A.M) Ltd, a leading 21st century forward-looking asset management company, is proud to announce the Sustainable Energy Forum (SEF-2025), scheduled for September 29-30, 2025 in Abuja, Nigeria.
-                            </p>
-                            <p class="text-gray-700 mb-4">
-                                The forum will bring together industry leaders, policymakers, investors, and innovators to discuss the future of sustainable energy in Africa. With the continent's energy demands growing rapidly, SEF-2025 aims to foster collaboration and showcase cutting-edge solutions.
-                            </p>
+                            
+                            
                             <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">About J.A.M Ltd</h2>
                             <p class="text-gray-700 mb-4">
                                 JODOR Asset Management (J.A.M) Ltd, is a 21st century forward-looking asset management company founded on a rock-solid foundation to unlock value in Africa's most dynamic market.
+
+                                <p class="text-gray-700 mb-4">
+                                    The forum will bring together industry leaders, policymakers, investors, and innovators to discuss the future of sustainable energy in Africa. With the continent's energy demands growing rapidly, SEF-2025 aims to foster collaboration and showcase cutting-edge solutions.
+                                </p>
 
                                 We are a widely known brand in the multi-strategy asset management arena and have come a long way from our initial founding to our business restructuring in recent years and beyond.                            </p>
                             <p class="text-gray-700 mb-4">
@@ -550,7 +533,21 @@
                     <h3 class="text-2xl font-bold text-gray-900 mb-6">Related News</h3>
                     <div class="grid md:grid-cols-2 gap-6">
                         <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="100">
-                            <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Renewable Energy" loading="lazy">
+                            <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Sustainable Energy Forum 2025" loading="lazy">
+                            <div class="p-6">
+                                <div class="flex items-center mb-2">
+                                    <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">BREAKING</span>
+                                    <span class="text-gray-500 text-sm">August 20, 2025</span>
+                                </div>
+                                <h4 class="text-xl font-bold text-gray-900 mb-2">Sustainable Energy Forum 2025 Announced</h4>
+                                <p class="text-gray-600 mb-4">JODOR Asset Management (J.A.M) Ltd unveils SEF-2025 to drive sustainable energy innovation in Africa.</p>
+                                <p class="text-gray-600 mb-4">JODOR Asset Management (J.A.M Ltd) to Host Sustainable Energy Forum 2025 in Abuja</p>
+
+                                <a href="#" class="text-blue-600 hover:underline font-medium">Read More →</a>
+                            </div>
+                        </article>
+                        <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                            <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Investment" loading="lazy">
                             <div class="p-6">
                                 <div class="flex items-center mb-2">
                                     <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">FEATURED</span>
@@ -561,7 +558,7 @@
                                 <a href="#" class="text-blue-600 hover:underline font-medium">Read More →</a>
                             </div>
                         </article>
-                        <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                        <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="300">
                             <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Investment" loading="lazy">
                             <div class="p-6">
                                 <div class="flex items-center mb-2">
@@ -615,36 +612,234 @@
                                 <p class="text-gray-600">9:00 AM - 6:00 PM daily</p>
                             </div>
                         </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-clock text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-900">Current Date & Time</h4>
+                                <p class="text-gray-600" id="currentDateTime">Loading...</p>
+                            </div>
+                            </div>
+                            
+                            
+                            
+
+
                     </div>
                 </div>
                 <!-- Speakers -->
                 <div id="speakers" class="bg-white rounded-lg shadow-md p-6" data-aos="fade-up">
                     <h3 class="text-xl font-bold text-gray-900 mb-4">Featured Speakers</h3>
                     <div class="space-y-6">
+                        <h4 class="font-bold text-gray-900 mb-2">Keynote Speakers</h4>
                         <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="https://randomuser.me/api/portraits/men/42.jpg" alt="Speaker" loading="lazy">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pres.jpeg" alt="H.E. Asiwaju Bola Ahmed Tinubu, GCFR" loading="lazy">
                             <div>
-                                <h4 class="font-bold text-gray-900">Dr. Amina Mohammed</h4>
-                                <p class="text-gray-600 text-sm">Director, African Energy Commission</p>
+                                <h4 class="font-bold text-gray-900">H.E. Asiwaju Bola Ahmed Tinubu, GCFR</h4>
+                                <p class="text-gray-600 text-sm">Keynote Speaker</p>
                             </div>
                         </div>
                         <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="https://randomuser.me/api/portraits/women/63.jpg" alt="Speaker" loading="lazy">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/shet.jpeg" alt="H.E. Kashim Shettima, GCON" loading="lazy">
                             <div>
-                                <h4 class="font-bold text-gray-900">Dr. Engr Nduka</h4>
-                                <p class="text-gray-600 text-sm">CEO, JODOR Asset Management (J.A.M Ltd)</p>
+                                <h4 class="font-bold text-gray-900">H.E. Kashim Shettima, GCON</h4>
+                                <p class="text-gray-600 text-sm">Keynote Speaker</p>
+                            </div>
+                        </div>
+
+                        <h4 class="font-bold text-gray-900 mb-2">VVIP Speakers (Policy)</h4>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/heine.jpeg" alt="H.E. Heineken Lokpobiri" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Heineken Lokpobiri</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of State for Petroleum Resources (Oil)</p>
                             </div>
                         </div>
                         <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="https://randomuser.me/api/portraits/men/75.jpg" alt="Speaker" loading="lazy">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/ekpe.jpeg" alt="H.E. Ekperikpe Ekpo" loading="lazy">
                             <div>
-                                <h4 class="font-bold text-gray-900">Prof. Kwame Nkrumah</h4>
-                                <p class="text-gray-600 text-sm">Energy Economist, University of Lagos</p>
+                                <h4 class="font-bold text-gray-900">H.E. Ekperikpe Ekpo</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of State for Petroleum Resources (Gas)</p>
                             </div>
                         </div>
-                        <div class="text-center pt-2">
-                            <a href="#" class="text-blue-600 hover:underline font-medium">View All Speakers →</a>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/adela.jpeg" alt="H.E. Chief Bayo Adelabu" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Chief Bayo Adelabu</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Power</p>
+                            </div>
                         </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/edun.jpeg" alt="H.E. Wale Edun, OFR" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Wale Edun, OFR</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Finance and Co-ordinating Minister of the Economy</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/jumoke.jpeg" alt="H.E. Dr. Jumoke Oduwole, MFR" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Dr. Jumoke Oduwole, MFR</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Trade and Investment</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/dele.jpeg" alt="H.E. Dele Alake" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Dele Alake</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Solid Minerals Development</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/abbas.jpeg" alt="H.E. Balarabe Abbas Lawal" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Balarabe Abbas Lawal</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Environment</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/umahi.jpeg" alt="Chief Dave Umahi" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Chief Dave Umahi</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Works</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/ojo.jpeg" alt="H.E. Dr. Olubunmi Tunji-Ojo" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Dr. Olubunmi Tunji-Ojo</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Interior</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/festus.jpeg" alt="H.E. Festus Keyamo" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Festus Keyamo</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Aviation and Aerospace Development</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/nnaji.jpeg" alt="Chief Uche Nnaji" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Chief Uche Nnaji</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Innovation, Science and Technology</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/bianca.jpeg" alt="H.E. Bianca Odumegwu Ojukwu" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Bianca Odumegwu Ojukwu</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of State for Foreign Affairs</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/imaan.jpeg" alt="H.E. Hajia Imaan Suleiman" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Hajia Imaan Suleiman</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Women's Affairs</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/bitrus.jpeg" alt="H.E. Bitrus Jisalo" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Bitrus Jisalo</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Special Duties and Inter Governmental Affairs</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/yilwa.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">H.E. Prof. Nentawe Yilwatda</h4>
+                                <p class="text-gray-600 text-sm">Honourable Minister of Humanitarian Affairs and Poverty Reduction</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmpetro.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
+                                <p class="text-gray-600 text-sm"> Ministry of Petroleum Resources</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmpower.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
+                                <p class="text-gray-600 text-sm"> Ministry of Power</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmworks.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
+                                <p class="text-gray-600 text-sm"> Ministry of Works</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmaviation.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
+                                <p class="text-gray-600 text-sm"> Ministry of Aviation and Aerospace Development</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmtech.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
+                                <p class="text-gray-600 text-sm"> Ministry of Innovation, Science and Technology</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmtrade.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
+                                <p class="text-gray-600 text-sm"> Ministry of Industry, Trade and Investment</p>
+                            </div>
+                        </div>
+
+                        <h4 class="font-bold text-gray-900 mb-2">VVIP Speakers (Business)</h4>
+
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/dan.jpeg" alt="Alhaji Aliko M. Dangote, GCON" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Alhaji Aliko M. Dangote, GCON</h4>
+                                <p class="text-gray-600 text-sm">Founder and Chairman, Dangote Industries</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/bua.jpeg" alt="Alhaji Abdul S. Rabiu, CFR" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Alhaji Abdul S. Rabiu, CFR</h4>
+                                <p class="text-gray-600 text-sm">Founder & Chairman, BUA Group</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/wale.jpeg" alt="Wale Tinubu, CON" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Wale Tinubu, CON</h4>
+                                <p class="text-gray-600 text-sm">Founder & Chairman, Oando Energy (Oando Plc)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/farouk.jpeg" alt="Engr. Farouk A. Ahmed" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Engr. Farouk A. Ahmed</h4>
+                                <p class="text-gray-600 text-sm">Authority Chief Executive, NMDPRA</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/gbenga.jpeg" alt="Engr. Gbenga Komolafe" loading="lazy">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Engr. Gbenga Komolafe</h4>
+                                <p class="text-gray-600 text-sm">Commission Chief Executive, NUPRC</p>
+                            </div>
+                        </div>
+                        
+                
                     </div>
                 </div>
             </div>
@@ -955,6 +1150,43 @@
 
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+
+<script>
+    function updateCountdown() {
+        const now = new Date();
+        const eventDate = new Date('2025-09-29T09:00:00+01:00'); // Event start date and time in WAT
+        const difference = eventDate - now;
+
+        if (difference <= 0) {
+            document.getElementById('flashyCountdown').textContent = 'Event Has Started!';
+            document.getElementById('flashyCountdown').classList.remove('animate-pulse');
+            document.getElementById('flashyCountdown').classList.add('text-green-600');
+            return;
+        }
+
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        document.getElementById('flashyCountdown').textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000); // Update every second
+</script>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Africa/Lagos' };
+            document.getElementById('currentDateTime').textContent = now.toLocaleString('en-US', options) + ' WAT';
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 60000); // Update every minute
+    </script>
+
+
     <script>
         // Pause/Play functionality for the marquee
         document.addEventListener('DOMContentLoaded', function() {
@@ -1126,7 +1358,7 @@
                 url: form.attr('action'),
                 type: 'POST',
                 data: form.serialize(),
-                success: function(response) {
+                                success: function(response) {
                     loadingOverlay.removeClass('active');
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(response, 'text/html');

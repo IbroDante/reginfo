@@ -26,6 +26,8 @@ import logging
 import time
 import re
 from datetime import datetime
+import mimetypes
+from celery import Celery
 
 load_dotenv()
 
@@ -764,6 +766,127 @@ def contact():
 
         return render_template('index.html')
     return render_template('index.html')
+
+@app.route('/send_bulk_email', methods=['POST'])
+def send_bulk_email():
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+
+    subject = request.form.get('subject')
+    message_body = request.form.get('message')
+    file = request.files.get('attachment')
+
+    users = User.query.all()
+    recipients = [{"email": u.email, "name": f"{u.first_name} {u.family_name}"} for u in users if u.email]
+
+    attachment = None
+    if file and file.filename:
+        file_data = base64.b64encode(file.read()).decode('utf-8')
+        mime_type, _ = mimetypes.guess_type(file.filename)
+        attachment = {
+            "content": file_data,
+            "name": file.filename,
+            "type": mime_type or "application/octet-stream"
+        }
+
+    task = send_bulk_email_task.apply_async(args=[subject, message_body, recipients, attachment])
+
+    return redirect(url_for('admin', task_id=task.id))
+
+def make_celery(app):
+    celery = Celery(
+        app.import_name,
+        broker=os.getenv("REDIS_URL", "redis://localhost:6379/0"),
+        backend=os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    )
+    celery.conf.update(app.config)
+    TaskBase = celery.Task
+
+    class ContextTask(TaskBase):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return TaskBase.__call__(self, *args, **kwargs)
+
+    celery.Task = ContextTask
+    return celery
+
+celery = make_celery(app)
+
+@celery.task(bind=True, max_retries=5)
+def send_bulk_email_task(self, subject, message_body, recipients, attachment=None, batch_size=50):
+    """
+    Background task to send bulk emails via Brevo API in batches.
+    Retries failed batches automatically with exponential backoff.
+    """
+    url = "https://api.brevo.com/v3/smtp/email"
+    headers = {
+        "accept": "application/json",
+        "api-key": app.config['BREVO_API_KEY'],
+        "content-type": "application/json"
+    }
+
+    total = len(recipients)
+    sent = 0
+
+    for i in range(0, total, batch_size):
+        batch = recipients[i:i+batch_size]
+
+        payload = {
+            "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
+            "to": batch,
+            "subject": subject,
+            "htmlContent": f"""
+                <html>
+                <body>
+                    <h2>Announcement from J.A.M Ltd</h2>
+                    <p>{message_body}</p>
+                    <hr>
+                    <p><strong>Event:</strong> Sustainable Energy Forum (SEF-2025)<br>
+                       <strong>Date:</strong> Sept 29–30, 2025<br>
+                       <strong>Venue:</strong> Abuja</p>
+                </body>
+                </html>
+            """
+        }
+
+        if attachment:
+            payload["attachment"] = [attachment]
+
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+
+            if response.status_code != 201:
+                # Retry with exponential backoff (2^retries seconds)
+                raise Exception(f"Brevo responded {response.status_code}: {response.text}")
+
+        except Exception as e:
+            countdown = 2 ** self.request.retries  # exponential backoff
+            app.logger.warning(f"Batch {i//batch_size+1} failed, retrying in {countdown}s... Error: {e}")
+            raise self.retry(exc=e, countdown=countdown)
+
+        # Update progress after each successful batch
+        sent += len(batch)
+        self.update_state(state="PROGRESS", meta={"current": sent, "total": total})
+
+    return {"current": total, "total": total, "status": "All batches sent"}
+
+@app.route('/bulk_status/<task_id>')
+def bulk_status(task_id):
+    task = send_bulk_email_task.AsyncResult(task_id)
+    if task.state == "PENDING":
+        response = {"state": task.state, "progress": 0}
+    elif task.state != "FAILURE":
+        response = {
+            "state": task.state,
+            "progress": (task.info.get("current", 0) / task.info.get("total", 1)) * 100,
+            "current": task.info.get("current", 0),
+            "total": task.info.get("total", 1),
+        }
+    else:
+        response = {"state": "FAILURE", "error": str(task.info)}
+
+    return jsonify(response)
 
 if __name__ == '__main__':
     db.create_all()
