@@ -778,115 +778,163 @@ def send_bulk_email():
     file = request.files.get('attachment')
 
     users = User.query.all()
+    if not users:
+        flash("No users found to send email.", "warning")
+        return redirect(url_for('admin'))
+
     recipients = [{"email": u.email, "name": f"{u.first_name} {u.family_name}"} for u in users if u.email]
 
-    attachment = None
+    payload = {
+        "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
+        "to": recipients,
+        "subject": subject,
+        "htmlContent": f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                    <h2 style="color: #1e40af; text-align: center; margin-bottom: 20px;">📢 Official Announcement from J.A.M Ltd</h2>
+                    <hr>
+                    <p><strong>Event:</strong> Sustainable Energy Forum (SEF-2025)<br>
+                    <strong>Date:</strong> September 29-30th, 2025<br>
+                    <strong>Venue:</strong> Central Business District, Abuja</p>
+                    <strong>Message :</strong> {message_body}</p>
+
+                    <p style="font-size: 12px; color: #777;">Stay connected: 
+                        <a href="https://www.instagram.com/jodor_a.m/">Instagram</a> | 
+                        <a href="https://www.linkedin.com/jodor-a-m-ltd/">LinkedIn</a>
+                    </p>
+                </div>
+            </body>
+            </html>
+        """
+    }
+
+    # If admin uploaded a file, attach it
     if file and file.filename:
-        file_data = base64.b64encode(file.read()).decode('utf-8')
-        mime_type, _ = mimetypes.guess_type(file.filename)
-        attachment = {
-            "content": file_data,
-            "name": file.filename,
-            "type": mime_type or "application/octet-stream"
-        }
+        try:
+            file_data = base64.b64encode(file.read()).decode('utf-8')
+            mime_type, _ = mimetypes.guess_type(file.filename)
+            payload["attachment"] = [{
+                "content": file_data,
+                "name": file.filename,
+                "type": mime_type or "application/octet-stream"
+            }]
+        except Exception as e:
+            logger.error(f"Attachment processing failed: {e}")
+            flash("Error processing attachment. Email sent without it.", "warning")
 
-    task = send_bulk_email_task.apply_async(args=[subject, message_body, recipients, attachment])
-
-    return redirect(url_for('admin', task_id=task.id))
-
-def make_celery(app):
-    celery = Celery(
-        app.import_name,
-        broker=os.getenv("REDIS_URL", "redis://localhost:6379/0"),
-        backend=os.getenv("REDIS_URL", "redis://localhost:6379/0")
-    )
-    celery.conf.update(app.config)
-    TaskBase = celery.Task
-
-    class ContextTask(TaskBase):
-        def __call__(self, *args, **kwargs):
-            with app.app_context():
-                return TaskBase.__call__(self, *args, **kwargs)
-
-    celery.Task = ContextTask
-    return celery
-
-celery = make_celery(app)
-
-@celery.task(bind=True, max_retries=5)
-def send_bulk_email_task(self, subject, message_body, recipients, attachment=None, batch_size=50):
-    """
-    Background task to send bulk emails via Brevo API in batches.
-    Retries failed batches automatically with exponential backoff.
-    """
-    url = "https://api.brevo.com/v3/smtp/email"
     headers = {
         "accept": "application/json",
         "api-key": app.config['BREVO_API_KEY'],
         "content-type": "application/json"
     }
 
-    total = len(recipients)
-    sent = 0
+    try:
+        response = requests.post("https://api.brevo.com/v3/smtp/email", headers=headers, data=json.dumps(payload), timeout=15)
+        if response.status_code == 201:
+            flash("Bulk email sent successfully!", "success")
+        else:
+            logger.error(f"Bulk email failed: {response.text}")
+            flash("Failed to send bulk email. Check logs.", "error")
+    except Exception as e:
+        logger.error(f"Bulk email exception: {str(e)}")
+        flash("An error occurred while sending emails.", "error")
 
-    for i in range(0, total, batch_size):
-        batch = recipients[i:i+batch_size]
+    return redirect(url_for('admin'))
 
-        payload = {
-            "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
-            "to": batch,
-            "subject": subject,
-            "htmlContent": f"""
-                <html>
-                <body>
-                    <h2>Announcement from J.A.M Ltd</h2>
-                    <p>{message_body}</p>
-                    <hr>
-                    <p><strong>Event:</strong> Sustainable Energy Forum (SEF-2025)<br>
-                       <strong>Date:</strong> Sept 29–30, 2025<br>
-                       <strong>Venue:</strong> Abuja</p>
-                </body>
-                </html>
-            """
-        }
+# def make_celery(app):
+#     celery = Celery(
+#         app.import_name,
+#         broker=os.getenv("REDIS_URL", "redis://localhost:6379/0"),
+#         backend=os.getenv("REDIS_URL", "redis://localhost:6379/0")
+#     )
+#     celery.conf.update(app.config)
+#     TaskBase = celery.Task
 
-        if attachment:
-            payload["attachment"] = [attachment]
+#     class ContextTask(TaskBase):
+#         def __call__(self, *args, **kwargs):
+#             with app.app_context():
+#                 return TaskBase.__call__(self, *args, **kwargs)
 
-        try:
-            response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+#     celery.Task = ContextTask
+#     return celery
 
-            if response.status_code != 201:
-                # Retry with exponential backoff (2^retries seconds)
-                raise Exception(f"Brevo responded {response.status_code}: {response.text}")
+# celery = make_celery(app)
 
-        except Exception as e:
-            countdown = 2 ** self.request.retries  # exponential backoff
-            app.logger.warning(f"Batch {i//batch_size+1} failed, retrying in {countdown}s... Error: {e}")
-            raise self.retry(exc=e, countdown=countdown)
+# @celery.task(bind=True, max_retries=5)
+# def send_bulk_email_task(self, subject, message_body, recipients, attachment=None, batch_size=50):
+#     """
+#     Background task to send bulk emails via Brevo API in batches.
+#     Retries failed batches automatically with exponential backoff.
+#     """
+#     url = "https://api.brevo.com/v3/smtp/email"
+#     headers = {
+#         "accept": "application/json",
+#         "api-key": app.config['BREVO_API_KEY'],
+#         "content-type": "application/json"
+#     }
 
-        # Update progress after each successful batch
-        sent += len(batch)
-        self.update_state(state="PROGRESS", meta={"current": sent, "total": total})
+#     total = len(recipients)
+#     sent = 0
 
-    return {"current": total, "total": total, "status": "All batches sent"}
+#     for i in range(0, total, batch_size):
+#         batch = recipients[i:i+batch_size]
 
-@app.route('/bulk_status/<task_id>')
-def bulk_status(task_id):
-    task = send_bulk_email_task.AsyncResult(task_id)
-    if task.state == "PENDING":
-        response = {"state": task.state, "progress": 0}
-    elif task.state != "FAILURE":
-        response = {
-            "state": task.state,
-            "progress": (task.info.get("current", 0) / task.info.get("total", 1)) * 100,
-            "current": task.info.get("current", 0),
-            "total": task.info.get("total", 1),
-        }
-    else:
-        response = {"state": "FAILURE", "error": str(task.info)}
+#         payload = {
+#             "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
+#             "to": batch,
+#             "subject": subject,
+#             "htmlContent": f"""
+#                 <html>
+#                 <body>
+#                     <h2>Announcement from J.A.M Ltd</h2>
+#                     <p>{message_body}</p>
+#                     <hr>
+#                     <p><strong>Event:</strong> Sustainable Energy Forum (SEF-2025)<br>
+#                        <strong>Date:</strong> Sept 29–30, 2025<br>
+#                        <strong>Venue:</strong> Abuja</p>
+#                 </body>
+#                 </html>
+#             """
+#         }
 
-    return jsonify(response)
+#         if attachment:
+#             payload["attachment"] = [attachment]
+
+#         try:
+#             response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=15)
+
+#             if response.status_code != 201:
+#                 # Retry with exponential backoff (2^retries seconds)
+#                 raise Exception(f"Brevo responded {response.status_code}: {response.text}")
+
+#         except Exception as e:
+#             countdown = 2 ** self.request.retries  # exponential backoff
+#             app.logger.warning(f"Batch {i//batch_size+1} failed, retrying in {countdown}s... Error: {e}")
+#             raise self.retry(exc=e, countdown=countdown)
+
+#         # Update progress after each successful batch
+#         sent += len(batch)
+#         self.update_state(state="PROGRESS", meta={"current": sent, "total": total})
+
+#     return {"current": total, "total": total, "status": "All batches sent"}
+
+# @app.route('/bulk_status/<task_id>')
+# def bulk_status(task_id):
+#     task = send_bulk_email_task.AsyncResult(task_id)
+#     if task.state == "PENDING":
+#         response = {"state": task.state, "progress": 0}
+#     elif task.state != "FAILURE":
+#         response = {
+#             "state": task.state,
+#             "progress": (task.info.get("current", 0) / task.info.get("total", 1)) * 100,
+#             "current": task.info.get("current", 0),
+#             "total": task.info.get("total", 1),
+#         }
+#     else:
+#         response = {"state": "FAILURE", "error": str(task.info)}
+
+#     return jsonify(response)
 
 if __name__ == '__main__':
     db.create_all()

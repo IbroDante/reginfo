@@ -758,33 +758,5 @@
         });
     </script>
 
-<script>
-    function checkStatus(taskId) {
-      fetch(`/bulk_status/${taskId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.state === "PENDING" || data.state === "PROGRESS") {
-            document.getElementById("progressContainer").classList.remove("hidden");
-            const pct = Math.round(data.progress || 0);
-            document.getElementById("progressBar").style.width = pct + "%";
-            document.getElementById("progressText").textContent = `${pct}% (${data.current || 0}/${data.total || 0})`;
-            setTimeout(() => checkStatus(taskId), 2000);
-          } else if (data.state === "SUCCESS") {
-            document.getElementById("progressBar").style.width = "100%";
-            document.getElementById("progressText").textContent = "Completed!";
-          } else if (data.state === "FAILURE") {
-            document.getElementById("progressText").textContent = "Task failed!";
-          }
-        })
-        .catch(err => console.error("Status check failed:", err));
-    }
-    
-    // ✅ Start polling if a task_id is present in URL
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("task_id")) {
-      checkStatus(urlParams.get("task_id"));
-    }
-    </script>
-    
 </body>
 </html>
