@@ -39,7 +39,6 @@ Modern design with Tailwind CSS, Poppins font, and Font Awesome icons.
 
 Admin Dashboard (/admin):
 
-Password-protected (set via ADMIN_PASSWORD in .env).
 Displays a table of all registered users with fields: Title, First Name, Family Name, Company/Organisation/University, Country of Origin, Email, Telephone, Age Group, Highest Qualification, Registration Category, Hotel Lodging, Travel Visa, Further Info, Confirmed (Yes/No), and Profile Picture.
 Uses DataTables for sorting, searching, and pagination.
 Profile pictures are displayed as clickable thumbnails, opening in a SweetAlert2 popup.
@@ -51,7 +50,7 @@ Backend Functionality:
 Generates a unique 5-character alphanumeric access code for each user.
 Sends two emails via Brevo API:
 User Email: SEF-2025 confirmation with event details and access code.
-Admin Email: Notification to mololuwa.ibrahim@gmail.com with user details and optional picture attachment (profile_picture.jpg).
+Admin Email: Notification to @gmail.com with user details and optional picture attachment (profile_picture.jpg).
 
 
 Validates profile picture size (≤50KB) with a custom 413 error handler for uploads exceeding 100KB.
@@ -94,8 +93,8 @@ Set Up Environment Variables:Create a .env file in the project root:
 DATABASE_URL=postgresql://user:password@localhost:5432/your_database
 SECRET_KEY=your-secret-key
 BREVO_API_KEY=xkeywdwdd
-EMAIL_FROM=mololuwa.ibrahim@gmail.com
-ADMIN_PASSWORD=admin123
+EMAIL_FROM=
+ADMIN_PASSWORD=
 
 
 Replace DATABASE_URL with your PostgreSQL connection string or use sqlite:///users.db for SQLite.
@@ -123,7 +122,7 @@ flask db upgrade
 Configure Brevo:
 
 Log in to Brevo’s dashboard.
-Verify the sender email (mololuwa.ibrahim@gmail.com) under Settings > Senders, Domains & Dedicated IPs.
+Verify the sender email (@gmail.com) under Settings > Senders, Domains & Dedicated IPs.
 Ensure the Brevo account is activated to send emails.
 
 
@@ -134,12 +133,9 @@ python app.py
 Access the app at http://localhost:5000.
 
 
-Deployment (Optional):For deployment on Render:
-
 Install gunicorn:pip install gunicorn
 
 
-Set environment variables in Render’s dashboard.
 Use the command:gunicorn --workers 3 app:app
 
 
@@ -195,7 +191,7 @@ Errors: e.g., "Profile picture must not exceed 50KB.", "Email already registered
 Admin Dashboard:
 
 Visit http://localhost:5000/admin:
-Enter the admin password (set in .env, default: admin123).
+Enter the admin password (set in .env).
 View a DataTables table with all user registrations, including Title, Country of Origin, and other fields.
 Click profile pictures to view full-size in a SweetAlert2 popup.
 Sort, search, and paginate the table.
@@ -207,7 +203,7 @@ Incorrect passwords trigger a SweetAlert2 error popup.
 Emails:
 
 User: Receives a confirmation email with SEF-2025 details (event title, date, venue, unique access code).
-Admin: Receives a notification to mololuwa.ibrahim@gmail.com with all user details and an optional picture attachment (profile_picture.jpg).
+Admin: Receives a notification to @gmail.com with all user details and an optional picture attachment (profile_picture.jpg).
 
 
 Confirmation:
@@ -225,27 +221,8 @@ Country Dropdown: The Country of Origin field uses a dropdown with 249 ISO 3166-
 Title Options: The Title dropdown includes culturally relevant options (e.g., Chief, Alhaji, Otunba) alongside standard titles.
 File Size Validation: Profile pictures are limited to 50KB, with a 100KB server limit (MAX_CONTENT_LENGTH). Exceeding either triggers a SweetAlert2 error popup.
 Email Limits: Each registration sends two emails, counting toward Brevo’s 300 emails/day free plan limit.
-Security:
-The 50KB picture limit minimizes storage issues.
-Add Flask-WTF for CSRF protection in production for the registration and admin password forms.
-Verify EMAIL_FROM in Brevo.
-Set a secure ADMIN_PASSWORD in .env for the admin dashboard.
-
 
 Performance: Lazy-loaded images, minified CDNs (Tailwind, SweetAlert2, AOS, Typed.js, DataTables), and client-side DataTables optimize load times. For large datasets, consider server-side pagination.
-
-Troubleshooting
-
-Flash Messages: If SweetAlert2 popups fail, check the CDN (https://cdn.jsdelivr.net/npm/sweetalert2@11) and browser console.
-Animations: Verify AOS (https://unpkg.com/aos@next) and Typed.js (https://cdnjs.cloudflare.com/ajax/libs/typed.js) CDNs. Ensure JavaScript is enabled.
-DataTables: Verify jQuery (https://code.jquery.com/jquery-3.5.1.min.js) and DataTables (https://cdn.datatables.net/1.11.5/) CDNs. Test sorting and searching.
-File Size Errors: Test with files >50KB and >100KB to confirm SweetAlert2 error popups.
-Email Issues: Check Brevo’s dashboard logs. Debug with print(response.text) in app.py.
-Database: Verify DATABASE_URL or use SQLite. Rerun migrations if needed:flask db migrate -m "Update migration"
-flask db upgrade
-
-
-Admin Access: If the password prompt persists, ensure ADMIN_PASSWORD is set in .env. Clear browser cookies if session issues occur.
 
 Future Enhancements
 
