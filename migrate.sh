@@ -1,10 +1,6 @@
 #!/bin/sh
-
-# # Initialize the migration environment
-# flask db init
-
-# # Generate the migration script
-# flask db migrate -m "Initial migration."
-
-# Apply the migration script to the database
+# Apply any new migrations
 flask db upgrade
+
+# Start the app
+gunicorn -w 4 -b 0.0.0.0:$PORT app:app
