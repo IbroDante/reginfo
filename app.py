@@ -136,6 +136,7 @@ def register():
         registration_category = form_data.get('registration_category')
         hotel_lodging = form_data.get('hotel_lodging') == 'Yes'
         travel_visa = form_data.get('travel_visa') == 'Yes'
+        certificate_required = form_data.get('certificate_required') == 'Yes'
         further_info = form_data.get('further_info', '')
         picture_file = request.files.get('picture')
 
@@ -176,6 +177,7 @@ def register():
             registration_category=registration_category,
             hotel_lodging=hotel_lodging,
             travel_visa=travel_visa,
+            certificate_required=certificate_required,
             further_info=further_info,
             picture=picture_data,
             confirmation_token=token,
@@ -187,7 +189,7 @@ def register():
             db.session.commit()
             logger.info(f"User registered successfully: {email}")
             send_user_receipt_email(email, first_name, family_name)
-            send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data)
+            send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, certificate_required, further_info, picture_data)
             return jsonify({
                 'status': 'success',
                 'message': 'Your registration is received. A confirmation email will be sent to you shortly. Check your inbox, Spam or junk folders.'
@@ -603,7 +605,7 @@ def send_contact_respond_email(name, organisation, telephone, email, inquiry, ot
         logger.error(f"Exception while sending contact response email to {email}: {str(e)}")
         return False
 
-def send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, further_info, picture_data):
+def send_admin_notification_email(email, token, title, first_name, family_name, company_organisation, country_of_origin, telephone, age_group, highest_qualification, registration_category, hotel_lodging, travel_visa, certificate_required, further_info, picture_data):
     url = "https://api.brevo.com/v3/smtp/email"
     payload = {
         "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
@@ -628,6 +630,8 @@ def send_admin_notification_email(email, token, title, first_name, family_name, 
                     <li><strong>Registration Category:</strong> {registration_category}</li>
                     <li><strong>Hotel Lodging Required:</strong> {'Yes' if hotel_lodging else 'No'}</li>
                     <li><strong>Travel Visa Required:</strong> {'Yes' if travel_visa else 'No'}</li>
+                    <li><strong>Certificate Required:</strong> {certificate_required or 'None'}</li>
+
                     <li><strong>Further Info:</strong> {further_info or 'None'}</li>
                     <li><strong>Unique Access Code:</strong> {token}</li>
                 </ul>

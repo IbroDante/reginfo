@@ -23,6 +23,7 @@ class User(db.Model):
     registration_category = db.Column(db.String(100), nullable=False)
     hotel_lodging = db.Column(db.Boolean, default=False)
     travel_visa = db.Column(db.Boolean, default=False)
+    certificate_required = db.Column(db.Boolean, default=False)
     further_info = db.Column(db.Text)
     picture = db.Column(db.Text)
     confirmation_token = db.Column(db.String(5), unique=True)
