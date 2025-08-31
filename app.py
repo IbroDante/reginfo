@@ -440,6 +440,7 @@ def send_user_confirmation_email(email, token, first_name, family_name):
                     <li><strong>Date:</strong> September 29-30th, 2025</li>
                     <li><strong>Time:</strong> 10:00 AM (Daily)</li>
                     <li><strong>Venue:</strong> Central Business District, Abuja</li>
+                    <li><strong>Certificate Required:</strong> {'Yes' if certificate_required else 'No'}</li>
                     <li><strong>Unique Access Code:</strong> {token}</li>
                 </ul>
                 <p><strong>For updates and to join the conversation, follow us:</strong></p>
@@ -630,7 +631,7 @@ def send_admin_notification_email(email, token, title, first_name, family_name, 
                     <li><strong>Registration Category:</strong> {registration_category}</li>
                     <li><strong>Hotel Lodging Required:</strong> {'Yes' if hotel_lodging else 'No'}</li>
                     <li><strong>Travel Visa Required:</strong> {'Yes' if travel_visa else 'No'}</li>
-                    <li><strong>Certificate Required:</strong> {certificate_required or 'None'}</li>
+                    <li><strong>Certificate Required:</strong> {'Yes' if certificate_required else 'No'}</li>
 
                     <li><strong>Further Info:</strong> {further_info or 'None'}</li>
                     <li><strong>Unique Access Code:</strong> {token}</li>

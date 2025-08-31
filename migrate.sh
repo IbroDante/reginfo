@@ -1,5 +1,8 @@
 #!/bin/sh
 # Apply any new migrations
+
+flask db migrate
+
 flask db upgrade
 
 # Start the app
