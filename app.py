@@ -440,7 +440,6 @@ def send_user_confirmation_email(email, token, first_name, family_name):
                     <li><strong>Date:</strong> September 29-30th, 2025</li>
                     <li><strong>Time:</strong> 10:00 AM (Daily)</li>
                     <li><strong>Venue:</strong> Central Business District, Abuja</li>
-                    <li><strong>Certificate Required:</strong> {'Yes' if certificate_required else 'No'}</li>
                     <li><strong>Unique Access Code:</strong> {token}</li>
                 </ul>
                 <p><strong>For updates and to join the conversation, follow us:</strong></p>
