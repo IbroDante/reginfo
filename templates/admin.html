@@ -138,6 +138,17 @@
         .profile-thumbnail:hover {
             transform: scale(1.1);
         }
+        .attachment-thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .attachment-thumbnail:hover {
+            transform: scale(1.1);
+        }
         .table-responsive {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
@@ -153,6 +164,10 @@
             .action-btn {
                 padding: 4px 8px;
                 margin-bottom: 4px;
+            }
+            .attachment-thumbnail {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
@@ -227,75 +242,85 @@
                 </div>
             </div>
 
-           <!-- Bulk Email Section -->
-<div class="bg-white rounded-xl admin-container p-6 mt-6">
-    <h2 class="text-xl font-bold text-gray-800 mb-4">Send Bulk Email</h2>
-    <form action="{{ url_for('send_bulk_email') }}" method="POST" enctype="multipart/form-data">
-      <div class="mb-4">
-        <label for="bulk_subject" class="block text-sm font-medium text-gray-700">Subject</label>
-        <input type="text" id="bulk_subject" name="subject" required 
-               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-      </div>
-      <div class="mb-4">
-        <label for="bulk_message" class="block text-sm font-medium text-gray-700">Message</label>
-        <textarea id="bulk_message" name="message" rows="6" required 
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"></textarea>
-      </div>
-      <div class="mb-4">
-        <label for="bulk_file" class="block text-sm font-medium text-gray-700">Attachment (optional)</label>
-        <input type="file" id="bulk_file" name="attachment"
-               class="w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer">
-      </div>
-      <button type="submit" 
-              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-        <i class="fas fa-paper-plane mr-2"></i> Send to All Users
-      </button>
-    </form>
-  </div>
-  
-  <div id="progressContainer" class="mt-4 hidden">
-    <p class="text-sm text-gray-700">Sending progress:</p>
-    <div class="w-full bg-gray-200 rounded-full h-4">
-      <div id="progressBar" class="bg-blue-600 h-4 rounded-full" style="width:0%"></div>
-    </div>
-    <p id="progressText" class="text-xs text-gray-600 mt-1">0%</p>
-  </div>
-  
-  <div class="bg-white rounded-xl admin-container p-6 mt-6">
-    <h2 class="text-xl font-bold text-gray-800 mb-4">Bulk Messages History</h2>
-    <table class="table-auto w-full border-collapse border border-gray-200">
-      <thead>
-        <tr class="bg-gray-100">
-          <th class="px-4 py-2 border">ID</th>
-          <th class="px-4 py-2 border">Subject</th>
-          <th class="px-4 py-2 border">Status</th>
-          <th class="px-4 py-2 border">Progress</th>
-          <th class="px-4 py-2 border">Sent / Total</th>
-          <th class="px-4 py-2 border">Attachment</th>
-          <th class="px-4 py-2 border">Created At</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% if bulk_messages %}
-          {% for msg in bulk_messages %}
-          <tr>
-            <td class="px-4 py-2 border">{{ msg.id }}</td>
-            <td class="px-4 py-2 border">{{ msg.subject }}</td>
-            <td class="px-4 py-2 border">{{ msg.status }}</td>
-            <td class="px-4 py-2 border">{{ msg.progress|round(1) }}%</td>
-            <td class="px-4 py-2 border">{{ msg.sent_count }}/{{ msg.total_recipients }}</td>
-            <td class="px-4 py-2 border">{{ msg.attachment_name or "-" }}</td>
-            <td class="px-4 py-2 border">{{ msg.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-          </tr>
-          {% endfor %}
-        {% else %}
-          <tr><td colspan="7" class="text-center py-4">No bulk messages yet.</td></tr>
-        {% endif %}
-      </tbody>
-    </table>
-  </div>
-  
-  
+            <!-- Bulk Email Section -->
+            <div class="bg-white rounded-xl admin-container p-6 mt-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Send Bulk Email</h2>
+                <form action="{{ url_for('send_bulk_email') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="bulk_subject" class="block text-sm font-medium text-gray-700">Subject</label>
+                        <input type="text" id="bulk_subject" name="subject" required 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                    </div>
+                    <div class="mb-4">
+                        <label for="bulk_message" class="block text-sm font-medium text-gray-700">Message</label>
+                        <textarea id="bulk_message" name="message" rows="6" required 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label for="bulk_file" class="block text-sm font-medium text-gray-700">Attachment (optional)</label>
+                        <input type="file" id="bulk_file" name="attachment"
+                            class="w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer">
+                    </div>
+                    <button type="submit" 
+                            class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                        <i class="fas fa-paper-plane mr-2"></i> Send to All Users
+                    </button>
+                </form>
+            </div>
+
+            <div id="progressContainer" class="mt-4 hidden">
+                <p class="text-sm text-gray-700">Sending progress:</p>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div id="progressBar" class="bg-blue-600 h-4 rounded-full" style="width:0%"></div>
+                </div>
+                <p id="progressText" class="text-xs text-gray-600 mt-1">0%</p>
+            </div>
+
+            <!-- Bulk Messages History -->
+            <div class="bg-white rounded-xl admin-container p-6 mt-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Bulk Messages History</h2>
+                <div class="table-responsive">
+                    <table id="bulkMessagesTable" class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="px-4 py-2 border">ID</th>
+                                <th class="px-4 py-2 border">Subject</th>
+                                <th class="px-4 py-2 border">Status</th>
+                                <th class="px-4 py-2 border">Progress</th>
+                                <th class="px-4 py-2 border">Sent / Total</th>
+                                <th class="px-4 py-2 border">Attachment</th>
+                                <th class="px-4 py-2 border">Created At</th>
+                                <th class="px-4 py-2 border">Updated At</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if bulk_messages %}
+                                {% for msg in bulk_messages %}
+                                <tr>
+                                    <td class="px-4 py-2 border">{{ msg.id }}</td>
+                                    <td class="px-4 py-2 border">{{ msg.subject }}</td>
+                                    <td class="px-4 py-2 border">{{ msg.status }}</td>
+                                    <td class="px-4 py-2 border">{{ msg.progress|round(1) }}%</td>
+                                    <td class="px-4 py-2 border">{{ msg.sent_count }}/{{ msg.total_recipients }}</td>
+                                    <td class="px-4 py-2 border">
+                                        {% if msg.attachment_data and msg.attachment_type and msg.attachment_type.startswith('image/') %}
+                                            <img src="data:{{ msg.attachment_type }};base64,{{ msg.attachment_data }}" alt="Attachment" class="attachment-thumbnail">
+                                        {% else %}
+                                            {{ msg.attachment_name or "-" }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-4 py-2 border">{{ msg.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td class="px-4 py-2 border">{{ msg.updated_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr><td colspan="8" class="text-center py-4">No bulk messages yet.</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Dashboard Table -->
             <div class="bg-white rounded-xl admin-container overflow-hidden">
                 <div class="p-6">
@@ -374,7 +399,6 @@
                                             {{ 'Yes' if user.travel_visa else 'No' }}
                                         </span>
                                     </td>
-
                                     <td class="px-4 py-4">
                                         <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                                             {{ 'Yes' if user.certificate_required else 'No' }}
@@ -396,10 +420,8 @@
                                         </span>
                                     </td>
                                     <td class="px-4 py-4">{{ user.respond_contact or 'N/A' }}</td>
-
                                     <td class="px-4 py-4">{{ user.timestamp }}</td>
                                     <td class="px-4 py-4">{{ user.updated_at }}</td>
-
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         {% if user.is_approved %}
                                         <span class="status-badge status-approved">
@@ -475,6 +497,7 @@
                                     <th class="px-4 py-3 text-left">Message</th>
                                     <th class="px-4 py-3 text-left">Response</th>
                                     <th class="px-4 py-3 text-left">Timestamp</th>
+                                    <th class="px-4 py-3 text-left">Updated At</th>
                                     <th class="px-4 py-3 text-left">Actions</th>
                                 </tr>
                             </thead>
@@ -495,6 +518,7 @@
                                     <td class="px-4 py-4">{{ contact.message or 'N/A' }}</td>
                                     <td class="px-4 py-4">{{ contact.respond_contact or 'N/A' }}</td>
                                     <td class="px-4 py-4 whitespace-nowrap">{{ contact.timestamp }}</td>
+                                    <td class="px-4 py-4 whitespace-nowrap">{{ contact.updated_at }}</td>
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         <div class="flex space-x-2">
                                             <form action="{{ url_for('respond_contact', contact_id=contact.id) }}" method="POST" class="inline respond-form">
@@ -561,7 +585,7 @@
     <!-- DataTables and Custom Scripts -->
     <script>
         $(document).ready(function() {
-            // Initialize DataTable with responsive settings
+            // Initialize DataTable for Users Table
             $('#usersTable').DataTable({
                 responsive: true,
                 pageLength: 10,
@@ -583,6 +607,7 @@
                 }
             });
 
+            // Initialize DataTable for Contacts Table
             $('#contactsTable').DataTable({
                 responsive: true,
                 pageLength: 10,
@@ -594,6 +619,28 @@
                 language: {
                     search: '<i class="fas fa-search mr-2 text-gray-500"></i>',
                     searchPlaceholder: 'Search contacts...',
+                    paginate: {
+                        previous: '<i class="fas fa-chevron-left"></i>',
+                        next: '<i class="fas fa-chevron-right"></i>'
+                    }
+                },
+                initComplete: function() {
+                    $('.dataTables_filter input').addClass('border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500');
+                }
+            });
+
+            // Initialize DataTable for Bulk Messages Table
+            $('#bulkMessagesTable').DataTable({
+                responsive: true,
+                pageLength: 10,
+                lengthChange: true,
+                searching: true,
+                ordering: true,
+                info: false,
+                dom: '<"flex flex-col md:flex-row md:items-center md:justify-between mb-4"<"mb-4 md:mb-0"l><"dataTables_filter"f>>t<"flex flex-col md:flex-row md:items-center md:justify-between mt-4"<"mb-4 md:mb-0"i><"pagination"p>>',
+                language: {
+                    search: '<i class="fas fa-search mr-2 text-gray-500"></i>',
+                    searchPlaceholder: 'Search bulk messages...',
                     paginate: {
                         previous: '<i class="fas fa-chevron-left"></i>',
                         next: '<i class="fas fa-chevron-right"></i>'
@@ -625,8 +672,7 @@
                             type: 'POST',
                             data: form.serialize(),
                             success: function(response) {
-                                // Refresh the page or update the row dynamically
-                                location.reload(); // Simple reload for now; adjust for AJAX if needed
+                                location.reload();
                             },
                             error: function() {
                                 Swal.fire({
@@ -747,6 +793,19 @@
                 });
             });
 
+            // Handle attachment thumbnail clicks
+            $('.attachment-thumbnail').on('click', function() {
+                const src = $(this).attr('src');
+                Swal.fire({
+                    imageUrl: src,
+                    imageAlt: 'Attachment',
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    background: 'transparent',
+                    backdrop: 'rgba(0,0,0,0.8)'
+                });
+            });
+
             // Show third mail button after approval
             function updateThirdMailButton() {
                 $('tr').each(function() {
@@ -764,12 +823,11 @@
             // Initial call to set button visibility
             updateThirdMailButton();
 
-            // Re-run on table draw (e.g., after filtering or pagination)
+            // Re-run on table draw
             $('#usersTable').on('draw.dt', function() {
                 updateThirdMailButton();
             });
         });
     </script>
-
 </body>
 </html>

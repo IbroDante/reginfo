@@ -5,7 +5,7 @@ import json
 import uuid
 import os
 from flask_mail import Mail, Message
-from models import db, User, Contact
+from models import db, User, Contact, BulkMessage
 import base64
 import json
 import random
@@ -80,6 +80,7 @@ def index():
 def index2():
     return render_template('index2.html')
 
+
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
@@ -89,26 +90,28 @@ def admin():
             try:
                 users = User.query.all()
                 contacts = Contact.query.all()
-                return render_template('admin.html', users=users, contacts=contacts)
+                bulk_messages = BulkMessage.query.all()
+                return render_template('admin.html', users=users, contacts=contacts, bulk_messages=bulk_messages)
             except OperationalError as e:
                 logger.error(f"Database error in admin route: {str(e)}")
                 flash('Database connection error. Please try again later.', 'error')
-                return render_template('admin.html', users=None, contacts=None)
+                return render_template('admin.html', users=None, contacts=None, bulk_messages=None)
         else:
             flash('Incorrect admin password.', 'error')
-            return render_template('admin.html', users=None, contacts=None)
+            return render_template('admin.html', users=None, contacts=None, bulk_messages=None)
     
     if not session.get('admin_authenticated'):
-        return render_template('admin.html', users=None, contacts=None)
+        return render_template('admin.html', users=None, contacts=None, bulk_messages=None)
     
     try:
         users = User.query.all()
         contacts = Contact.query.all()
-        return render_template('admin.html', users=users, contacts=contacts)
+        bulk_messages = BulkMessage.query.all()
+        return render_template('admin.html', users=users, contacts=contacts, bulk_messages=bulk_messages)
     except OperationalError as e:
         logger.error(f"Database error in admin route: {str(e)}")
         flash('Database connection error. Please try again later.', 'error')
-        return render_template('admin.html', users=None, contacts=None)
+        return render_template('admin.html', users=None, contacts=None, bulk_messages=None)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -788,6 +791,31 @@ def send_bulk_email():
 
     recipients = [{"email": u.email, "name": f"{u.first_name} {u.family_name}"} for u in users if u.email]
 
+    # Create a new BulkMessage entry
+    bulk_message = BulkMessage(
+        subject=subject,
+        body=message_body,
+        total_recipients=len(recipients),
+        attachment_name=file.filename if file and file.filename else None,
+        status="Pending"
+    )
+
+    # If admin uploaded a file, process it
+    file_data = None
+    mime_type = None
+    if file and file.filename:
+        try:
+            file_data = base64.b64encode(file.read()).decode('utf-8')
+            mime_type, _ = mimetypes.guess_type(file.filename)
+            bulk_message.attachment_data = file_data
+            bulk_message.attachment_type = mime_type or "application/octet-stream"
+        except Exception as e:
+            logger.error(f"Attachment processing failed: {e}")
+            flash("Error processing attachment. Email sent without it.", "warning")
+
+    db.session.add(bulk_message)
+    db.session.commit()
+
     payload = {
         "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
         "to": recipients,
@@ -801,7 +829,7 @@ def send_bulk_email():
                     <p><strong>Event:</strong> Sustainable Energy Forum (SEF-2025)<br>
                     <strong>Date:</strong> September 29-30th, 2025<br>
                     <strong>Venue:</strong> Central Business District, Abuja</p>
-                    <strong>Message :</strong> {message_body}</p>
+                    <strong>Message:</strong> {message_body}</p>
 
                     <p style="font-size: 12px; color: #777;">Stay connected: 
                         <a href="https://www.instagram.com/jodor_a.m/">Instagram</a> | 
@@ -813,19 +841,13 @@ def send_bulk_email():
         """
     }
 
-    # If admin uploaded a file, attach it
-    if file and file.filename:
-        try:
-            file_data = base64.b64encode(file.read()).decode('utf-8')
-            mime_type, _ = mimetypes.guess_type(file.filename)
-            payload["attachment"] = [{
-                "content": file_data,
-                "name": file.filename,
-                "type": mime_type or "application/octet-stream"
-            }]
-        except Exception as e:
-            logger.error(f"Attachment processing failed: {e}")
-            flash("Error processing attachment. Email sent without it.", "warning")
+    # Add attachment to payload if available
+    if file_data and mime_type:
+        payload["attachment"] = [{
+            "content": file_data,
+            "name": file.filename,
+            "type": mime_type
+        }]
 
     headers = {
         "accept": "application/json",
@@ -836,12 +858,20 @@ def send_bulk_email():
     try:
         response = requests.post("https://api.brevo.com/v3/smtp/email", headers=headers, data=json.dumps(payload), timeout=15)
         if response.status_code == 201:
+            bulk_message.status = "Sent"
+            bulk_message.progress = 100.0
+            bulk_message.sent_count = len(recipients)
+            db.session.commit()
             flash("Bulk email sent successfully!", "success")
         else:
             logger.error(f"Bulk email failed: {response.text}")
+            bulk_message.status = "Failed"
+            db.session.commit()
             flash("Failed to send bulk email. Check logs.", "error")
     except Exception as e:
         logger.error(f"Bulk email exception: {str(e)}")
+        bulk_message.status = "Failed"
+        db.session.commit()
         flash("An error occurred while sending emails.", "error")
 
     return redirect(url_for('admin'))
