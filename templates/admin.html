@@ -318,6 +318,8 @@
                                     <th class="px-4 py-3 text-left">Disapproval Reason</th>
                                     <th class="px-4 py-3 text-left">Confirmed</th>
                                     <th class="px-4 py-3 text-left">Response</th>
+                                    <th class="px-4 py-3 text-left">Timestamp</th>
+                                    <th class="px-4 py-3 text-left">Updated At</th>
                                     <th class="px-4 py-3 text-left">Status</th>
                                     <th class="px-4 py-3 text-left">Actions</th>
                                 </tr>
@@ -394,6 +396,10 @@
                                         </span>
                                     </td>
                                     <td class="px-4 py-4">{{ user.respond_contact or 'N/A' }}</td>
+
+                                    <td class="px-4 py-4">{{ user.timestamp }}</td>
+                                    <td class="px-4 py-4">{{ user.updated_at }}</td>
+
                                     <td class="px-4 py-4 whitespace-nowrap">
                                         {% if user.is_approved %}
                                         <span class="status-badge status-approved">

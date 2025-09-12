@@ -36,10 +36,10 @@
             background-color: rgba(255, 255, 255, 0.95);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .article-card, .stat-card {
+        .article-card, .stat-card, .speaker-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .article-card:hover, .stat-card:hover {
+        .article-card:hover, .stat-card:hover, .speaker-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
@@ -64,7 +64,6 @@
         .dropdown:hover .dropdown-menu {
             display: block;
         }
-        /* Marquee Container */
         .marquee-container {
             background: linear-gradient(to right, #f1f5f9, #e2e8f0);
             border-top: 1px solid #cbd5e1;
@@ -74,22 +73,16 @@
             position: relative;
             min-height: 46px;
         }
-        
-        /* Marquee Track */
         .marquee-track {
             display: flex;
             position: absolute;
             animation: marquee 90s linear infinite;
             white-space: nowrap;
         }
-        
-        /* Marquee Animation */
         @keyframes marquee {
-            100% { transform: translateX(100%); }
+            0% { transform: translateX(0%); }
             100% { transform: translateX(-100%); }
         }
-        
-        /* Marquee Item */
         .marquee-item {
             display: flex;
             align-items: center;
@@ -97,8 +90,6 @@
             border-right: 1px solid #cbd5e1;
             height: 100%;
         }
-        
-        /* Marquee Label */
         .marquee-label {
             background: #0ea5e9;
             color: white;
@@ -109,25 +100,19 @@
             font-weight: 600;
             text-transform: uppercase;
         }
-        
-        /* Price Movement Indicators */
         .price-up { color: #10b981; }
         .price-down { color: #ef4444; }
         .price-neutral { color: #64748b; }
-        
         .price-up::before {
             content: "▲";
             font-size: 0.7em;
             margin-right: 4px;
         }
-        
         .price-down::before {
             content: "▼";
             font-size: 0.7em;
             margin-right: 4px;
         }
-        
-        /* News Items */
         .news-item {
             background: linear-gradient(to right, #fde68a, #fcd34d);
             color: #854d0e;
@@ -137,13 +122,6 @@
             font-size: 0.85rem;
             margin-right: 10px;
         }
-        
-        /* Header Styles */
-        .header-gradient {
-            background: linear-gradient(90deg, #0a2e52 0%, #0a4b78 100%);
-        }
-        
-        /* Ticker Controls */
         .ticker-controls {
             position: absolute;
             right: 10px;
@@ -153,7 +131,6 @@
             gap: 8px;
             z-index: 10;
         }
-        
         .ticker-btn {
             background: rgba(255, 255, 255, 0.7);
             border: 1px solid #cbd5e1;
@@ -166,13 +143,11 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        
         .ticker-btn:hover {
             background: #0ea5e9;
             color: white;
             border-color: #0ea5e9;
         }
-
         .loading-overlay {
             position: absolute;
             top: 0;
@@ -190,10 +165,43 @@
         .loading-overlay.active {
             display: flex;
         }
-        @media (max-width: 640px) {
-            .form-container {
-                padding: 1.5rem;
-            }
+        /* Styles for news carousel */
+        .news-carousel {
+            overflow: hidden;
+            position: relative;
+        }
+        .news-track {
+            display: flex;
+            animation: newsMarquee 30s linear infinite;
+            width: calc(300px * 10); /* Adjust based on number of articles * card width */
+        }
+        @keyframes newsMarquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* Move half the track for seamless loop */
+        }
+        .news-track.paused {
+            animation-play-state: paused;
+        }
+        .news-carousel:hover .news-track {
+            animation-play-state: paused;
+        }
+        .news-carousel .article-card {
+            flex: 0 0 auto;
+            width: 300px;
+            margin-right: 16px;
+        }
+        /* Styles for speakers toggle */
+        .speakers-hidden {
+            display: none;
+        }
+        .speakers-visible {
+            display: block;
+        }
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+        .toggle-icon.active {
+            transform: rotate(180deg);
         }
     </style>
 </head>
@@ -292,9 +300,7 @@
 
     <!-- Enhanced Marquee Section -->
     <div class="marquee-container relative">
-        <!-- Marquee Track -->
         <div class="marquee-track">
-            <!-- Commodity Items -->
             <div class="marquee-item">
                 <span class="marquee-label">OIL</span>
                 <span class="price-up">66.59 (+0.18)</span>
@@ -323,8 +329,6 @@
                 <span class="marquee-label">UK GAS</span>
                 <span class="price-down">79.53 (-1.51)</span>
             </div>
-            
-            <!-- News Items -->
             <div class="marquee-item">
                 <span class="news-item">
                     <i class="fas fa-bullhorn mr-1"></i> SEF-2025: Early bird registration now open!
@@ -340,7 +344,6 @@
                     <i class="fas fa-calendar mr-1"></i> Exclusive webinar: Future of Commodity Asset Management
                 </span>
             </div>
-            
             <!-- Duplicate for seamless looping -->
             <div class="marquee-item">
                 <span class="marquee-label">OIL</span>
@@ -370,7 +373,6 @@
                 <span class="marquee-label">UK GAS</span>
                 <span class="price-down">79.53 (-1.51)</span>
             </div>
-            
             <div class="marquee-item">
                 <span class="news-item">
                     <i class="fas fa-bullhorn mr-1"></i> SEF-2025: Early bird registration now open!
@@ -387,13 +389,9 @@
                 </span>
             </div>
         </div>
-
-        <!-- Ticker Controls -->
-        <div >
-            <div class="ticker-btn" id="pauseBtn">
-            </div>
-            <div class="ticker-btn" id="playBtn">
-            </div>
+        <div class="ticker-controls">
+            <div class="ticker-btn" id="pauseBtn"><i class="fas fa-pause"></i></div>
+            <div class="ticker-btn" id="playBtn"><i class="fas fa-play"></i></div>
         </div>
     </div>
 
@@ -402,11 +400,9 @@
         <div class="breadcrumb text-sm">
             <a href="#" class="hover:underline">Home</a> &gt;
             <span class="text-gray-600">Sustainable Energy Forum 2025</span>
-            </div>
-
+        </div>
         <div class="text-center mt-2">
             <span class="text-gray-600">Countdown to the Event</span>
-
             <h2 class="text-4xl font-extrabold text-red-600 animate-pulse" id="flashyCountdown">Loading...</h2>
         </div>
     </div>
@@ -442,7 +438,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-3 gap-8 text-center">
                 <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="100">
-                    <h3 class="text-4xl font-bold text-blue-900 counter" data-target="1000+">0</h3>
+                    <h3 class="text-4xl font-bold text-blue-900 counter" data-target="1000">0</h3>
                     <p class="text-gray-600 mt-2">Attendees</p>
                 </div>
                 <div class="stat-card bg-gray-100 p-6 rounded-lg" data-aos="zoom-in" data-aos-delay="200">
@@ -467,20 +463,17 @@
                         <div class="flex items-center mb-4">
                             <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">About</span>
                         </div>
-                        
-                        
                         <div class="prose max-w-none mb-8">
-                            
-                            
                             <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">About J.A.M Ltd</h2>
                             <p class="text-gray-700 mb-4">
                                 JODOR Asset Management (J.A.M) Ltd, is a 21st century forward-looking asset management company founded on a rock-solid foundation to unlock value in Africa's most dynamic market.
-
-                                <p class="text-gray-700 mb-4">
-                                    The forum will bring together industry leaders, policymakers, investors, and innovators to discuss the future of sustainable energy in Africa. With the continent's energy demands growing rapidly, SEF-2025 aims to foster collaboration and showcase cutting-edge solutions.
-                                </p>
-
-                                We are a widely known brand in the multi-strategy asset management arena and have come a long way from our initial founding to our business restructuring in recent years and beyond.                            </p>
+                            </p>
+                            <p class="text-gray-700 mb-4">
+                                The forum will bring together industry leaders, policymakers, investors, and innovators to discuss the future of sustainable energy in Africa. With the continent's energy demands growing rapidly, SEF-2025 aims to foster collaboration and showcase cutting-edge solutions.
+                            </p>
+                            <p class="text-gray-700 mb-4">
+                                We are a widely known brand in the multi-strategy asset management arena and have come a long way from our initial founding to our business restructuring in recent years and beyond.
+                            </p>
                             <p class="text-gray-700 mb-4">
                                 Our Business Focus Include
                             </p>
@@ -495,9 +488,11 @@
                             </ul>
                             <p class="text-gray-700 mb-4">
                                 We apply cutting-edge research, machine learning, artificial intelligence, and advanced technology to drive sustainable growth and development on critical projects.
-
+                            </p>
+                            <p class="text-gray-700 mb-4">
                                 We aim to be Africa's premier asset management firm, driving innovation across key critical sectors, and delivering unparalleled value to our clients, and we are a dedicated team of professionals with vast experience across multiple cities, countries and jurisdictions, and we work head over heels in the prompt delivery and the swift execution of project deliverables across major sectors.
-                                
+                            </p>
+                            <p class="text-gray-700 mb-4">
                                 We pride ourselves in time (T) based results, using the PIE methodology.
                             </p>
                             <h2 class="text-2xl font-bold text-gray-900 mt-8 mb-4">Forum Highlights</h2>
@@ -530,118 +525,207 @@
                         </div>
                     </div>
                 </article>
-                <!-- Related Articles -->
+                <!-- Related News -->
                 <div id="news" class="mt-12" data-aos="fade-up">
                     <h3 class="text-2xl font-bold text-gray-900 mb-6">Related News</h3>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="100">
-                            <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Sustainable Energy Forum 2025" loading="lazy">
-                            <div class="p-6">
-                                <div class="flex items-center mb-2">
-                                    <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">BREAKING</span>
-                                    <span class="text-gray-500 text-sm">August 20, 2025</span>
+                    <div class="news-carousel">
+                        <div class="news-track">
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="100">
+                                <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Sustainable Energy Forum 2025" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">BREAKING</span>
+                                        <span class="text-gray-500 text-sm">August 20, 2025</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Sustainable Energy Forum 2025 Announced</h4>
+                                    <p class="text-gray-600 text-sm mb-4">JODOR Asset Management (J.A.M) Ltd unveils SEF-2025 to drive sustainable energy innovation in Africa.</p>
+                                    <p class="text-gray-600 text-sm mb-4">JODOR Asset Management (J.A.M Ltd) to Host Sustainable Energy Forum 2025 in Abuja</p>
+                                    <a href="#" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
                                 </div>
-                                <h4 class="text-xl font-bold text-gray-900 mb-2">Sustainable Energy Forum 2025 Announced</h4>
-                                <p class="text-gray-600 mb-4">JODOR Asset Management (J.A.M) Ltd unveils SEF-2025 to drive sustainable energy innovation in Africa.</p>
-                                <p class="text-gray-600 mb-4">JODOR Asset Management (J.A.M Ltd) to Host Sustainable Energy Forum 2025 in Abuja</p>
-
-                                <a href="#" class="text-blue-600 hover:underline font-medium">Read More →</a>
-                            </div>
-                        </article>
-                        <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="200">
-                            <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Investment" loading="lazy">
-                            <div class="p-6">
-                                <div class="flex items-center mb-2">
-                                    <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">FEATURED</span>
-                                    <span class="text-gray-500 text-sm">August 15, 2024</span>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="200">
+                                <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Investment" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">FEATURED</span>
+                                        <span class="text-gray-500 text-sm">August 15, 2024</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Africa's Renewable Energy Potential</h4>
+                                    <p class="text-gray-600 text-sm mb-4">Exploring the untapped opportunities in solar and wind energy across the continent.</p>
+                                    <a href="#" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
                                 </div>
-                                <h4 class="text-xl font-bold text-gray-900 mb-2">Africa's Renewable Energy Potential</h4>
-                                <p class="text-gray-600 mb-4">Exploring the untapped opportunities in solar and wind energy across the continent.</p>
-                                <a href="#" class="text-blue-600 hover:underline font-medium">Read More →</a>
-                            </div>
-                        </article>
-                        <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up" data-aos-delay="300">
-                            <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Investment" loading="lazy">
-                            <div class="p-6">
-                                <div class="flex items-center mb-2">
-                                    <span class="sponsored-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">SPONSORED</span>
-                                    <span class="text-gray-500 text-sm">July 28, 2024</span>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="300">
+                                <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Investment" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="sponsored-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">SPONSORED</span>
+                                        <span class="text-gray-500 text-sm">July 28, 2024</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Investment Trends in Sustainable Energy</h4>
+                                    <p class="text-gray-600 text-sm mb-4">How investors are positioning themselves in Africa's growing green energy sector.</p>
+                                    <a href="#" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
                                 </div>
-                                <h4 class="text-xl font-bold text-gray-900 mb-2">Investment Trends in Sustainable Energy</h4>
-                                <p class="text-gray-600 mb-4">How investors are positioning themselves in Africa's growing green energy sector.</p>
-                                <a href="#" class="text-blue-600 hover:underline font-medium">Read More →</a>
-                            </div>
-                        </article>
-
-                        <!-- New Articles with African-related Images and Dates -->
-<article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up">
-    <img class="w-full h-48 object-cover" src="static/images/food.jpg" alt="Nigeria Endowed with Energy Sources" loading="lazy">
-    <div class="p-6">
-    <div class="flex items-center mb-2">
-    <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">ENERGY</span>
-    <span class="text-gray-500 text-sm">October 6, 2024 • Guardian</span>
-    </div>
-    <h4 class="text-xl font-bold text-gray-900 mb-2">Nigeria Endowed with Sufficient Energy Sources for Food Security – VC</h4>
-    <p class="text-gray-600 mb-4">Experts emphasize Nigeria’s vast energy resources as a key driver for achieving food security goals.</p>
-    <a href="https://guardian.ng/news/nigeria-endowed-with-sufficient-energy-sources-for-food-security-vc/" target="_blank" class="text-blue-600 hover:underline font-medium">Read More →</a>
-    </div>
-    </article>
-    
-    
-    <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up">
-    <img class="w-full h-48 object-cover" src="static/images/40m.png" alt="Nigerian Commodity Market" loading="lazy">
-    <div class="p-6">
-    <div class="flex items-center mb-2">
-    <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">ECONOMY</span>
-    <span class="text-gray-500 text-sm">September 7, 2021 • ThisDay</span>
-    </div>
-    <h4 class="text-xl font-bold text-gray-900 mb-2">Nigerian Commodity Market to Generate 40M Jobs</h4>
-    <p class="text-gray-600 mb-4">The commodity market is projected to create massive job opportunities for Nigerians.</p>
-    <a href="https://www.thisdaylive.com/2021/09/07/nigerian-commodity-market-to-generate-40m-jobs/" target="_blank" class="text-blue-600 hover:underline font-medium">Read More →</a>
-    </div>
-    </article>
-    
-    
-    <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up">
-    <img class="w-full h-48 object-cover" src="static/images/stakehol.jpeg" alt="Africa Commodity Ecosystem Summit" loading="lazy">
-    <div class="p-6">
-    <div class="flex items-center mb-2">
-    <span class="sponsored-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">SUMMIT</span>
-    <span class="text-gray-500 text-sm">March 16, 2021 • Guardian</span>
-    </div>
-    <h4 class="text-xl font-bold text-gray-900 mb-2">Stakeholders to Explore Africa Commodity Ecosystem at Investment Summit</h4>
-    <p class="text-gray-600 mb-4">Industry leaders will deliberate on Africa’s commodity ecosystem at an upcoming summit.</p>
-    <a href="https://guardian.ng/business-services/stakeholders-to-explore-africa-commodity-ecosystem-at-investment-summit/" target="_blank" class="text-blue-600 hover:underline font-medium">Read More →</a>
-    </div>
-    </article>
-    
-    
-    <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up">
-    <img class="w-full h-48 object-cover" src="static/images/onetri.jpeg" alt="$1 Trillion African Commodity Markets" loading="lazy">
-    <div class="p-6">
-    <div class="flex items-center mb-2">
-    <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">INVESTMENT</span>
-    <span class="text-gray-500 text-sm">March 11, 2021 • Peoples Gazette</span>
-    </div>
-    <h4 class="text-xl font-bold text-gray-900 mb-2">Firm Predicts $1 Trillion African Commodity Markets Investment</h4>
-    <p class="text-gray-600 mb-4">A global firm projects African commodity markets could attract over $1 trillion in investment.</p>
-    <a href="https://gazettengr.com/firm-predicts-1-trillion-african-commodity-markets-investment/" target="_blank" class="text-blue-600 hover:underline font-medium">Read More →</a>
-    </div>
-    </article>
-    
-    
-    <article class="article-card bg-white rounded-lg shadow-md overflow-hidden" data-aos="fade-up">
-    <img class="w-full h-48 object-cover" src="static/images/gcc.jpeg" alt="JAMS GCC2020 Summit" loading="lazy">
-    <div class="p-6">
-    <div class="flex items-center mb-2">
-    <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">EVENT</span>
-    <span class="text-gray-500 text-sm">December 7, 2020 • Blueprint</span>
-    </div>
-    <h4 class="text-xl font-bold text-gray-900 mb-2">JAMS GCC2020 Holds Monday</h4>
-    <p class="text-gray-600 mb-4">JAMS GCC2020 event set to hold, bringing together commodity market stakeholders.</p>
-    <a href="https://blueprint.ng/jams-gcc2020-holds-monday/" target="_blank" class="text-blue-600 hover:underline font-medium">Read More →</a>
-    </div>
-    </article>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="400">
+                                <img class="w-full h-48 object-cover" src="static/images/food.jpg" alt="Nigeria Endowed with Energy Sources" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">ENERGY</span>
+                                        <span class="text-gray-500 text-sm">October 6, 2024 • Guardian</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Nigeria Endowed with Sufficient Energy Sources for Food Security – VC</h4>
+                                    <p class="text-gray-600 text-sm mb-4">Experts emphasize Nigeria’s vast energy resources as a key driver for achieving food security goals.</p>
+                                    <a href="https://guardian.ng/news/nigeria-endowed-with-sufficient-energy-sources-for-food-security-vc/" target="_blank" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="500">
+                                <img class="w-full h-48 object-cover" src="static/images/40m.png" alt="Nigerian Commodity Market" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">ECONOMY</span>
+                                        <span class="text-gray-500 text-sm">September 7, 2021 • ThisDay</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Nigerian Commodity Market to Generate 40M Jobs</h4>
+                                    <p class="text-gray-600 text-sm mb-4">The commodity market is projected to create massive job opportunities for Nigerians.</p>
+                                    <a href="https://www.thisdaylive.com/2021/09/07/nigerian-commodity-market-to-generate-40m-jobs/" target="_blank" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="600">
+                                <img class="w-full h-48 object-cover" src="static/images/stakehol.jpeg" alt="Africa Commodity Ecosystem Summit" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="sponsored-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">SUMMIT</span>
+                                        <span class="text-gray-500 text-sm">March 16, 2021 • Guardian</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Stakeholders to Explore Africa Commodity Ecosystem at Investment Summit</h4>
+                                    <p class="text-gray-600 text-sm mb-4">Industry leaders will deliberate on Africa’s commodity ecosystem at an upcoming summit.</p>
+                                    <a href="https://guardian.ng/business-services/stakeholders-to-explore-africa-commodity-ecosystem-at-investment-summit/" target="_blank" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="700">
+                                <img class="w-full h-48 object-cover" src="static/images/onetri.jpeg" alt="$1 Trillion African Commodity Markets" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">INVESTMENT</span>
+                                        <span class="text-gray-500 text-sm">March 11, 2021 • Peoples Gazette</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Firm Predicts $1 Trillion African Commodity Markets Investment</h4>
+                                    <p class="text-gray-600 text-sm mb-4">A global firm projects African commodity markets could attract over $1 trillion in investment.</p>
+                                    <a href="https://gazettengr.com/firm-predicts-1-trillion-african-commodity-markets-investment/" target="_blank" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="800">
+                                <img class="w-full h-48 object-cover" src="static/images/gcc.jpeg" alt="JAMS GCC2020 Summit" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">EVENT</span>
+                                        <span class="text-gray-500 text-sm">December 7, 2020 • Blueprint</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">JAMS GCC2020 Holds Monday</h4>
+                                    <p class="text-gray-600 text-sm mb-4">JAMS GCC2020 event set to hold, bringing together commodity market stakeholders.</p>
+                                    <a href="https://blueprint.ng/jams-gcc2020-holds-monday/" target="_blank" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <!-- Duplicate articles for seamless looping -->
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="100">
+                                <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Sustainable Energy Forum 2025" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">BREAKING</span>
+                                        <span class="text-gray-500 text-sm">August 20, 2025</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Sustainable Energy Forum 2025 Announced</h4>
+                                    <p class="text-gray-600 text-sm mb-4">JODOR Asset Management (J.A.M) Ltd unveils SEF-2025 to drive sustainable energy innovation in Africa.</p>
+                                    <p class="text-gray-600 text-sm mb-4">JODOR Asset Management (J.A.M Ltd) to Host Sustainable Energy Forum 2025 in Abuja</p>
+                                    <a href="#" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="200">
+                                <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Investment" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">FEATURED</span>
+                                        <span class="text-gray-500 text-sm">August 15, 2024</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Africa's Renewable Energy Potential</h4>
+                                    <p class="text-gray-600 text-sm mb-4">Exploring the untapped opportunities in solar and wind energy across the continent.</p>
+                                    <a href="#" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="300">
+                                <img class="w-full h-48 object-cover" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Investment" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="sponsored-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">SPONSORED</span>
+                                        <span class="text-gray-500 text-sm">July 28, 2024</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Investment Trends in Sustainable Energy</h4>
+                                    <p class="text-gray-600 text-sm mb-4">How investors are positioning themselves in Africa's growing green energy sector.</p>
+                                    <a href="#" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="400">
+                                <img class="w-full h-48 object-cover" src="static/images/food.jpg" alt="Nigeria Endowed with Energy Sources" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">ENERGY</span>
+                                        <span class="text-gray-500 text-sm">October 6, 2024 • Guardian</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Nigeria Endowed with Sufficient Energy Sources for Food Security – VC</h4>
+                                    <p class="text-gray-600 text-sm mb-4">Experts emphasize Nigeria’s vast energy resources as a key driver for achieving food security goals.</p>
+                                    <a href="https://guardian.ng/news/nigeria-endowed-with-sufficient-energy-sources-for-food-security-vc/" target="_blank" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="500">
+                                <img class="w-full h-48 object-cover" src="static/images/40m.png" alt="Nigerian Commodity Market" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">ECONOMY</span>
+                                        <span class="text-gray-500 text-sm">September 7, 2021 • ThisDay</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Nigerian Commodity Market to Generate 40M Jobs</h4>
+                                    <p class="text-gray-600 text-sm mb-4">The commodity market is projected to create massive job opportunities for Nigerians.</p>
+                                    <a href="https://www.thisdaylive.com/2021/09/07/nigerian-commodity-market-to-generate-40m-jobs/" target="_blank" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="600">
+                                <img class="w-full h-48 object-cover" src="static/images/stakehol.jpeg" alt="Africa Commodity Ecosystem Summit" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="sponsored-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">SUMMIT</span>
+                                        <span class="text-gray-500 text-sm">March 16, 2021 • Guardian</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Stakeholders to Explore Africa Commodity Ecosystem at Investment Summit</h4>
+                                    <p class="text-gray-600 text-sm mb-4">Industry leaders will deliberate on Africa’s commodity ecosystem at an upcoming summit.</p>
+                                    <a href="https://guardian.ng/business-services/stakeholders-to-explore-africa-commodity-ecosystem-at-investment-summit/" target="_blank" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="700">
+                                <img class="w-full h-48 object-cover" src="static/images/onetri.jpeg" alt="$1 Trillion African Commodity Markets" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="featured-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">INVESTMENT</span>
+                                        <span class="text-gray-500 text-sm">March 11, 2021 • Peoples Gazette</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">Firm Predicts $1 Trillion African Commodity Markets Investment</h4>
+                                    <p class="text-gray-600 text-sm mb-4">A global firm projects African commodity markets could attract over $1 trillion in investment.</p>
+                                    <a href="https://gazettengr.com/firm-predicts-1-trillion-african-commodity-markets-investment/" target="_blank" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                            <article class="article-card bg-white rounded-lg shadow-md overflow-hidden w-80" data-aos="fade-up" data-aos-delay="800">
+                                <img class="w-full h-48 object-cover" src="static/images/gcc.jpeg" alt="JAMS GCC2020 Summit" loading="lazy">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-2">
+                                        <span class="event-tag text-white text-xs font-semibold px-2 py-1 rounded mr-2">EVENT</span>
+                                        <span class="text-gray-500 text-sm">December 7, 2020 • Blueprint</span>
+                                    </div>
+                                    <h4 class="text-lg font-bold text-gray-900 mb-2">JAMS GCC2020 Holds Monday</h4>
+                                    <p class="text-gray-600 text-sm mb-4">JAMS GCC2020 event set to hold, bringing together commodity market stakeholders.</p>
+                                    <a href="https://blueprint.ng/jams-gcc2020-holds-monday/" target="_blank" class="text-blue-600 hover:underline font-medium text-sm">Read More →</a>
+                                </div>
+                            </article>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -690,12 +774,7 @@
                                 <h4 class="font-medium text-gray-900">Current Date & Time</h4>
                                 <p class="text-gray-600" id="currentDateTime">Loading...</p>
                             </div>
-                            </div>
-                            
-                            
-                            
-
-
+                        </div>
                     </div>
                 </div>
                 <!-- Speakers -->
@@ -717,201 +796,195 @@
                                 <p class="text-gray-600 text-sm">Vice President of the Federal Republic of Nigeria</p>
                             </div>
                         </div>
-
-                        <h4 class="font-bold text-gray-900 mb-2">VVIP Speakers (Policy)</h4>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/heine.jpeg" alt="H.E. Heineken Lokpobiri" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Heineken Lokpobiri</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of State for Petroleum Resources (Oil)</p>
+                        <div id="additional-speakers" class="speakers-hidden">
+                            <h4 class="font-bold text-gray-900 mb-2">VVIP Speakers (Policy)</h4><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/heine.jpeg" alt="H.E. Heineken Lokpobiri" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Heineken Lokpobiri</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of State for Petroleum Resources (Oil)</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/ekpe.jpeg" alt="H.E. Ekperikpe Ekpo" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Ekperikpe Ekpo</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of State for Petroleum Resources (Gas)</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/adela.jpeg" alt="H.E. Chief Bayo Adelabu" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Chief Bayo Adelabu</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Power</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/edun.jpeg" alt="H.E. Wale Edun, OFR" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Wale Edun, OFR</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Finance and Co-ordinating Minister of the Economy</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/jumoke.jpeg" alt="H.E. Dr. Jumoke Oduwole, MFR" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Dr. Jumoke Oduwole, MFR</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Trade and Investment</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/dele.jpeg" alt="H.E. Dele Alake" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Dele Alake</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Solid Minerals Development</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/abbas.jpeg" alt="H.E. Balarabe Abbas Lawal" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Balarabe Abbas Lawal</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Environment</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/umahi.jpeg" alt="Chief Dave Umahi" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Chief Dave Umahi</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Works</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/ojo.jpeg" alt="H.E. Dr. Olubunmi Tunji-Ojo" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Dr. Olubunmi Tunji-Ojo</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Interior</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/festus.jpeg" alt="H.E. Festus Keyamo" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Festus Keyamo</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Aviation and Aerospace Development</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/nnaji.jpeg" alt="Chief Uche Nnaji" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Chief Uche Nnaji</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Innovation, Science and Technology</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/bianca.jpeg" alt="H.E. Bianca Odumegwu Ojukwu" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Bianca Odumegwu Ojukwu</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of State for Foreign Affairs</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/imaan.jpeg" alt="H.E. Hajia Imaan Suleiman" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Hajia Imaan Suleiman</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Women's Affairs</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/bitrus.jpeg" alt="H.E. Bitrus Jisalo" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Bitrus Jisalo</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Special Duties and Inter Governmental Affairs</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/yilwa.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">H.E. Prof. Nentawe Yilwatda</h4>
+                                    <p class="text-gray-600 text-sm">Honourable Minister of Humanitarian Affairs and Poverty Reduction</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmpetro.jpeg" alt="Permanent Secretary" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Perm. Secretary</h4>
+                                    <p class="text-gray-600 text-sm">Ministry of Petroleum Resources</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmpower.jpeg" alt="Permanent Secretary" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Perm. Secretary</h4>
+                                    <p class="text-gray-600 text-sm">Ministry of Power</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmworks.jpeg" alt="Permanent Secretary" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Perm. Secretary</h4>
+                                    <p class="text-gray-600 text-sm">Ministry of Works</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmaviation.jpeg" alt="Permanent Secretary" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Perm. Secretary</h4>
+                                    <p class="text-gray-600 text-sm">Ministry of Aviation and Aerospace Development</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmtech.jpeg" alt="Permanent Secretary" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Perm. Secretary</h4>
+                                    <p class="text-gray-600 text-sm">Ministry of Innovation, Science and Technology</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmtrade.jpeg" alt="Permanent Secretary" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Perm. Secretary</h4>
+                                    <p class="text-gray-600 text-sm">Ministry of Industry, Trade and Investment</p>
+                                </div>
+                            </div><br>
+                            <h4 class="font-bold text-gray-900 mb-2">VVIP Speakers (Business)</h4><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/dan.jpeg" alt="Alhaji Aliko M. Dangote, GCON" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Alhaji Aliko M. Dangote, GCON</h4>
+                                    <p class="text-gray-600 text-sm">Founder and Chairman, Dangote Industries</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/bua.jpeg" alt="Alhaji Abdul S. Rabiu, CFR" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Alhaji Abdul S. Rabiu, CFR</h4>
+                                    <p class="text-gray-600 text-sm">Founder & Chairman, BUA Group</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/wale.jpeg" alt="Wale Tinubu, CON" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Wale Tinubu, CON</h4>
+                                    <p class="text-gray-600 text-sm">Founder & Chairman, Oando Energy (Oando Plc)</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/farouk.jpeg" alt="Engr. Farouk A. Ahmed" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Engr. Farouk A. Ahmed</h4>
+                                    <p class="text-gray-600 text-sm">Authority Chief Executive, NMDPRA</p>
+                                </div>
+                            </div><br>
+                            <div class="flex items-center">
+                                <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/gbenga.jpeg" alt="Engr. Gbenga Komolafe" loading="lazy">
+                                <div>
+                                    <h4 class="font-bold text-gray-900">Engr. Gbenga Komolafe</h4>
+                                    <p class="text-gray-600 text-sm">Commission Chief Executive, NUPRC</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/ekpe.jpeg" alt="H.E. Ekperikpe Ekpo" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Ekperikpe Ekpo</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of State for Petroleum Resources (Gas)</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/adela.jpeg" alt="H.E. Chief Bayo Adelabu" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Chief Bayo Adelabu</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Power</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/edun.jpeg" alt="H.E. Wale Edun, OFR" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Wale Edun, OFR</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Finance and Co-ordinating Minister of the Economy</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/jumoke.jpeg" alt="H.E. Dr. Jumoke Oduwole, MFR" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Dr. Jumoke Oduwole, MFR</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Trade and Investment</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/dele.jpeg" alt="H.E. Dele Alake" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Dele Alake</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Solid Minerals Development</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/abbas.jpeg" alt="H.E. Balarabe Abbas Lawal" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Balarabe Abbas Lawal</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Environment</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/umahi.jpeg" alt="Chief Dave Umahi" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Chief Dave Umahi</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Works</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/ojo.jpeg" alt="H.E. Dr. Olubunmi Tunji-Ojo" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Dr. Olubunmi Tunji-Ojo</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Interior</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/festus.jpeg" alt="H.E. Festus Keyamo" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Festus Keyamo</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Aviation and Aerospace Development</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/nnaji.jpeg" alt="Chief Uche Nnaji" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Chief Uche Nnaji</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Innovation, Science and Technology</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/bianca.jpeg" alt="H.E. Bianca Odumegwu Ojukwu" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Bianca Odumegwu Ojukwu</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of State for Foreign Affairs</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/imaan.jpeg" alt="H.E. Hajia Imaan Suleiman" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Hajia Imaan Suleiman</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Women's Affairs</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/bitrus.jpeg" alt="H.E. Bitrus Jisalo" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Bitrus Jisalo</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Special Duties and Inter Governmental Affairs</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/yilwa.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">H.E. Prof. Nentawe Yilwatda</h4>
-                                <p class="text-gray-600 text-sm">Honourable Minister of Humanitarian Affairs and Poverty Reduction</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmpetro.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
-                                <p class="text-gray-600 text-sm"> Ministry of Petroleum Resources</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmpower.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
-                                <p class="text-gray-600 text-sm"> Ministry of Power</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmworks.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
-                                <p class="text-gray-600 text-sm"> Ministry of Works</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmaviation.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
-                                <p class="text-gray-600 text-sm"> Ministry of Aviation and Aerospace Development</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmtech.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
-                                <p class="text-gray-600 text-sm"> Ministry of Innovation, Science and Technology</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/pmtrade.jpeg" alt="H.E. Prof. Nentawe Yilwatda" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Perm. Secretary </h4>
-                                <p class="text-gray-600 text-sm"> Ministry of Industry, Trade and Investment</p>
-                            </div>
-                        </div>
-
-                        <h4 class="font-bold text-gray-900 mb-2">VVIP Speakers (Business)</h4>
-
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/dan.jpeg" alt="Alhaji Aliko M. Dangote, GCON" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Alhaji Aliko M. Dangote, GCON</h4>
-                                <p class="text-gray-600 text-sm">Founder and Chairman, Dangote Industries</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/bua.jpeg" alt="Alhaji Abdul S. Rabiu, CFR" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Alhaji Abdul S. Rabiu, CFR</h4>
-                                <p class="text-gray-600 text-sm">Founder & Chairman, BUA Group</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/wale.jpeg" alt="Wale Tinubu, CON" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Wale Tinubu, CON</h4>
-                                <p class="text-gray-600 text-sm">Founder & Chairman, Oando Energy (Oando Plc)</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/farouk.jpeg" alt="Engr. Farouk A. Ahmed" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Engr. Farouk A. Ahmed</h4>
-                                <p class="text-gray-600 text-sm">Authority Chief Executive, NMDPRA</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <img class="w-16 h-16 rounded-full object-cover mr-4" src="static/images/gbenga.jpeg" alt="Engr. Gbenga Komolafe" loading="lazy">
-                            <div>
-                                <h4 class="font-bold text-gray-900">Engr. Gbenga Komolafe</h4>
-                                <p class="text-gray-600 text-sm">Commission Chief Executive, NUPRC</p>
-                            </div>
-                        </div>
-                        
-                
+                        <button id="toggle-speakers" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center w-full">
+                            View All Speakers <i class="fas fa-chevron-down ml-2 toggle-icon"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1068,7 +1141,6 @@
         </div>
     </section>
 
-
     <!-- Testimonial Carousel -->
     <div class="mt-16" data-aos="fade-up">
         <h3 class="text-2xl font-semibold text-gray-800 text-center mb-8">What Our Clients Say</h3>
@@ -1176,13 +1248,12 @@
                     </address>
                 </div>
             </div>
-            <!-- Copyright -->
-    <div class="cpy-right text-center py-4">
-        <p class="text-dark">
-            © <script>document.write(new Date().getFullYear());</script> Plug Technologies. All rights reserved | Design by
-            <a href="https://plugtech.onrender.com" target="_blank">Plug Technologies</a>
-        </p>
-    </div>
+            <div class="cpy-right text-center py-4">
+                <p class="text-dark">
+                    © <script>document.write(new Date().getFullYear());</script> Plug Technologies. All rights reserved | Design by
+                    <a href="https://plugtech.onrender.com" target="_blank">Plug Technologies</a>
+                </p>
+            </div>
         </div>
     </footer>
 
@@ -1202,35 +1273,33 @@
         {% endfor %}
     {% endif %}
     {% endwith %}
-
+    
     <!-- Scripts -->
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        function updateCountdown() {
+            const now = new Date();
+            const eventDate = new Date('2025-09-29T09:00:00+01:00');
+            const difference = eventDate - now;
 
+            if (difference <= 0) {
+                document.getElementById('flashyCountdown').textContent = 'Event Has Started!';
+                document.getElementById('flashyCountdown').classList.remove('animate-pulse');
+                document.getElementById('flashyCountdown').classList.add('text-green-600');
+                return;
+            }
 
-<script>
-    function updateCountdown() {
-        const now = new Date();
-        const eventDate = new Date('2025-09-29T09:00:00+01:00'); // Event start date and time in WAT
-        const difference = eventDate - now;
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-        if (difference <= 0) {
-            document.getElementById('flashyCountdown').textContent = 'Event Has Started!';
-            document.getElementById('flashyCountdown').classList.remove('animate-pulse');
-            document.getElementById('flashyCountdown').classList.add('text-green-600');
-            return;
+            document.getElementById('flashyCountdown').textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
         }
 
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-        document.getElementById('flashyCountdown').textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }
-
-    updateCountdown();
-    setInterval(updateCountdown, 1000); // Update every second
-</script>
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
     <script>
         function updateDateTime() {
             const now = new Date();
@@ -1238,12 +1307,9 @@
             document.getElementById('currentDateTime').textContent = now.toLocaleString('en-US', options) + ' WAT';
         }
         updateDateTime();
-        setInterval(updateDateTime, 60000); // Update every minute
+        setInterval(updateDateTime, 60000);
     </script>
-
-
     <script>
-        // Pause/Play functionality for the marquee
         document.addEventListener('DOMContentLoaded', function() {
             const marqueeTrack = document.querySelector('.marquee-track');
             const pauseBtn = document.getElementById('pauseBtn');
@@ -1261,10 +1327,8 @@
                 pauseBtn.style.display = 'flex';
             });
             
-            // Initially show pause button
             playBtn.style.display = 'none';
             
-            // Hover to pause functionality
             marqueeTrack.addEventListener('mouseenter', function() {
                 this.style.animationPlayState = 'paused';
                 pauseBtn.style.display = 'none';
@@ -1276,12 +1340,28 @@
                 playBtn.style.display = 'none';
                 pauseBtn.style.display = 'flex';
             });
+
+            // Toggle speakers
+            $('#toggle-speakers').click(function() {
+                const additionalSpeakers = $('#additional-speakers');
+                const toggleIcon = $(this).find('.toggle-icon');
+                if (additionalSpeakers.hasClass('speakers-hidden')) {
+                    additionalSpeakers.removeClass('speakers-hidden').addClass('speakers-visible');
+                    $(this).text('Hide Speakers ');
+                    toggleIcon.removeClass('fa-chevron-down').addClass('fa-chevron-up active');
+                } else {
+                    additionalSpeakers.removeClass('speakers-visible').addClass('speakers-hidden');
+                    $(this).text('View All Speakers ');
+                    toggleIcon.removeClass('fa-chevron-up active').addClass('fa-chevron-down');
+                }
+                toggleIcon.appendTo($(this));
+                AOS.refresh();
+            });
         });
     </script>
     <script>
         AOS.init({ duration: 1000, once: true });
 
-        // Typed.js for hero text
         new Typed('#typed', {
             strings: ['JODOR Asset Management (J.A.M) Ltd'],
             typeSpeed: 100,
@@ -1289,17 +1369,14 @@
             loop: false
         });
 
-        // Mobile menu toggle
         $('#menu-toggle').click(function() {
             $('#mobile-menu').toggleClass('hidden');
         });
 
-        // Mobile dropdown toggle
         $('.dropdown > button').click(function() {
             $(this).siblings('.dropdown-content').toggleClass('hidden');
         });
 
-        // Sticky navbar
         $(window).scroll(function() {
             if ($(this).scrollTop() > 50) {
                 $('.navbar').addClass('navbar-scrolled');
@@ -1308,7 +1385,6 @@
             }
         });
 
-        // Smooth scrolling for navigation links
         $('a[href*="#"]').not('[href="#"]').click(function(event) {
             if (
                 location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') &&
@@ -1319,16 +1395,14 @@
                 target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
                 if (target.length) {
                     $('html, body').animate({
-                        scrollTop: target.offset().top - 80 // Adjust for fixed navbar height
+                        scrollTop: target.offset().top - 80
                     }, 1000);
-                    // Close mobile menu if open
                     $('#mobile-menu').addClass('hidden');
                     return false;
                 }
             }
         });
 
-        // Counter animation for stats section
         function startCounter() {
             $('.counter').each(function() {
                 var $this = $(this);
@@ -1337,8 +1411,8 @@
                     console.error('Invalid data-target value for counter:', $this.attr('data-target'));
                     return;
                 }
-                var duration = 2000; // Animation duration in milliseconds
-                var steps = 60; // Number of steps for smooth animation
+                var duration = 2000;
+                var steps = 60;
                 var increment = countTo / steps;
                 var current = 0;
 
@@ -1346,16 +1420,15 @@
                     current += increment;
                     if (current >= countTo) {
                         current = countTo;
-                        $this.text(countTo.toLocaleString()); // Format with commas
+                        $this.text(countTo.toLocaleString());
                         clearInterval(counterInterval);
                     } else {
-                        $this.text(Math.floor(current).toLocaleString()); // Format with commas
+                        $this.text(Math.floor(current).toLocaleString());
                     }
                 }, duration / steps);
             });
         }
 
-        // Trigger counter when stats section is in view using IntersectionObserver
         const statsSection = document.getElementById('stats');
         let counterStarted = false;
 
@@ -1488,5 +1561,7 @@
             });
         });
     </script>
+
+    
 </body>
 </html>

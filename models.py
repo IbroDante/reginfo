@@ -5,6 +5,7 @@ import json
 import uuid
 from itsdangerous import URLSafeTimedSerializer
 from flask import current_app
+from sqlalchemy import func
 
 db = SQLAlchemy()
 
@@ -31,6 +32,8 @@ class User(db.Model):
     is_approved = db.Column(db.Boolean, default=False)
     disapproval_reason = db.Column(db.Text)  
     respond_contact = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=False, default=func.now(), onupdate=func.now())
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
