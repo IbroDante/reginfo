@@ -5,7 +5,7 @@ import json
 import uuid
 import os
 from flask_mail import Mail, Message
-from models import db, User, Contact, BulkMessage
+from models import db, User, Contact, BulkMessage, Subscriber, SubscriberBulkMessage
 import base64
 import json
 import random
@@ -31,13 +31,12 @@ from celery import Celery
 
 load_dotenv()
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL") #render
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL") 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
@@ -63,7 +62,6 @@ db.init_app(app)
 mail.init_app(app)
 migrate = Migrate(app, db) 
 
-# Create database
 with app.app_context():
     db.create_all()
 
@@ -80,7 +78,6 @@ def index():
 def index2():
     return render_template('index2.html')
 
-
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
@@ -91,27 +88,31 @@ def admin():
                 users = User.query.all()
                 contacts = Contact.query.all()
                 bulk_messages = BulkMessage.query.all()
-                return render_template('admin.html', users=users, contacts=contacts, bulk_messages=bulk_messages)
-            except OperationalError as e:
+                subscribers = Subscriber.query.all()
+                subscriber_bulk_messages = SubscriberBulkMessage.query.all()
+                return render_template('admin.html', users=users, contacts=contacts, bulk_messages=bulk_messages, subscribers=subscribers, subscriber_bulk_messages=subscriber_bulk_messages)
+            except db.OperationalError as e:
                 logger.error(f"Database error in admin route: {str(e)}")
                 flash('Database connection error. Please try again later.', 'error')
-                return render_template('admin.html', users=None, contacts=None, bulk_messages=None)
+                return render_template('admin.html', users=None, contacts=None, bulk_messages=None, subscribers=None, subscriber_bulk_messages=None)
         else:
             flash('Incorrect admin password.', 'error')
-            return render_template('admin.html', users=None, contacts=None, bulk_messages=None)
+            return render_template('admin.html', users=None, contacts=None, bulk_messages=None, subscribers=None, subscriber_bulk_messages=None)
     
     if not session.get('admin_authenticated'):
-        return render_template('admin.html', users=None, contacts=None, bulk_messages=None)
+        return render_template('admin.html', users=None, contacts=None, bulk_messages=None, subscribers=None, subscriber_bulk_messages=None)
     
     try:
         users = User.query.all()
         contacts = Contact.query.all()
         bulk_messages = BulkMessage.query.all()
-        return render_template('admin.html', users=users, contacts=contacts, bulk_messages=bulk_messages)
-    except OperationalError as e:
+        subscribers = Subscriber.query.all()
+        subscriber_bulk_messages = SubscriberBulkMessage.query.all()
+        return render_template('admin.html', users=users, contacts=contacts, bulk_messages=bulk_messages, subscribers=subscribers, subscriber_bulk_messages=subscriber_bulk_messages)
+    except db.OperationalError as e:
         logger.error(f"Database error in admin route: {str(e)}")
         flash('Database connection error. Please try again later.', 'error')
-        return render_template('admin.html', users=None, contacts=None, bulk_messages=None)
+        return render_template('admin.html', users=None, contacts=None, bulk_messages=None, subscribers=None, subscriber_bulk_messages=None)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -258,7 +259,6 @@ def delete_user(user_id):
     flash(f'{first_name} {family_name} has been deleted.', 'success')
     return redirect(url_for('admin'))
 
-# Delete Contact Route
 @app.route('/delete_contact/<int:contact_id>', methods=['POST'])
 def delete_contact(contact_id):
     if not session.get('admin_authenticated'):
@@ -331,7 +331,6 @@ def third_mail(user_id):
         logger.error(f"Database error for contact ID {user_id}: {str(e)}")
     return redirect(url_for('admin'))
 
-# Respond Contact Route
 @app.route('/respond_contact/<int:contact_id>', methods=['POST'])
 def respond_contact(contact_id):
     if not session.get('admin_authenticated'):
@@ -663,7 +662,6 @@ def send_admin_notification_email(email, token, title, first_name, family_name, 
     else:
         print(f"Failed to send admin email: {response.text}")
 
-# Email sending function for contact inquiries
 def send_contact_notification_email(name, organisation, telephone, email, inquiry, other_inquiry, message, timestamp):
     url = "https://api.brevo.com/v3/smtp/email"
     payload = {
@@ -755,7 +753,6 @@ def contact():
             logger.error(f"Database error: {str(e)}")
             return render_template('index.html')
 
-        # Send email to admin
         if send_contact_notification_email(
             name=name,
             organisation=organisation,
@@ -774,6 +771,224 @@ def contact():
         return render_template('index.html')
     return render_template('index.html')
 
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+
+    name = request.form.get('name')
+    email = request.form.get('email')
+
+    # Validate input
+    if not name or not email:
+        return jsonify({'success': False, 'message': 'Name and email are required.'}), 400
+
+    # Check if email already exists
+    existing_subscriber = Subscriber.query.filter_by(email=email).first()
+    if existing_subscriber:
+        return jsonify({'success': False, 'message': 'You’ve already subscribed with this email, thank you for being part of our community!'}), 200
+
+    # Add new subscriber to database
+    subscriber = Subscriber(name=name, email=email, is_active=True)
+    try:
+        db.session.add(subscriber)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Database error during subscription for {email}: {str(e)}")
+        return jsonify({'success': False, 'message': 'Failed to subscribe due to a server error. Please try again later.'}), 500
+
+    # Send confirmation email using Brevo API
+    url = "https://api.brevo.com/v3/smtp/email"
+    payload = {
+        "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
+        "to": [{"email": email, "name": name}],
+        "subject": "Welcome to SEF-2025 Newsletter",
+        "htmlContent": f"""
+            <html>
+            <head></head>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                    <h2 style="color: #1e40af; text-align: center; margin-bottom: 20px;">Welcome to J.A.M Ltd Newsletter!</h2>
+                    <p>Dear {name},</p>
+                    <p>Thank you for subscribing to the <strong>Sustainable Energy Forum (SEF-2025)</strong> newsletter in Abuja.</p>
+                    <p>Stay tuned for the latest updates, event details, and exclusive insights.</p>
+                    <p><strong>Event Details:</strong></p>
+                    <ul>
+                        <li><strong>Event:</strong> Sustainable Energy Forum (SEF-2025)</li>
+                        <li><strong>Date:</strong> September 29-30th, 2025</li>
+                        <li><strong>Venue:</strong> Central Business District, Abuja</li>
+                    </ul>
+                    <p><strong>Stay connected:</strong></p>
+                    <ul>
+                        <li>Via Instagram: <a href="https://www.instagram.com/jodor_a.m/">https://www.instagram.com/jodor_a.m/</a></li>
+                        <li>Via LinkedIn: <a href="https://www.linkedin.com/jodor-a-m-ltd/">https://www.linkedin.com/jodor-a-m-ltd/</a></li>
+                    </ul>
+                    <p>We appreciate your interest and look forward to keeping you informed!</p>
+                    <p>Best regards,</p>
+                    <p><strong>J.A.M Ltd Team</strong></p>
+                </div>
+            </body>
+            </html>
+        """
+    }
+    headers = {
+        "accept": "application/json",
+        "api-key": app.config['BREVO_API_KEY'],
+        "content-type": "application/json"
+    }
+    try:
+        response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
+        if response.status_code == 201:
+            logger.info(f"Subscription confirmation email sent successfully to {email}: {response.json()}")
+            return jsonify({'success': True, 'message': 'Subscribed successfully! A confirmation email has been sent.'})
+        else:
+            logger.error(f"Failed to send confirmation email to {email}: {response.text}")
+            db.session.rollback()
+            return jsonify({'success': False, 'message': 'Subscription successful, but failed to send confirmation email. Please contact support.'}), 200
+    except requests.exceptions.Timeout:
+        logger.error(f"Timeout while sending confirmation email to {email}")
+        db.session.rollback()
+        return jsonify({'success': False, 'message': 'Subscription successful, but email sending timed out. Please contact support.'}), 200
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Exception while sending confirmation email to {email}: {str(e)}")
+        db.session.rollback()
+        return jsonify({'success': False, 'message': 'Subscription successful, but an error occurred while sending the confirmation email. Please contact support.'}), 200
+
+@app.route('/send_subscriber_bulk_email', methods=['POST'])
+def send_subscriber_bulk_email():
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+
+    subject = request.form.get('subject')
+    message_body = request.form.get('message')
+    file = request.files.get('attachment')
+
+    subscribers = Subscriber.query.filter_by(is_active=True).all()
+    if not subscribers:
+        flash("No active subscribers found to send email.", "warning")
+        return redirect(url_for('admin'))
+
+    recipients = [{"email": s.email, "name": s.name} for s in subscribers if s.email]
+
+    # Create a new SubscriberBulkMessage entry
+    bulk_message = SubscriberBulkMessage(
+        subject=subject,
+        body=message_body,
+        total_recipients=len(recipients),
+        attachment_name=file.filename if file and file.filename else None,
+        status="Pending"
+    )
+
+    # Process attachment if provided
+    file_data = None
+    mime_type = None
+    if file and file.filename:
+        try:
+            file_data = base64.b64encode(file.read()).decode('utf-8')
+            mime_type, _ = mimetypes.guess_type(file.filename)
+            bulk_message.attachment_data = file_data
+            bulk_message.attachment_type = mime_type or "application/octet-stream"
+        except Exception as e:
+            logger.error(f"Attachment processing failed: {e}")
+            flash("Error processing attachment. Email sent without it.", "warning")
+
+    db.session.add(bulk_message)
+    db.session.commit()
+
+    payload = {
+        "sender": {"name": "J.A.M Ltd", "email": app.config['EMAIL_FROM']},
+        "to": recipients,
+        "subject": subject,
+        "htmlContent": f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; background-color: #f9f9f9; padding: 20px;">
+                <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                    <h2 style="color: #1e40af; text-align: center; margin-bottom: 20px;">📢 Newsletter from J.A.M Ltd</h2>
+                    <hr>
+                    <p><strong>Event:</strong> Sustainable Energy Forum (SEF-2025)<br>
+                    <strong>Date:</strong> September 29-30th, 2025<br>
+                    <strong>Venue:</strong> Central Business District, Abuja</p>
+                    <p><strong>Message:</strong> {message_body}</p>
+                    <p style="font-size: 12px; color: #777;">Stay connected: 
+                        <a href="https://www.instagram.com/jodor_a.m/">Instagram</a> | 
+                        <a href="https://www.linkedin.com/jodor-a-m-ltd/">LinkedIn</a>
+                    </p>
+                </div>
+            </body>
+            </html>
+        """
+    }
+
+    # Add attachment to payload if available
+    if file_data and mime_type:
+        payload["attachment"] = [{
+            "content": file_data,
+            "name": file.filename,
+            "type": mime_type
+        }]
+
+    headers = {
+        "accept": "application/json",
+        "api-key": app.config['BREVO_API_KEY'],
+        "content-type": "application/json"
+    }
+
+    try:
+        response = requests.post("https://api.brevo.com/v3/smtp/email", headers=headers, data=json.dumps(payload), timeout=15)
+        if response.status_code == 201:
+            bulk_message.status = "Sent"
+            bulk_message.progress = 100.0
+            bulk_message.sent_count = len(recipients)
+            db.session.commit()
+            flash("Bulk email to subscribers sent successfully!", "success")
+        else:
+            logger.error(f"Subscriber bulk email failed: {response.text}")
+            bulk_message.status = "Failed"
+            db.session.commit()
+            flash("Failed to send bulk email to subscribers. Check logs.", "error")
+    except Exception as e:
+        logger.error(f"Subscriber bulk email exception: {str(e)}")
+        bulk_message.status = "Failed"
+        db.session.commit()
+        flash("An error occurred while sending emails to subscribers.", "error")
+
+    return redirect(url_for('admin'))
+
+@app.route('/delete_subscriber/<int:subscriber_id>', methods=['POST'])
+def delete_subscriber(subscriber_id):
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+    subscriber = Subscriber.query.get_or_404(subscriber_id)
+    try:
+        db.session.delete(subscriber)
+        db.session.commit()
+        flash('Subscriber deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Failed to delete subscriber {subscriber_id}: {str(e)}")
+        flash('Failed to delete subscriber.', 'error')
+    return redirect(url_for('admin'))
+
+@app.route('/toggle_subscriber_status/<int:subscriber_id>', methods=['POST'])
+def toggle_subscriber_status(subscriber_id):
+    if not session.get('admin_authenticated'):
+        flash('Please log in to the admin dashboard.', 'error')
+        return redirect(url_for('admin'))
+    subscriber = Subscriber.query.get_or_404(subscriber_id)
+    try:
+        subscriber.is_active = not subscriber.is_active
+        db.session.commit()
+        flash(f"Subscriber {'activated' if subscriber.is_active else 'deactivated'} successfully!", 'success')
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Failed to toggle subscriber status {subscriber_id}: {str(e)}")
+        flash('Failed to toggle subscriber status.', 'error')
+    return redirect(url_for('admin'))
+
 @app.route('/send_bulk_email', methods=['POST'])
 def send_bulk_email():
     if not session.get('admin_authenticated'):
@@ -791,7 +1006,6 @@ def send_bulk_email():
 
     recipients = [{"email": u.email, "name": f"{u.first_name} {u.family_name}"} for u in users if u.email]
 
-    # Create a new BulkMessage entry
     bulk_message = BulkMessage(
         subject=subject,
         body=message_body,
@@ -800,7 +1014,6 @@ def send_bulk_email():
         status="Pending"
     )
 
-    # If admin uploaded a file, process it
     file_data = None
     mime_type = None
     if file and file.filename:
@@ -841,7 +1054,6 @@ def send_bulk_email():
         """
     }
 
-    # Add attachment to payload if available
     if file_data and mime_type:
         payload["attachment"] = [{
             "content": file_data,

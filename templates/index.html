@@ -23,12 +23,32 @@
             background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
             background-size: 200% 200%;
         }
+
         .newsletter-bg {
-            background-color: #f8f9fa;
-            background-image: url('https://www.energyconnects.com/static/images/newsletter-bg.png');
-            background-repeat: no-repeat;
-            background-position: right center;
-        }
+    background-color: #f8f9fa;
+    background-image: url('https://www.energyconnects.com/static/images/newsletter-bg.png');
+    background-repeat: no-repeat;
+    background-position: right center;
+}
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    border-radius: 0.75rem;
+    display: none;
+}
+.loading-overlay.active {
+    display: flex;
+}
+
+       
         .navbar {
             transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
@@ -741,18 +761,27 @@
             </div>
             <!-- Sidebar -->
             <div class="lg:w-1/3">
+               
+
                 <!-- Newsletter -->
-                <div class="newsletter-bg rounded-lg shadow-md p-6 mb-8" data-aos="fade-up">
-                    <h3 class="text-xl font-bold text-gray-900 mb-4">Stay Updated</h3>
-                    <p class="text-gray-700 mb-4">Subscribe to our newsletter for the latest updates on SEF-2025.</p>
-                    <form class="space-y-4">
-                        <input type="text" placeholder="Your Name" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <input type="email" placeholder="Email Address" class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cta-button">
-                            Subscribe
-                        </button>
-                    </form>
-                </div>
+<div class="newsletter-bg rounded-lg shadow-md p-6 mb-8 relative" data-aos="fade-up">
+    <div class="loading-overlay" id="newsletter-loading">
+        <div class="flex items-center">
+            <i class="fas fa-spinner fa-spin text-blue-600 text-2xl"></i>
+            <span class="text-gray-700 font-medium ml-2">Subscribing...</span>
+        </div>
+    </div>
+    <h3 class="text-xl font-bold text-gray-900 mb-4">Stay Updated</h3>
+    <p class="text-gray-700 mb-4">Subscribe to our newsletter for the latest updates on SEF-2025.</p>
+    <form id="newsletter-form" method="POST" action="{{ url_for('subscribe') }}" class="space-y-4">
+        <input type="text" id="subscriber_name" name="name" placeholder="Your Name" required class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <input type="email" id="subscriber_email" name="email" placeholder="Email Address" required class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cta-button">
+            Subscribe
+        </button>
+    </form>
+</div>
+
                 <!-- Event Details -->
                 <div id="event-details" class="bg-white rounded-lg shadow-md p-6 mb-8" data-aos="fade-up">
                     <h3 class="text-xl font-bold text-gray-900 mb-4">Event Details</h3>
@@ -1570,7 +1599,53 @@
                 }
             });
         });
+
+        $(document).ready(function() {
+    $('#newsletter-form').on('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission
+        var form = $(this);
+        var loadingOverlay = $('#newsletter-loading');
+
+        // Show loading overlay
+        loadingOverlay.addClass('active');
+
+        $.ajax({
+            url: form.attr('action'),
+            type: form.attr('method'),
+            data: form.serialize(),
+            success: function(response) {
+                loadingOverlay.removeClass('active');
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Subscribed!',
+                        text: 'Thank you for subscribing to our newsletter. You will receive a confirmation email shortly.',
+                        confirmButtonColor: '#2563eb'
+                    });
+                    form[0].reset(); // Clear the form
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: response.message || 'Something went wrong. Please try again.',
+                        confirmButtonColor: '#2563eb'
+                    });
+                }
+            },
+            error: function() {
+                loadingOverlay.removeClass('active');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred. Please try again later.',
+                    confirmButtonColor: '#2563eb'
+                });
+            }
+        });
+    });
+});
     </script>
+
 
     
 </body>
