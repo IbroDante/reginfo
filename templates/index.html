@@ -24,6 +24,65 @@
             background-size: 200% 200%;
         }
 
+        .news-carousel {
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+    }
+    .news-track {
+        display: flex;
+        animation: scroll 40s linear infinite;
+        width: calc(320px * 14); /* Adjust based on number of articles (7 original + 7 duplicates) */
+    }
+    .news-track:hover {
+        animation-play-state: paused;
+    }
+    .article-card {
+        flex: 0 0 auto;
+        margin-right: 16px;
+        width: 320px; /* Matches w-80 (80 * 4px = 320px) */
+    }
+    .event-tag {
+        background-color: #2563eb; /* Blue-600 */
+    }
+    .featured-tag {
+        background-color: #16a34a; /* Green-600 */
+    }
+    .sponsored-tag {
+        background-color: #9333ea; /* Purple-600 */
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    @keyframes scroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-320px * 7)); /* Move by the width of original articles */
+        }
+    }
+    @media (max-width: 768px) {
+        .article-card {
+            width: 280px;
+        }
+        .news-track {
+            width: calc(280px * 14);
+        }
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(calc(-280px * 7));
+            }
+        }
+    }
+
         .newsletter-bg {
     background-color: #f8f9fa;
     background-image: url('https://www.energyconnects.com/static/images/newsletter-bg.png');
@@ -536,14 +595,147 @@
                                 <li class="mb-2">Networking opportunities with investors and policymakers</li>
                                 <li class="mb-2">Workshops on sustainable energy financing</li>
                             </ul>
-                            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
-                                <p class="text-blue-700 font-medium">
-                                    "We're at a critical juncture for Africa's energy future. SEF-2025 will provide the platform needed to accelerate our transition to sustainable energy solutions,"
-                                    <br><br>
-                                    Dr. (Engr.) Nduka Ofulue, <br>
-                                    MD/CEO J.A.M Ltd.
-                                </p>
-                            </div>
+                            
+<!-- Quote Carousel -->
+<div id="quotes" class="mt-12" data-aos="fade-up">
+    <h3 class="text-2xl font-bold text-gray-900 text-center mb-8">Insights from Our Leadership</h3>
+    <div class="news-carousel">
+        <div class="news-track flex">
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="100">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="event-tag bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">SEF-2025</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"We're at a critical juncture for Africa's energy future. SEF-2025 will provide the platform needed to accelerate our transition to sustainable energy solutions."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="200">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="featured-tag bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">SUSTAINABILITY</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"Sustainable Energy Forum (SEF) is the continent's premier 'sustainability' event specifically focused on the energy sector and by extension other critical sectors of state economies in Africa that depend on the energy sector."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="300">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="sponsored-tag bg-purple-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">ENERGY SECTOR</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"SEF is Africa's premier event for energy professionals including power, gas, upstream, midstream, downstream, conventional, renewables, energy technology, energy derivatives, energy trade, market development, product research, energy services, policy regulation, and development strategies."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="400">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="event-tag bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">INNOVATION</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"JODOR Asset Management (J.A.M) Ltd uses cutting-edge research, artificial intelligence, machine learning, and advanced technology to drive sustainable growth and development on critical projects."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="500">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="featured-tag bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">SEF PROGRAMME</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"The SEF programme, founded in 2020 and by extension in 2023, has set the tone for robust initiatives in the energy, raw materials, and natural resources sector, and these initiatives are piloted by J.A.M Ltd, a 21st-century forward-looking asset management firm founded in Nigeria."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="600">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="sponsored-tag bg-purple-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">ENERGY SECURITY</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"The SEF-2025 in its 2nd edition will unveil CRET solutions and will take delegates into a deep-dive to tackle in-country and pan-African issues in energy policy and strategy, including energy production, energy storage, energy trade, and energy supply, for sustainable energy security in Nigeria and Africa."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="700">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="event-tag bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">CLIMATE</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"Our climate feeds off from our activities on planet Earth. Sustainable Energy Forum (SEF), with a focus on sustainable energy security, will encompass cutting-edge research and development activities with climate-friendly policies as a key objective of the energy optimization output."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <!-- Duplicate articles for seamless looping -->
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="100">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="event-tag bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">SEF-2025</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"We're at a critical juncture for Africa's energy future. SEF-2025 will provide the platform needed to accelerate our transition to sustainable energy solutions."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="200">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="featured-tag bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">SUSTAINABILITY</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"Sustainable Energy Forum (SEF) is the continent's premier 'sustainability' event specifically focused on the energy sector and by extension other critical sectors of state economies in Africa that depend on the energy sector."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="300">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="sponsored-tag bg-purple-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">ENERGY SECTOR</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"SEF is Africa's premier event for energy professionals including power, gas, upstream, midstream, downstream, conventional, renewables, energy technology, energy derivatives, energy trade, market development, product research, energy services, policy regulation, and development strategies."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="400">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="event-tag bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">INNOVATION</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"JODOR Asset Management (J.A.M) Ltd uses cutting-edge research, artificial intelligence, machine learning, and advanced technology to drive sustainable growth and development on critical projects."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="500">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="featured-tag bg-green-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">SEF PROGRAMME</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"The SEF programme, founded in 2020 and by extension in 2023, has set the tone for robust initiatives in the energy, raw materials, and natural resources sector, and these initiatives are piloted by J.A.M Ltd, a 21st-century forward-looking asset management firm founded in Nigeria."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="600">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="sponsored-tag bg-purple-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">ENERGY SECURITY</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"The SEF-2025 in its 2nd edition will unveil CRET solutions and will take delegates into a deep-dive to tackle in-country and pan-African issues in energy policy and strategy, including energy production, energy storage, energy trade, and energy supply, for sustainable energy security in Nigeria and Africa."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+            <article class="article-card bg-blue-50 border-l-4 border-blue-500 rounded-lg shadow-md overflow-hidden w-80 mx-2" data-aos="fade-up" data-aos-delay="700">
+                <div class="p-6">
+                    <div class="flex items-center mb-2">
+                        <span class="event-tag bg-blue-600 text-white text-xs font-semibold px-2 py-1 rounded mr-2">CLIMATE</span>
+                    </div>
+                    <p class="text-blue-700 text-sm italic mb-4">"Our climate feeds off from our activities on planet Earth. Sustainable Energy Forum (SEF), with a focus on sustainable energy security, will encompass cutting-edge research and development activities with climate-friendly policies as a key objective of the energy optimization output."</p>
+                    <p class="font-semibold text-gray-800">— Dr. (Engr.) Nduka Ofulue, MD/CEO J.A.M Ltd.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+
+<br><br>
+<br>
+
+
                             <p class="text-gray-700 mb-6">
                                 Early bird registration is now open for the Sustainable Energy Forum 2025. Companies interested in sponsorship opportunities should contact the J.A.M Ltd events team.
                             </p>
@@ -1746,7 +1938,25 @@
 });
     </script>
 
+<script>
+    // Ensure AOS is initialized
+    document.addEventListener('DOMContentLoaded', function() {
+        AOS.init({
+            duration: 800,
+            once: true
+        });
 
+        // Reset carousel to start for seamless looping
+        const track = document.querySelector('#quotes .news-track');
+        track.addEventListener('animationiteration', () => {
+            track.style.transition = 'none';
+            track.style.transform = 'translateX(0)';
+            setTimeout(() => {
+                track.style.transition = 'transform 40s linear';
+            }, 50);
+        });
+    });
+</script>
     
 </body>
 </html>
